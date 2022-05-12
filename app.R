@@ -6,6 +6,7 @@ library(lintr)
 library(shinylogs)
 
 source("modules/scatterPlot.R", local = T)
+source("modules/tabPages_Layout.R", local = T)
 
 #If you want to have the logs folder prompted on application stop
 #onStop(function() {
@@ -16,39 +17,24 @@ ui <- navbarPage(
   "Res Q Dashboard",
   tabPanel(
     "Hospital Overview",
-    fluidPage(
-      fluidRow(
-        column(
-          5,
-          h1("Quality Indicators"),
-          tags$hr(),
-          tags$p("First Item in list"),
-          tags$hr(),
-          tags$p("Second Item"),
-          tags$hr(),
-          tags$p("Third Item"),
-          tags$hr(),
-          tags$p("Fourth Item"),
-          tags$hr(),
-          tags$p("Fifth Item"),
-          tags$hr(),
-          tags$p("Sixth Item")
-        ),
-        column(
-          7,
-          h1("Visualization"),
-          tabsetPanel(type = "tabs",
-                      tabPanel("Plot", scatterPlot_UI(id = "module_1", database = mtcars)),
-                      tabPanel("Table", scatterPlot_Table(id = "module_1"))
-          )
-        )
-      )
-    )
+    tabPages(tab_id = "module_1", tab_df = mtcars)
   ),
-  tabPanel("Patient Profiles"),
-  tabPanel("Bleeding"),
-  tabPanel("Imaging"),
-  tabPanel("Treatment"),
+  tabPanel(
+    "Patient Profiles",
+    tabPages(tab_id = "module_2", tab_df = iris)
+  ),
+  tabPanel(
+    "Bleeding",
+    tabPages(tab_id = "module_3", tab_df = ToothGrowth)
+  ),
+  tabPanel(
+    "Imaging",
+    tabPages(tab_id = "module_4", tab_df = PlantGrowth)
+  ),
+  tabPanel(
+    "Treatment",
+    tabPages(tab_id = "module_5", tab_df = USArrests)
+  ),
   tabPanel("Phase One"),
   tabPanel("Discharge")
 )
@@ -60,6 +46,10 @@ server <- function(input, output, session) {
   )
   
   scatterPlot_server(id = "module_1", mtcars)
+  scatterPlot_server(id = "module_2", iris)
+  scatterPlot_server(id = "module_3", ToothGrowth)
+  scatterPlot_server(id = "module_4", PlantGrowth)
+  scatterPlot_server(id = "module_5", USArrests)
 }
 
 shinyApp(ui = ui, server = server)
