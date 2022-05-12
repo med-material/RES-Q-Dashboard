@@ -9,4 +9,5 @@ This then developed into the following dashboard where the ui and functionality 
 ![mtcars dashboard](mtcars-db-latest.gif)
 
 When adding a hierarchical structure and logging capabilities the app starts looking like this:
-![Honing in on dashboard interface](Update12-05=22.gif)
+![Honing in on dashboard interface](Update12-05-22.gif)
+
