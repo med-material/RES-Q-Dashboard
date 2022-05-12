@@ -8,9 +8,9 @@ library(shinylogs)
 source("modules/scatterPlot.R", local = T)
 
 #If you want to have the logs folder prompted on application stop
-onStop(function() {
-  browseURL(url = "logs/")
-})
+#onStop(function() {
+#  browseURL(url = "logs")
+#})
 
 ui <- navbarPage(
   "Res Q Dashboard",
@@ -56,7 +56,7 @@ ui <- navbarPage(
 server <- function(input, output, session) {
   # Store JSON with logs in the logs dir
   track_usage(
-    storage_mode = store_json(path = "logs/")
+    storage_mode = store_null()
   )
   
   scatterPlot_server(id = "module_1", mtcars)
