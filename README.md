@@ -13,4 +13,5 @@ This then developed into the following dashboard where the ui and functionality 
 When adding a hierarchical structure and logging capabilities the app starts looking like this:
 ![Honing in on dashboard interface](Images/Update12-05-22.gif)
 
-
+When adding some placeholder QI with metrics and visualizations it looks like:
+![QI section on the left](Images/Update17-05-22.png)
