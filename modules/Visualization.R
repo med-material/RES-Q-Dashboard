@@ -1,7 +1,8 @@
 visualization_Layout <- function(id, database) {
+  ns <- NS(id)
   column(
-    7,
-    h1("Visualization"),
+    6,
+    h1("Visualization", align = 'center'),
     tabsetPanel(type = "tabs",
                 tabPanel("Plot", scatterPlot_UI(id, database)),
                 tabPanel("Table", scatterPlot_Table(id))
@@ -16,27 +17,48 @@ scatterPlot_UI <- function(id, database) {
     plotlyOutput(
       outputId = ns("plot")
     ),
-    selectInput(
-      inputId = ns("selected_col"),
-      label = "Select column",
-      choices = colnames(database),
-      selected = colnames(database)[1]
+    fixedRow(
+      column(
+        6,
+        align = 'center',
+        selectInput(
+          inputId = ns("selected_col"),
+          label = "Select column",
+          choices = colnames(database),
+          selected = colnames(database)[1]
+        )
+      ),
+      column(
+        6,
+        align = 'center',
+        selectInput(
+          inputId = ns("selected_col2"),
+          label = "Select column",
+          choices = colnames(database),
+          selected = colnames(database)[2]
+        )
+      )
+      
     ),
-    selectInput(
-      inputId = ns("selected_col2"),
-      label = "Select column",
-      choices = colnames(database),
-      selected = colnames(database)[2]
-    ),
-    checkboxInput(
-      inputId = ns("smooth_line"),
-      label = "Add smoothing",
-      value = FALSE
-    ),
-    checkboxInput(
-      inputId = ns("comp_country"),
-      label = "Show country mean",
-      value = FALSE
+    fixedRow(
+      column(
+        6,
+        align = 'center',
+        checkboxInput(
+          inputId = ns("smooth_line"),
+          label = "Add smoothing",
+          value = FALSE
+        )
+      ),
+      column(
+        6,
+        align = 'center',
+        checkboxInput(
+          inputId = ns("comp_country"),
+          label = "Show country mean",
+          value = FALSE
+        )
+      )
     )
   )
 }
@@ -60,6 +82,7 @@ scatterPlot_server <- function(id, database) {
         }
         ggplotly(plot)
       })
+      
       output$table <- DT::renderDataTable(database %>% select(input$selected_col, input$selected_col2), options = list(pageLength = 5))
     }
   )
