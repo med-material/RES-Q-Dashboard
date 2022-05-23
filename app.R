@@ -6,8 +6,7 @@ library(lintr)
 library(shinylogs)
 library(DT)
 library(shinydashboard)
-library(sparkline)
-library(htmlwidgets)
+library(ggforce)
 
 source("modules/Visualization.R", local = T)
 source("modules/tabPages_Layout.R", local = T)
@@ -56,9 +55,10 @@ server <- function(input, output, session) {
   scatterPlot_server(id = "tab4", PlantGrowth)
   scatterPlot_server(id = "tab5", USArrests)
   
-  df_col1 = c(1)
-  df_col2 = c(2)
+  df_col1 = c(1,2,3,4,5)
+  df_col2 = c(1,3,5,3,4)
   df = data.frame(df_col1, df_col2)
+  colnames(df) <- c("x", "y")
   
   QI_server(id = "tab1", df)
   QI_server(id = "tab2", df)
