@@ -1,4 +1,4 @@
-QI_Layout <- function(id, database) {
+QI_Layout_HO <- function(id, database) {
   ns <- NS(id)
   
   column(
@@ -26,14 +26,269 @@ QI_Layout <- function(id, database) {
         h3("Visual 2", align = 'center')
       )
     ),
+    tags$hr(),
     QI_rowmaker(id, "DTN", 100, 55, "DTN_vis1", "DTN_vis2"),
-
-    QI_rowmaker(id, "IVT", 314, 2.79, "plot3", "plot4"),
+    tags$hr(),
+    QI_rowmaker(id, "IVT", 314, 2.79, "plot3", "plot4")
     # fixedRow(
     #   plotlyOutput(
     #   outputId = ns("DTN_vis1")
     #   )
     # )
+  )
+}
+
+QI_Layout_PC <- function(id, database) {
+  ns <- NS(id)
+  column(
+    6,
+    h1("Quality Indicators", align = 'center'),
+    fixedRow(
+      column(
+        2,
+        h3("QI", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 1", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 2", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 1", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 2", align = 'center')
+      )
+    ),
+    QI_rowmaker(id, "Age", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "Gender", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "NIHSS", 50, 60, "p1", "p2")
+  )
+}
+
+QI_Layout_Bleeding <- function(id, database) {
+  ns <- NS(id)
+  column(
+    6,
+    h1("Quality Indicators", align = 'center'),
+    fixedRow(
+      column(
+        2,
+        h3("QI", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 1", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 2", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 1", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 2", align = 'center')
+      )
+    ),
+    QI_rowmaker(id, "QI1", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI2", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI3", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI4", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI5", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI6", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI7", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI8", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI9", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI10", 50, 60, "p1", "p2")
+  )
+}
+
+QI_Layout_Imaging <- function(id, database) {
+  ns <- NS(id)
+  column(
+    6,
+    h1("Quality Indicators", align = 'center'),
+    fixedRow(
+      column(
+        2,
+        h3("QI", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 1", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 2", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 1", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 2", align = 'center')
+      )
+    ),
+    QI_rowmaker(id, "QI1", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI2", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI3", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI4", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI5", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI6", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI7", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI8", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI9", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI10", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI11", 50, 60, "p1", "p2")
+  )
+}
+
+QI_Layout_Treatment <- function(id, database) {
+  ns <- NS(id)
+  column(
+    6,
+    h1("Quality Indicators", align = 'center'),
+    fixedRow(
+      column(
+        2,
+        h3("QI", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 1", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 2", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 1", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 2", align = 'center')
+      )
+    ),
+    QI_rowmaker(id, "QI1", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI2", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI3", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI4", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI5", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI6", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI7", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI8", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI9", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI10", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI11", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI12", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI13", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI14", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI15", 50, 60, "p1", "p2")
+  )
+}
+
+
+QI_Layout_PO <- function(id, database) {
+  ns <- NS(id)
+  column(
+    6,
+    h1("Quality Indicators", align = 'center'),
+    fixedRow(
+      column(
+        2,
+        h3("QI", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 1", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 2", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 1", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 2", align = 'center')
+      )
+    ),
+    QI_rowmaker(id, "QI1", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI2", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI3", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI4", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI5", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI6", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI7", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI8", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI9", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI10", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI11", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI12", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI13", 50, 60, "p1", "p2")
+  )
+}
+
+QI_Layout_Discharge <- function(id, database) {
+  ns <- NS(id)
+  column(
+    6,
+    h1("Quality Indicators", align = 'center'),
+    fixedRow(
+      column(
+        2,
+        h3("QI", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 1", align = 'center')
+      ),
+      column(
+        2,
+        h3("Metric 2", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 1", align = 'center')
+      ),
+      column(
+        3,
+        h3("Visual 2", align = 'center')
+      )
+    ),
+    QI_rowmaker(id, "QI1", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI2", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI3", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI4", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI5", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI6", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI7", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI8", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI9", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI10", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI11", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI12", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI13", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI14", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI15", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI16", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI17", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI18", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI19", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI20", 50, 60, "p1", "p2"),
+    QI_rowmaker(id, "QI21", 50, 60, "p1", "p2")
   )
 }
 
@@ -57,16 +312,14 @@ QI_rowmaker <- function(id, QI, m1, m2, v1id, v2id) {
       3,
       align = 'center',
       h6("+30"),
-      tags$img(src = "testplot.png", width = "150px", height = "75px"),
+      tags$img(src = "testplot.png", width = "100px", height = "30px"),
     ),
     column(
       3,
-      align = 'center',
-          plotlyOutput(
-            outputId = ns(v1id),
-            width = "150px",
-            height = "100px"
-          )
+      align = 'center'
+          # plotlyOutput(
+          #   outputId = ns(v1id)
+          # )
     )
   )
 }

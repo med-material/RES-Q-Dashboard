@@ -21,26 +21,32 @@ ui <- navbarPage(
   "Res Q Dashboard",
   tabPanel(
     "Hospital Overview",
-    tabPages(tab_id = "tab1", tab_df = mtcars)
+    tabPages_HO(tab_id = "tab1", tab_df = mtcars)
   ),
   tabPanel(
     "Patient Profiles",
-    tabPages(tab_id = "tab2", tab_df = iris)
+    tabPages_PC(tab_id = "tab2", tab_df = iris)
   ),
   tabPanel(
     "Bleeding",
-    tabPages(tab_id = "tab3", tab_df = ToothGrowth)
+    tabPages_Bleeding(tab_id = "tab3", tab_df = ToothGrowth)
   ),
   tabPanel(
     "Imaging",
-    tabPages(tab_id = "tab4", tab_df = PlantGrowth)
+    tabPages_Imaging(tab_id = "tab4", tab_df = PlantGrowth)
   ),
   tabPanel(
     "Treatment",
-    tabPages(tab_id = "tab5", tab_df = USArrests)
+    tabPages_Treatment(tab_id = "tab5", tab_df = USArrests)
   ),
-  tabPanel("Phase One"),
-  tabPanel("Discharge")
+  tabPanel(
+    "Phase One",
+    tabPages_PO(tab_id = "tab6", tab_df = swiss)
+  ),
+  tabPanel(
+    "Discharge",
+    tabPages_Discharge(tab_id = "tab7", tab_df = iris)
+  )
 )
 
 server <- function(input, output, session) {
@@ -54,6 +60,8 @@ server <- function(input, output, session) {
   scatterPlot_server(id = "tab3", ToothGrowth)
   scatterPlot_server(id = "tab4", PlantGrowth)
   scatterPlot_server(id = "tab5", USArrests)
+  scatterPlot_server(id = "tab6", swiss)
+  scatterPlot_server(id = "tab7", iris)
   
   df_col1 = c(1,2,3,4,5)
   df_col2 = c(1,3,5,3,4)
