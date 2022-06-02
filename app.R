@@ -8,9 +8,28 @@ library(DT)
 library(shinydashboard)
 library(ggforce)
 
-source("modules/Visualization.R", local = T)
-source("modules/tabPages_Layout.R", local = T)
-source("modules/QI.R", local = T)
+#Pages
+source("modules/page_HO.R", local = T)
+source("modules/page_PC.R", local = T)
+source("modules/page_Bleeding.R", local = T)
+source("modules/page_Imaging.R", local = T)
+source("modules/page_Treatment.R", local = T)
+source("modules/page_PO.R", local = T)
+source("modules/page_Discharge.R", local = T)
+
+#Utils
+source("utils/rowmaker.R", local = T)
+
+#Element modules
+source("modules/plot_Visualization.R", local = T)
+source("modules/QI_HO.R", local = T)
+source("modules/QI_PC.R", local = T)
+source("modules/QI_Bleeding.R", local = T)
+source("modules/QI_Imaging.R", local = T)
+source("modules/QI_Treatment.R", local = T)
+source("modules/QI_PO.R", local = T)
+source("modules/QI_Discharge.R", local = T)
+
 
 #If you want to have the logs folder prompted on application stop
 #onStop(function() {
@@ -21,31 +40,31 @@ ui <- navbarPage(
   "Res Q Dashboard",
   tabPanel(
     "Hospital Overview",
-    tabPages_HO(tab_id = "tab1", tab_df = mtcars)
+    page_HO(id = "HO", df = mtcars)
   ),
   tabPanel(
     "Patient Profiles",
-    tabPages_PC(tab_id = "tab2", tab_df = iris)
+    page_PC(id = "PC", df = iris)
   ),
   tabPanel(
     "Bleeding",
-    tabPages_Bleeding(tab_id = "tab3", tab_df = ToothGrowth)
+    page_Bleeding(id = "Bleeding", df = ToothGrowth)
   ),
   tabPanel(
     "Imaging",
-    tabPages_Imaging(tab_id = "tab4", tab_df = PlantGrowth)
+    page_Imaging(id = "Imaging", df = PlantGrowth)
   ),
   tabPanel(
     "Treatment",
-    tabPages_Treatment(tab_id = "tab5", tab_df = USArrests)
+    page_Treatment(id = "Treatment", df = USArrests)
   ),
   tabPanel(
     "Phase One",
-    tabPages_PO(tab_id = "tab6", tab_df = swiss)
+    page_PO(id = "PO", df = swiss)
   ),
   tabPanel(
     "Discharge",
-    tabPages_Discharge(tab_id = "tab7", tab_df = iris)
+    page_Discharge(id = "Discharge", df = iris)
   )
 )
 
@@ -55,24 +74,26 @@ server <- function(input, output, session) {
     storage_mode = store_null()
   )
   
-  scatterPlot_server(id = "tab1", mtcars)
-  scatterPlot_server(id = "tab2", iris)
-  scatterPlot_server(id = "tab3", ToothGrowth)
-  scatterPlot_server(id = "tab4", PlantGrowth)
-  scatterPlot_server(id = "tab5", USArrests)
-  scatterPlot_server(id = "tab6", swiss)
-  scatterPlot_server(id = "tab7", iris)
+  plot_Visualization(id = "HO", mtcars)
+  plot_Visualization(id = "PC", iris)
+  plot_Visualization(id = "Bleeding", ToothGrowth)
+  plot_Visualization(id = "Imaging", PlantGrowth)
+  plot_Visualization(id = "Treatment", USArrests)
+  plot_Visualization(id = "PO", swiss)
+  plot_Visualization(id = "Discharge", iris)
   
   df_col1 = c(1,2,3,4,5)
   df_col2 = c(1,3,5,3,4)
   df = data.frame(df_col1, df_col2)
   colnames(df) <- c("x", "y")
   
-  QI_server(id = "tab1", df)
-  QI_server(id = "tab2", df)
-  QI_server(id = "tab3", df)
-  QI_server(id = "tab4", df)
-  QI_server(id = "tab5", df)
+  QI_HO(id = "HO", df)
+  QI_PC(id = "PC", df)
+  QI_Bleeding(id = "Bleeding", df)
+  QI_Imaging(id = "Imaging", df)
+  QI_Treatment(id = "Treatment", df)
+  QI_PO(id = "PO", df)
+  QI_Discharge(id = "Discharge", df)
   
 }
 
