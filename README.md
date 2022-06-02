@@ -15,3 +15,6 @@ When adding a hierarchical structure and logging capabilities the app starts loo
 
 When adding some placeholder QI with metrics and visualizations it looks like:
 ![QI section on the left](Images/Update24-05-22.png)
+
+The goal is to take the hospital data and process it to the point that it looks as following for indicator display purposes:
+![QI Data](Images/Update02-06-22.png)
