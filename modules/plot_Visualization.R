@@ -82,6 +82,7 @@ plot_Visualization <- function(id, database) {
         ggplotly(plot)
       })
       
+      
       output$table <- DT::renderDataTable(database %>% select(input$selected_col, input$selected_col2), options = list(pageLength = 5))
     }
   )
