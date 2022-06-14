@@ -28,16 +28,16 @@ QI_Bleeding_UI <- function(id, database) {
         h4("More", align = 'center')
       )
     ),
-    QI_rowmaker(id, "QI1", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI2", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI3", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI4", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI5", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI6", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI7", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI8", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI9", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI10", 50, 60, "p1", "p2")
+    QI_rowmaker(id, "ICH.V", 50, 60, "V1.png", "p2"),
+    QI_rowmaker(id, "INF.BLD", 50, 60, "V2.png", "p2"),
+    QI_rowmaker(id, "SRC.F", 50, 60, "V3.png", "p2"),
+    QI_rowmaker(id, "ICH.S", 50, 60, "V1.png", "p2"),
+    QI_rowmaker(id, "INT.BLD", 50, 60, "V2.png", "p2"),
+    QI_rowmaker(id, "ICH.NS", 50, 60, "V3.png", "p2"),
+    QI_rowmaker(id, "SAH.NS", 50, 60, "V1.png", "p2"),
+    QI_rowmaker(id, "BLD.C", 50, 60, "V2.png", "p2"),
+    QI_rowmaker(id, "ICH.DVT", 50, 60, "V3.png", "p2"),
+    QI_rowmaker(id, "HH", 50, 60, "V1.png", "p2")
   )
 }
 

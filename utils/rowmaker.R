@@ -18,7 +18,7 @@ QI_rowmaker <- function(id, QI, m1, m2, v1id, v2id) {
       4,
       align = 'center',
       #h6("+30"),
-      tags$img(src = "testplot.png", width = "30%"),
+      tags$img(src = v1id, width = "50%"),
     ),
     column(
       3,

@@ -30,9 +30,9 @@ QI_HO_UI <- function(id, database) {
       )
     ),
     tags$hr(),
-    QI_rowmaker(id, "DTN", 100, 55, "DTN_vis1", "DTN_vis2"),
+    QI_rowmaker(id, "DTN", 100, 55, "V1.png", "DTN_vis2"),
     tags$hr(),
-    QI_rowmaker(id, "IVT", 314, 2.79, "plot3", "plot4")
+    QI_rowmaker(id, "IVT", 314, 2.79, "V2.png", "plot4")
     # fixedRow(
     #   plotlyOutput(
     #   outputId = ns("DTN_vis1")

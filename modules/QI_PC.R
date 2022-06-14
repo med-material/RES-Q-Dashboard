@@ -28,9 +28,9 @@ QI_PC_UI <- function(id, database) {
         h4("More", align = 'center')
       )
     ),
-    QI_rowmaker(id, "Age", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "Gender", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "NIHSS", 50, 60, "p1", "p2")
+    QI_rowmaker(id, "Age", 50, 60, "V1.png", "p2"),
+    QI_rowmaker(id, "Gender", 50, 60, "V2.png", "p2"),
+    QI_rowmaker(id, "NIHSS", 50, 60, "V3.png", "p2")
   )
 }
 

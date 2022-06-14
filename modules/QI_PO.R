@@ -28,19 +28,19 @@ QI_PO_UI <- function(id, database) {
         h4("More", align = 'center')
       )
     ),
-    QI_rowmaker(id, "QI1", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI2", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI3", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI4", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI5", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI6", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI7", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI8", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI9", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI10", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI11", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI12", 50, 60, "p1", "p2"),
-    QI_rowmaker(id, "QI13", 50, 60, "p1", "p2")
+    QI_rowmaker(id, "DECOM", 50, 60, "V1.png", "p2"),
+    QI_rowmaker(id, "CRTD.IMG", 50, 60, "V2.png", "p2"),
+    QI_rowmaker(id, "CRTD.I70", 50, 60, "V3.png", "p2"),
+    QI_rowmaker(id, "END.70", 50, 60, "V1.png", "p2"),
+    QI_rowmaker(id, "ANTP", 50, 60, "V2.png", "p2"),
+    QI_rowmaker(id, "INS", 50, 60, "V3.png", "p2"),
+    QI_rowmaker(id, "SCRN.DYS", 50, 60, "V1.png", "p2"),
+    QI_rowmaker(id, "PHSIO", 50, 60, "V2.png", "p2"),
+    QI_rowmaker(id, "PHSIO.T", 50, 60, "V3.png", "p2"),
+    QI_rowmaker(id, "SWLW", 50, 60, "V1.png", "p2"),
+    QI_rowmaker(id, "NO.IVT", 50, 60, "V2.png", "p2"),
+    QI_rowmaker(id, "AFIB", 50, 60, "V3.png", "p2"),
+    QI_rowmaker(id, "TEST.DYS", 50, 60, "V1.png", "p2")
   )
 }
 
