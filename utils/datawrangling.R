@@ -77,3 +77,6 @@ hosp_QI_agg <- function(data, indicator, hospital, from, to, rolling_time, aggTy
     data <- data %>% mutate(rel_freq = n/denom)
   }
 }
+
+#hosp_QI_agg("age", )
+max(numVars$YQ)

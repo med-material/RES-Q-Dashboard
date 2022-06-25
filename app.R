@@ -19,6 +19,8 @@ source("modules/page_Generic.R", local = T)
 
 #Utils
 source("utils/datawrangling.R", local = T)
+source("utils/dataHandlerQI.R", local = T)
+source("utils/dataLoader.R", local = T)
 
 #Element modules
 source("modules/plot_Expanded.R", local = T)
@@ -30,6 +32,7 @@ source("modules/rowmaker.R", local = T)
 #  browseURL(url = "logs")
 #})
 
+db <- dataLoader()
 
 ui <- fluidPage(
   dashboard_Structure_UI("Dashboard")

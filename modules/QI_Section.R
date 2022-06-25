@@ -1,6 +1,6 @@
 QI_Section_UI <- function(id) {
   ns <- NS(id)
-  QI_List <- c("QI1", "QI2")
+  QI_List <- c("age", "nihss_score")
   column(6, uiOutput(ns("header")), 
          lapply(1:length(QI_List), function(i) {
            rowmaker_UI(ns(QI_List[i]))
@@ -12,7 +12,6 @@ QI_Section <- function(id) {
   moduleServer(
     id,
     function(input, output, session) {
-      ns <- NS(id)
       output$header <- renderUI({
         fixedRow(
           column(2, h4("QI", align = 'center')),
@@ -24,7 +23,7 @@ QI_Section <- function(id) {
         )
       })
       
-      QI_List <- c("QI1", "QI2")
+      QI_List <- c("age", "nihss_score")
       lapply(1:length(QI_List), function(i) {
         rowmaker(QI_List[i], QI_List[i])
       })
