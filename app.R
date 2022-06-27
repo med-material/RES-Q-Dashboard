@@ -32,7 +32,7 @@ source("modules/rowmaker.R", local = T)
 #  browseURL(url = "logs")
 #})
 
-db <- dataLoader()
+#db <- dataLoader()
 
 ui <- fluidPage(
   dashboard_Structure_UI("Dashboard")
@@ -45,6 +45,9 @@ server <- function(input, output, session) {
   )
   
   dashboard_Structure("Dashboard")
+  db <- dataLoader()
+  numVars <- db$numVars
+  catVars <- db$catVars
 }
 
 shinyApp(ui = ui, server = server)

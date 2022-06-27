@@ -1,3 +1,5 @@
+source("utils/dataLoader.R", local = T)
+
 dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
   latest <- max(data$YQ)
   scope <- sort(unique(data$YQ), decreasing = TRUE)
@@ -39,5 +41,8 @@ dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
   hosp_data_agg$CValue <- country_data_agg$Value
   return(hosp_data_agg)
 }
-db <- dataLoader()
-metrics <- dataHandlerQI(db, "age", "uggeebfixudwdhb", "vrprkigsxydwgni", "mean")
+# db <- dataLoader()
+# numVars <- db$numVars
+# catVars <- db$catVars
+# 
+# metrics <- dataHandlerQI(numVars, "age", "uggeebfixudwdhb", "vrprkigsxydwgni", "mean")

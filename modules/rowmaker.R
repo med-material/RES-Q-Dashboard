@@ -18,7 +18,7 @@ rowmaker <- function(id, QI) {
         QI
       })
       
-      row_df <- dataHandlerQI(db, QI, "uggeebfixudwdhb", "vrprkigsxydwgni", "mean")
+      row_df <- dataHandlerQI(numVars, QI, "uggeebfixudwdhb", "vrprkigsxydwgni", "mean")
       
       output$QIM1 <- renderText({
         as.character(round(row_df$Value[4], 1))
