@@ -7,6 +7,7 @@ library(shinylogs)
 library(DT)
 library(shinydashboard)
 library(ggforce)
+library(bslib)
 
 
 #Structure
@@ -24,8 +25,10 @@ source("utils/dataLoader.R", local = T)
 
 #Element modules
 source("modules/plot_Expanded.R", local = T)
-source("modules/QI_Section.R", local = T)
-source("modules/rowmaker.R", local = T)
+source("modules/QI_Section_Num.R", local = T)
+source("modules/QI_Section_Cat.R", local = T)
+source("modules/rowmaker_Num.R", local = T)
+source("modules/rowmaker_Cat.R", local = T)
 
 #If you want to have the logs folder prompted on application stop
 #onStop(function() {
@@ -34,7 +37,7 @@ source("modules/rowmaker.R", local = T)
 
 #db <- dataLoader()
 
-ui <- fluidPage(
+ui <- fluidPage(theme = bs_theme(version = 4, bootswatch = "minty"),
   dashboard_Structure_UI("Dashboard")
 )
 

@@ -51,13 +51,11 @@ plot_Expanded_UI <- function(id, database) {
 
   table_UI <- dataTableOutput(outputId = ns("table"))
 
-  column(
-    6,
-    tabsetPanel(
-      type = "tabs",
-      tabPanel("Plot", plot_UI),
-      tabPanel("Table", table_UI)
-    )
+
+  tabsetPanel(
+    type = "tabs",
+    tabPanel("Plot", plot_UI),
+    tabPanel("Table", table_UI)
   )
 }
 
