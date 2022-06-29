@@ -1,6 +1,4 @@
-#title Dashboard-exploration - 
-
-The dashboard presents a large number of stroke quality care data for clincians spread across several pages (horizontal top bar navigation) 
+The dashboard's goal is to present a quick overview over a large number of stroke quality care data for clincians spread across several pages (horizontal top bar navigation) 
 This includes numeric and categorical parameters. 
 ![QI Real Data](Images/Update_29_06.png)
 
