@@ -1,7 +1,7 @@
 dashboard_Structure_UI <- function(id) {
   ns <- NS(id)
   navbarPage(
-    "Res Q Dashboard",
+    "Res-Q Dashboard",
     tabPanel(
       "Hospital Overview",
       page_HO(ns("HO"))

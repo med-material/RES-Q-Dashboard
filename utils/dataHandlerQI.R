@@ -1,8 +1,9 @@
 source("utils/dataLoader.R", local = T)
 
 dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
-  latest <- max(data$YQ)
-  scope <- sort(unique(data$YQ), decreasing = TRUE)
+  starting <- data %>% filter(site_name == hospital)
+  latest <- max(starting$YQ)
+  scope <- sort(unique(starting$YQ), decreasing = TRUE)
   scope <- head(scope,4)
   scope <- data.frame(YQ = scope)
   
@@ -20,7 +21,7 @@ dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
   
     hosp_data_scope <- hosp_data_scope %>%
       summarize(
-        Value = 
+        Hospital = 
           if (!!aggType == "mean") {
             mean(Value, na.rm = T)
           }
@@ -33,7 +34,7 @@ dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
     
     country_data_scope <- country_data_scope %>%
       summarize(
-        Value = 
+        Country = 
           if (!!aggType == "mean") {
             mean(Value, na.rm = T)
           }
@@ -45,7 +46,11 @@ dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
     
     hosp_data_agg <- merge(hosp_data_scope, scope, all.y = T)
     country_data_agg <- merge(country_data_scope, scope, all.y = T)
-    hosp_data_agg$CValue <- country_data_agg$Value
+    hosp_data_agg$Country <- country_data_agg$Country
+    hosp_data_agg$Hospital[2] <- NA
+    hosp_data_agg$Flag <- as.factor(ifelse(is.na(hosp_data_agg$Hospital), "Missing", "Good"))
+    hosp_data_agg <- hosp_data_agg %>% mutate(Hospital = ifelse(is.na(Hospital), mean(Hospital, na.rm=T), Hospital))
+    hosp_data_agg <- hosp_data_agg %>% mutate(Country = ifelse(is.na(Country), mean(Country, na.rm=T), Country))
     return(hosp_data_agg)
   }
   
@@ -87,5 +92,20 @@ plot <- ggplot(metrics, aes(x = Scope, fill = Category)) +
 
 ggplotly(plot)
 
+metrics2 <- dataHandlerQI(numVars, "age", "uggeebfixudwdhb", "vrprkigsxydwgni", "mean")
+metrics2$Hospital <- round(metrics2$Hospital,1)
+# plot2 <- ggplot(metrics2, aes(x = YQ)) + geom_point(aes(y = Value, group = 1)) + geom_line(aes(y = Value, group = 1)) + 
+#   geom_point(aes(y = CValue, group = 1)) + geom_line(aes(y = CValue, group = 1)) +
+#   theme(axis.ticks.x = element_blank(),
+#       axis.text.x = element_blank(),
+#       axis.title.x = element_blank(),
+#       axis.ticks.y = element_blank(),
+#       axis.text.y = element_blank(),
+#       axis.title.y = element_blank(),
+#       panel.grid.major = element_blank(), 
+#       panel.grid.minor = element_blank(),
+#       panel.background = element_blank())
+#   
+# plot2
 #ggplot(metrics, aes(x = Value, fill = group)) + 
 #  geom_bar()

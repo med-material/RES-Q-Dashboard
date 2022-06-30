@@ -18,8 +18,7 @@ QI_Section_Num <- function(id) {
           column(2, h6("QI", align = 'center')),
           column(1, h6("Hospital", align = 'center')),
           column(1, h6("National", align = 'center')),
-          column(4, h6("Hospital", align = 'center')),
-          column(3, h6("National", align = 'center')),
+          column(7, h6("Visual", align = 'center')),
           column(1, h6("More", align = 'center'))
         )
       })
