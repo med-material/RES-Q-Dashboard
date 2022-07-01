@@ -4,7 +4,7 @@ dataLoader <- function() {
     
     #df <- dataset %>% pivot_longer(-c(discharge_year, discharge_quarter, site_namemt), names_to= "vars", values_to = "vals")
     
-    
+    #Relevant columns from the dataset for the QI's
     numVars_cols <- c("site_country", "site_name", "discharge_year", "discharge_quarter", "age", "nihss_score", "door_to_needle", "door_to_groin",
                       "door_to_imaging", "onset_to_door", "discharge_mrs", "discharge_nihss_score", "three_m_mrs", "glucose", "cholesterol", "sys_blood_pressure",
                       "dis_blood_pressure", "perfusion_core", "hypoperfusion_core", "prestroke_mrs", "bleeding_volume_value", "ich_score", "hunt_hess_score")
@@ -26,6 +26,8 @@ dataLoader <- function() {
                       "etiology_large_artery", "etiology_cardioembolism", "etiology_other", "etiology_cryptogenic_stroke", "etiology_small_vessel",
                       "glucose_level", "insulin_administration", "first_arrival_hosp", "first_hospital"
     )
+    
+    #Removing outlier data
     numVars <- dataset %>% select(all_of(numVars_cols)) %>% 
       filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y"))) %>% 
       mutate(YQ = paste(discharge_year, discharge_quarter))
@@ -34,6 +36,7 @@ dataLoader <- function() {
       filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y"))) %>% 
       mutate(YQ = paste(discharge_year, discharge_quarter))
     
+    #Flip to long format
     numVars <- numVars %>% pivot_longer(-c(site_country, site_name, YQ, discharge_year, discharge_quarter), names_to = "QI", values_to = "Value")
     
     catVars <- catVars %>% pivot_longer(-c(site_country, site_name, YQ, discharge_year, discharge_quarter), names_to = "QI", values_to = "Value")

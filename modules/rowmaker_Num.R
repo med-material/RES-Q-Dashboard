@@ -30,8 +30,11 @@ rowmaker_Num <- function(id, QI) {
       output$vis <- renderPlotly({
         
         plot_df <- row_df
+        
+        #Rounding numbers for the plot on mouse-over
         plot_df$Hospital <- round(plot_df$Hospital, 1)
         plot_df$Country <- round(plot_df$Country, 1)
+        
         plot <- ggplot(plot_df, aes(x = YQ))  + 
         geom_point(aes(y = Country, group = 1), color = "gray") + geom_line(aes(y = Country, group = 1), color = "gray") + 
         geom_line(aes(y = Hospital, group = 1)) + geom_point(aes(y = Hospital, group = 1, color = Flag)) +

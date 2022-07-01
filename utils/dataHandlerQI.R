@@ -1,8 +1,12 @@
 source("utils/dataLoader.R", local = T)
 
 dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
+  
+  #Find latest quarter of hospital of interest
   starting <- data %>% filter(site_name == hospital)
   latest <- max(starting$YQ)
+  
+  #Define scope of the data
   scope <- sort(unique(starting$YQ), decreasing = TRUE)
   scope <- head(scope,4)
   scope <- data.frame(YQ = scope)
@@ -44,11 +48,18 @@ dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
         }
       )
     
+    #Collecting both Country & Hospital data under the same variable
     hosp_data_agg <- merge(hosp_data_scope, scope, all.y = T)
     country_data_agg <- merge(country_data_scope, scope, all.y = T)
     hosp_data_agg$Country <- country_data_agg$Country
+    
+    #Test missing data flag
     hosp_data_agg$Hospital[2] <- NA
+    
+    #Flagging data
     hosp_data_agg$Flag <- as.factor(ifelse(is.na(hosp_data_agg$Hospital), "Missing", "Good"))
+    
+    #Filling missing data with rolling mean of data
     hosp_data_agg <- hosp_data_agg %>% mutate(Hospital = ifelse(is.na(Hospital), mean(Hospital, na.rm=T), Hospital))
     hosp_data_agg <- hosp_data_agg %>% mutate(Country = ifelse(is.na(Country), mean(Country, na.rm=T), Country))
     return(hosp_data_agg)
@@ -71,10 +82,12 @@ dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
     
   }
 }
+
+#Testing
 db <- dataLoader()
 numVars <- db$numVars
 catVars <- db$catVars
-# 
+
 metrics <- dataHandlerQI(catVars, "gender", "uggeebfixudwdhb", "vrprkigsxydwgni", "cat")
 metrics <- metrics %>% filter(YQ == "2021 Q4")
 

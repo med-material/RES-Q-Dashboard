@@ -17,9 +17,11 @@ rowmaker_Cat <- function(id, QI) {
       
       row_df <- dataHandlerQI(catVars, QI, "uggeebfixudwdhb", "vrprkigsxydwgni", "cat")
       
-      latest <- min(row_df$YQ)
+      latest <- max(row_df$YQ)
       
       row_df <- row_df %>% filter(YQ == latest)
+      
+      #Set the transparency of Country bar
       row_df$alphascope <- as.factor(ifelse(row_df$Scope == "Country", 0.4, 1))
       
       output$vis <- renderPlotly({
