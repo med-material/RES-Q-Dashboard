@@ -1,9 +1,9 @@
-page_Generic_UI <- function(id) {
+page_Generic_UI <- function(id, pageName) {
   ns <- NS(id)
   fluidPage(
     fixedRow(
       box(width = 6, background = "navy",
-        QI_Section_Num_UI(ns("QISection_Num")), 
+        QI_Section_Num_UI(ns("QISection_Num"), pageName), 
         br(),
         br(),
         br(),
@@ -16,11 +16,11 @@ page_Generic_UI <- function(id) {
   )
 }
 
-page_Generic <- function(id) {
+page_Generic <- function(id, pageName) {
   moduleServer(
     id,
     function(input, output, session) {
-      QI_Section_Num("QISection_Num")
+      QI_Section_Num("QISection_Num", pageName)
       QI_Section_Cat("QISection_Cat")
       plot_Expanded("VisSection", mtcars)
     }

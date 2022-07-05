@@ -12,23 +12,23 @@ dashboard_Structure_UI <- function(id) {
     ),
     tabPanel(
       "Bleeding",
-      page_Generic_UI(ns("Bleeding"))
+      page_Generic_UI(ns("Bleeding"), "Bleeding")
     ),
     tabPanel(
       "Imaging",
-      page_Generic_UI(ns("Imaging"))
+      page_Generic_UI(ns("Imaging"), "Imaging")
     ),
     tabPanel(
       "Treatment",
-      page_Generic_UI(ns("Treatment"))
+      page_Generic_UI(ns("Treatment"), "Treatment")
     ),
     tabPanel(
       "Phase One",
-      page_Generic_UI(ns("PO"))
+      page_Generic_UI(ns("PO"), "PO")
     ),
     tabPanel(
       "Discharge",
-      page_Generic_UI(ns("Discharge"))
+      page_Generic_UI(ns("Discharge"), "Discharge")
     )
   )
 }
@@ -37,11 +37,11 @@ dashboard_Structure<- function(id) {
   moduleServer(
     id,
     function(input, output, session) {
-      page_Generic("Bleeding")
-      page_Generic("Imaging")
-      page_Generic("Treatment")
-      page_Generic("PO")
-      page_Generic("Discharge")
+      page_Generic("Bleeding", "Bleeding")
+      page_Generic("Imaging", "Imaging")
+      page_Generic("Treatment", "Treatment")
+      page_Generic("PO", "PO")
+      page_Generic("Discharge", "Discharge")
     }
   )
 }

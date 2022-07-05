@@ -15,7 +15,7 @@ rowmaker_Cat <- function(id, QI) {
         QI
       })
       
-      row_df <- dataHandlerQI(catVars, QI, "uggeebfixudwdhb", "vrprkigsxydwgni", "cat")
+      row_df <- dataHandlerQI(catVars, "Categorical", QI, "uggeebfixudwdhb", "vrprkigsxydwgni", "cat")
       
       latest <- max(row_df$YQ)
       

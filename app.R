@@ -22,6 +22,7 @@ source("modules/page_Generic.R", local = T)
 source("utils/datawrangling.R", local = T)
 source("utils/dataHandlerQI.R", local = T)
 source("utils/dataLoader.R", local = T)
+source("utils/QILoader.R", local = T)
 
 #Element modules
 source("modules/plot_Expanded.R", local = T)
@@ -37,6 +38,14 @@ source("modules/rowmaker_Cat.R", local = T)
 
 #db <- dataLoader()
 
+#Load hospital data
+db <- dataLoader()
+numVars <- db$numVars
+catVars <- db$catVars
+
+#Load QI data
+QI_db <- QILoader()
+
 ui <- fluidPage(theme = bs_theme(version = 4, bootswatch = "minty"),
   dashboard_Structure_UI("Dashboard")
 )
@@ -46,11 +55,7 @@ server <- function(input, output, session) {
   track_usage(
     storage_mode = store_null()
   )
-  
   dashboard_Structure("Dashboard")
-  db <- dataLoader()
-  numVars <- db$numVars
-  catVars <- db$catVars
 }
 
 shinyApp(ui = ui, server = server)

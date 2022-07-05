@@ -3,4 +3,4 @@
 .RData
 .Ruserdata
 logs
-*.csv
+dataREanonymized.csv

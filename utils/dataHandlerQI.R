@@ -1,6 +1,6 @@
 source("utils/dataLoader.R", local = T)
 
-dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
+dataHandlerQI <- function (data, dataType, QI_Fetch, hospital, country, aggType) {
   
   #Find latest quarter of hospital of interest
   starting <- data %>% filter(site_name == hospital)
@@ -21,7 +21,7 @@ dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
     filter(QI == QI_Fetch & YQ >= scope$YQ[4] & site_country == country) %>%
     group_by(YQ)
   
-  if (aggType != "cat") {
+  if (dataType == "Quantitative") {
   
     hosp_data_scope <- hosp_data_scope %>%
       summarize(
@@ -65,6 +65,41 @@ dataHandlerQI <- function (data, QI_Fetch, hospital, country, aggType) {
     return(hosp_data_agg)
   }
   
+  else if (dataType == "Categorical_binary") {
+    
+    hosp_data_scope <- hosp_data_scope  %>% 
+      rename(Category = Value) %>% mutate(Scope = "Hospital") %>% select(c(YQ, QI, Category, Scope))
+    
+    country_data_scope <- country_data_scope  %>%
+      rename(Category = Value) %>% mutate(Scope = "Country") %>% select(c(YQ, QI, Category, Scope))
+    
+    
+    hosp_data_agg <- merge(hosp_data_scope, scope, all.y = T)
+    country_data_agg <- merge(country_data_scope, scope, all.y = T)
+    hosp_data_agg <- rbind(hosp_data_agg, country_data_agg)
+    
+    
+    hosp_data_agg$Category <- as.logical(hosp_data_agg$Category)
+    
+    if (aggType == "%") {
+      hosp_data_agg <- hosp_data_agg %>% group_by(YQ, QI, Scope) %>% 
+        summarise(
+          denom = n(),
+          Category = sum(Category, na.rm = T)
+        )
+      
+      hosp_data_agg <- hosp_data_agg %>% mutate(Category = 100*Category/denom) %>% select(-denom)
+      hosp_data_agg <- hosp_data_agg %>% pivot_wider(names_from = Scope, values_from = Category)
+    }
+    
+    else if (aggType == "count") {
+      hosp_data_agg <- hosp_data_agg %>% group_by(YQ, QI, Scope) %>% summarise(Category = sum(Category, na.rm = T))
+      hosp_data_agg <- hosp_data_agg %>% pivot_wider(names_from = Scope, values_from = Category)
+    }
+    hosp_data_agg$Flag <- as.factor(ifelse(is.na(hosp_data_agg$Hospital), "Missing", "Good"))
+    return(hosp_data_agg)
+  }
+  
   else {
     hosp_data_scope <- hosp_data_scope  %>% 
       rename(Category = Value) %>% mutate(Scope = "Hospital") %>% select(c(YQ, QI, Category, Scope))
@@ -88,8 +123,8 @@ db <- dataLoader()
 numVars <- db$numVars
 catVars <- db$catVars
 
-metrics <- dataHandlerQI(catVars, "gender", "uggeebfixudwdhb", "vrprkigsxydwgni", "cat")
-metrics <- metrics %>% filter(YQ == "2021 Q4")
+metrics <- dataHandlerQI(catVars, "Categorical", "stroke_type", "uggeebfixudwdhb", "vrprkigsxydwgni", "cat")
+metrics <- metrics %>% filter(YQ == max(metrics$YQ))
 
 plot <- ggplot(metrics, aes(x = Scope, fill = Category)) +
   geom_bar(position ="fill", width = 0.4) + coord_flip() +
@@ -105,20 +140,24 @@ plot <- ggplot(metrics, aes(x = Scope, fill = Category)) +
 
 ggplotly(plot)
 
-metrics2 <- dataHandlerQI(numVars, "age", "uggeebfixudwdhb", "vrprkigsxydwgni", "mean")
+metrics2 <- dataHandlerQI(numVars, "Quantitative", "door_to_imaging", "uggeebfixudwdhb", "vrprkigsxydwgni", "median")
 metrics2$Hospital <- round(metrics2$Hospital,1)
-# plot2 <- ggplot(metrics2, aes(x = YQ)) + geom_point(aes(y = Value, group = 1)) + geom_line(aes(y = Value, group = 1)) + 
-#   geom_point(aes(y = CValue, group = 1)) + geom_line(aes(y = CValue, group = 1)) +
+
+metrics3 <- dataHandlerQI(catVars, "Categorical_binary", "discharge_antidiabetics", "uggeebfixudwdhb", "vrprkigsxydwgni", "%")
+# plot2 <- ggplot(metrics3, aes(x = YQ)) + geom_point(aes(y = Hospital, group = 1)) + geom_line(aes(y = Hospital, group = 1)) +
+#   geom_point(aes(y = Country, group = 1)) + geom_line(aes(y = Country, group = 1)) +
 #   theme(axis.ticks.x = element_blank(),
 #       axis.text.x = element_blank(),
 #       axis.title.x = element_blank(),
 #       axis.ticks.y = element_blank(),
 #       axis.text.y = element_blank(),
 #       axis.title.y = element_blank(),
-#       panel.grid.major = element_blank(), 
+#       panel.grid.major = element_blank(),
 #       panel.grid.minor = element_blank(),
 #       panel.background = element_blank())
-#   
-# plot2
+# 
+# ggplotly(plot2)
+
+
 #ggplot(metrics, aes(x = Value, fill = group)) + 
 #  geom_bar()

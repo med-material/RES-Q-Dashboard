@@ -9,7 +9,7 @@ rowmaker_Num_UI <- function(id) {
   )
 }
 
-rowmaker_Num <- function(id, QI) {
+rowmaker_Num <- function(id, QI, df) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -17,7 +17,20 @@ rowmaker_Num <- function(id, QI) {
         QI
       })
       
-      row_df <- dataHandlerQI(numVars, QI, "uggeebfixudwdhb", "vrprkigsxydwgni", "mean")
+      index <- match(QI, df$ABBREVIATION)
+      dataType <- df$ATTRIBUTE_TYPE[index]
+      QI_col <- df$COLUMN[index]
+      hospital <- "uggeebfixudwdhb"
+      country <- "vrprkigsxydwgni"
+      aggType <- df$SUMMARIZE_BY[index]
+      #browser()
+      if (dataType == "Quantitative") {
+        row_df <- dataHandlerQI(numVars, dataType, QI_col, hospital, country, aggType)
+      }
+      
+      else {
+        row_df <- dataHandlerQI(catVars, dataType, QI_col, hospital, country, aggType)
+      }
       
       output$QIM1 <- renderText({
         as.character(round(row_df$Hospital[4], 1))
