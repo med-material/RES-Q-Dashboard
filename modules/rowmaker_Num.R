@@ -1,7 +1,8 @@
-rowmaker_Num_UI <- function(id) {
+rowmaker_Num_UI <- function(id, QI_title) {
   ns <- NS(id)
+  
   fixedRow(
-    column(2, h6(textOutput(ns("QIName")), align = "left")),
+    column(2, h6(textOutput(ns("QIName")), title = QI_title, align = "left")),
     column(1, h6(textOutput(ns("QIM1")), align = "center")),
     column(1, h6(textOutput(ns("QIM2")), align = "center")),
     column(7, plotlyOutput(ns("vis"), width = "500px", height = "80px"), align = "center"),
@@ -17,13 +18,20 @@ rowmaker_Num <- function(id, QI, df) {
         QI
       })
       
+      
       index <- match(QI, df$ABBREVIATION)
       dataType <- df$ATTRIBUTE_TYPE[index]
       QI_col <- df$COLUMN[index]
       hospital <- "uggeebfixudwdhb"
       country <- "vrprkigsxydwgni"
       aggType <- df$SUMMARIZE_BY[index]
+      title <- df$INDICATOR[index]
       #browser()
+      
+      output$title <- renderText({
+        title
+      })
+      
       if (dataType == "Quantitative") {
         row_df <- dataHandlerQI(numVars, dataType, QI_col, hospital, country, aggType)
       }

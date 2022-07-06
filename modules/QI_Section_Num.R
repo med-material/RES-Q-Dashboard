@@ -5,7 +5,7 @@ QI_Section_Num_UI <- function(id, pageName) {
   uiOutput(ns("header_num")),
   if (nrow(QI_List) != 0) {
    lapply(1:nrow(QI_List), function(i) {
-     rowmaker_Num_UI(ns(QI_List$ABBREVIATION[i]))
+     rowmaker_Num_UI(ns(QI_List$ABBREVIATION[i]), QI_List$INDICATOR[i])
    })
   }
   )
