@@ -24,7 +24,7 @@ dataHandlerQI <- function (data, dataType, QI_Fetch, hospital, country, aggType)
   if (dataType == "Quantitative") {
   
     hosp_data_scope <- hosp_data_scope %>%
-      summarize(
+      summarize(.groups = 'drop',
         Hospital = 
           if (!!aggType == "mean") {
             mean(Value, na.rm = T)
@@ -34,10 +34,12 @@ dataHandlerQI <- function (data, dataType, QI_Fetch, hospital, country, aggType)
           median(Value, na.rm = T)
         }
         
+        
+        
       )
     
     country_data_scope <- country_data_scope %>%
-      summarize(
+      summarize(.groups = 'drop',
         Country = 
           if (!!aggType == "mean") {
             mean(Value, na.rm = T)
@@ -83,7 +85,7 @@ dataHandlerQI <- function (data, dataType, QI_Fetch, hospital, country, aggType)
     
     if (aggType == "%") {
       hosp_data_agg <- hosp_data_agg %>% group_by(YQ, QI, Scope) %>% 
-        summarise(
+        summarise(.groups = 'drop',
           denom = n(),
           Category = sum(Category, na.rm = T)
         )
@@ -93,7 +95,7 @@ dataHandlerQI <- function (data, dataType, QI_Fetch, hospital, country, aggType)
     }
     
     else if (aggType == "count") {
-      hosp_data_agg <- hosp_data_agg %>% group_by(YQ, QI, Scope) %>% summarise(Category = sum(Category, na.rm = T))
+      hosp_data_agg <- hosp_data_agg %>% group_by(YQ, QI, Scope) %>% summarise(.groups = 'drop', Category = sum(Category, na.rm = T))
       hosp_data_agg <- hosp_data_agg %>% pivot_wider(names_from = Scope, values_from = Category)
     }
     hosp_data_agg$Flag <- as.factor(ifelse(is.na(hosp_data_agg$Hospital), "Missing", "Good"))
@@ -119,31 +121,32 @@ dataHandlerQI <- function (data, dataType, QI_Fetch, hospital, country, aggType)
 }
 
 #Testing
-db <- dataLoader()
-numVars <- db$numVars
-catVars <- db$catVars
-
-metrics <- dataHandlerQI(catVars, "Categorical", "stroke_type", "uggeebfixudwdhb", "vrprkigsxydwgni", "cat")
-metrics <- metrics %>% filter(YQ == max(metrics$YQ))
-
-plot <- ggplot(metrics, aes(x = Scope, fill = Category)) +
-  geom_bar(position ="fill", width = 0.4) + coord_flip() +
-                              theme(axis.ticks.x = element_blank(),
-                                    axis.text.x = element_blank(),
-                                    axis.title.x = element_blank(),
-                                    axis.ticks.y = element_blank(),
-                                    legend.position = "none",
-                                    axis.title.y = element_blank(),
-                                    panel.grid.major = element_blank(),
-                                    panel.grid.minor = element_blank(),
-                                    panel.background = element_blank())
-
-ggplotly(plot)
-
-metrics2 <- dataHandlerQI(numVars, "Quantitative", "door_to_imaging", "uggeebfixudwdhb", "vrprkigsxydwgni", "median")
-metrics2$Hospital <- round(metrics2$Hospital,1)
-
-metrics3 <- dataHandlerQI(catVars, "Categorical_binary", "discharge_antidiabetics", "uggeebfixudwdhb", "vrprkigsxydwgni", "%")
+# db <- dataLoader()
+# numVars <- db$numVars
+# catVars <- db$catVars
+# 
+# metrics <- dataHandlerQI(catVars, "Categorical", "discharge_mrs", "uggeebfixudwdhb", "vrprkigsxydwgni", "cat")
+# metrics <- metrics %>% filter(YQ == max(metrics$YQ))
+# 
+# if (all(!is.na(metrics$Category))) {
+#   plot <- ggplot(metrics, aes(x = Scope, fill = Category)) +
+#     geom_bar(position ="fill", width = 0.4) + coord_flip() +
+#                                 theme(axis.ticks.x = element_blank(),
+#                                       axis.text.x = element_blank(),
+#                                       axis.title.x = element_blank(),
+#                                       axis.ticks.y = element_blank(),
+#                                       legend.position = "none",
+#                                       axis.title.y = element_blank(),
+#                                       panel.grid.major = element_blank(),
+#                                       panel.grid.minor = element_blank(),
+#                                       panel.background = element_blank())
+#   
+#   ggplotly(plot)
+# }
+# metrics2 <- dataHandlerQI(numVars, "Quantitative", "door_to_imaging", "uggeebfixudwdhb", "vrprkigsxydwgni", "median")
+# metrics2$Hospital <- round(metrics2$Hospital,1)
+# 
+# metrics3 <- dataHandlerQI(catVars, "Categorical_binary", "discharge_antidiabetics", "uggeebfixudwdhb", "vrprkigsxydwgni", "%")
 # plot2 <- ggplot(metrics3, aes(x = YQ)) + geom_point(aes(y = Hospital, group = 1)) + geom_line(aes(y = Hospital, group = 1)) +
 #   geom_point(aes(y = Country, group = 1)) + geom_line(aes(y = Country, group = 1)) +
 #   theme(axis.ticks.x = element_blank(),

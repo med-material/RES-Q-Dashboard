@@ -7,7 +7,7 @@ page_Generic_UI <- function(id, pageName) {
         br(),
         br(),
         br(),
-        QI_Section_Cat_UI(ns("QISection_Cat"))
+        QI_Section_Cat_UI(ns("QISection_Cat"), pageName)
       ),
       column(6,
         plot_Expanded_UI(ns("VisSection"), mtcars)
@@ -21,7 +21,7 @@ page_Generic <- function(id, pageName) {
     id,
     function(input, output, session) {
       QI_Section_Num("QISection_Num", pageName)
-      QI_Section_Cat("QISection_Cat")
+      QI_Section_Cat("QISection_Cat", pageName)
       plot_Expanded("VisSection", mtcars)
     }
   )

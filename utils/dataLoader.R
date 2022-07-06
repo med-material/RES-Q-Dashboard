@@ -6,12 +6,12 @@ dataLoader <- function() {
     
     #Relevant columns from the dataset for the QI's
     numVars_cols <- c("site_country", "site_name", "discharge_year", "discharge_quarter", "age", "nihss_score", "door_to_needle", "door_to_groin",
-                      "door_to_imaging", "onset_to_door", "discharge_mrs", "discharge_nihss_score", "three_m_mrs", "glucose", "cholesterol", "sys_blood_pressure",
-                      "dis_blood_pressure", "perfusion_core", "hypoperfusion_core", "prestroke_mrs", "bleeding_volume_value", "ich_score", "hunt_hess_score")
+                      "door_to_imaging", "onset_to_door", "discharge_nihss_score", "glucose", "cholesterol", "sys_blood_pressure", "prestroke_mrs",
+                      "dis_blood_pressure", "perfusion_core", "hypoperfusion_core", "bleeding_volume_value")
     
     catVars_cols <- c("site_country", "site_name", "discharge_year", "discharge_quarter", "gender", "hospital_stroke", "hospitalized_in",
                       "department_type", "stroke_type", "thrombectomy", "thrombolysis", "no_thrombolysis_reason", "imaging_done", "imaging_type",
-                      "dysphagia_screening_done", "before_onset_antidiabetics", "before_onset_antihypertensives", "before_onset_asa",
+                      "dysphagia_screening_done", "dysphagia_screening_type", "before_onset_antidiabetics", "before_onset_antihypertensives", "before_onset_asa",
                       "before_onset_cilostazol","before_onset_clopidrogel","before_onset_ticagrelor","before_onset_ticlopidine","before_onset_prasugrel",
                       "before_onset_dipyridamol","before_onset_warfarin","before_onset_dabigatran","before_onset_rivaroxaban","before_onset_apixaban",
                       "before_onset_edoxaban","before_onset_statin", "risk_hypertension","risk_diabetes", "risk_hyperlipidemia", "risk_atrial_fibrilation",
@@ -24,7 +24,8 @@ dataLoader <- function() {
                       "bleeding_reason_anticoagulant", "bleeding_reason_angiopathy", "bleeding_reason_other", "bleeding_source", "covid_test",
                       "physiotherapy_start_within_3days", "occup_physiotherapy_received", "stroke_mimics_diagnosis", "tici_score", "prenotification",
                       "etiology_large_artery", "etiology_cardioembolism", "etiology_other", "etiology_cryptogenic_stroke", "etiology_small_vessel",
-                      "glucose_level", "insulin_administration", "first_arrival_hosp", "first_hospital"
+                      "glucose_level", "insulin_administration", "first_arrival_hosp", "first_hospital", "hunt_hess_score", "discharge_mrs", "ich_score",
+                      "three_m_mrs"
     )
     
     #Removing outlier data
@@ -32,7 +33,12 @@ dataLoader <- function() {
       filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y"))) %>% 
       mutate(YQ = paste(discharge_year, discharge_quarter))
     
-    catVars <- dataset %>% select(all_of(catVars_cols)) %>% 
+    
+    catVars <- dataset
+    indx <- sapply(catVars, is.double)
+    catVars[indx] <- lapply(catVars[indx], function(x) as.character(x))
+    
+    catVars <- catVars %>% select(all_of(catVars_cols)) %>% 
       filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y"))) %>% 
       mutate(YQ = paste(discharge_year, discharge_quarter))
     
@@ -44,3 +50,5 @@ dataLoader <- function() {
     
     return(list("numVars" = numVars,"catVars" = catVars))
 }
+
+dataLoader()
