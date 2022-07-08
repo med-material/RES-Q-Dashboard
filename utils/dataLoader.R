@@ -2,9 +2,7 @@ dataLoader <- function() {
     dataset <- as_tibble(read.csv("data/dataREanonymized.csv"))
     #out <- skimr::skim(dataset)
     
-    #df <- dataset %>% pivot_longer(-c(discharge_year, discharge_quarter, site_namemt), names_to= "vars", values_to = "vals")
-    
-    #Relevant columns from the dataset for the QI's
+    #Relevant columns from the dataset for the QI's HARDCODED. There might be a smarter way to do this. 
     numVars_cols <- c("site_country", "site_name", "discharge_year", "discharge_quarter", "age", "nihss_score", "door_to_needle", "door_to_groin",
                       "door_to_imaging", "onset_to_door", "discharge_nihss_score", "glucose", "cholesterol", "sys_blood_pressure", "prestroke_mrs",
                       "dis_blood_pressure", "perfusion_core", "hypoperfusion_core", "bleeding_volume_value")
@@ -28,16 +26,19 @@ dataLoader <- function() {
                       "three_m_mrs"
     )
     
-    #Removing outlier data
+    #Selecting numerical data and removing outliers
     numVars <- dataset %>% select(all_of(numVars_cols)) %>% 
       filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y"))) %>% 
       mutate(YQ = paste(discharge_year, discharge_quarter))
     
     
     catVars <- dataset
+    
+    #Converting all double type data into characters so they can be pivoted under the same character data type.
     indx <- sapply(catVars, is.double)
     catVars[indx] <- lapply(catVars[indx], function(x) as.character(x))
     
+    #Selecting numerical data and removing outliers
     catVars <- catVars %>% select(all_of(catVars_cols)) %>% 
       filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y"))) %>% 
       mutate(YQ = paste(discharge_year, discharge_quarter))
@@ -50,5 +51,3 @@ dataLoader <- function() {
     
     return(list("numVars" = numVars,"catVars" = catVars))
 }
-
-dataLoader()

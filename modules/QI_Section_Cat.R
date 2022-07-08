@@ -1,3 +1,6 @@
+#This module is pretty much identical to the QI_Section_Num except it had to be a separate module due to the header being different for categorical data, 
+#there are no national and hospital metrics (QIM1,QIM2) as these are not so well defined for categorical data. 
+#Note the QI_List filters now for stacked_bargraph. All stacked_bargraph visualisation types are categorical (but some categorical end up in trends) hence the name.
 QI_Section_Cat_UI <- function(id, pageName) {
   ns <- NS(id)
   QI_List <- QI_db %>% filter(TAB == pageName & NEW_DASHBOARD_VIS == "stacked_bargraph")
@@ -15,6 +18,8 @@ QI_Section_Cat <- function(id, pageName) {
   moduleServer(
     id,
     function(input, output, session) {
+      
+      #Renders the header for the categorical QI's
       output$header_cat <- renderUI({
         fixedRow(
           column(2, h6("QI", align = 'center')),

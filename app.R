@@ -19,7 +19,6 @@ source("modules/page_PC.R", local = T)
 source("modules/page_Generic.R", local = T)
 
 #Utils
-source("utils/datawrangling.R", local = T)
 source("utils/dataHandlerQI.R", local = T)
 source("utils/dataLoader.R", local = T)
 source("utils/QILoader.R", local = T)
@@ -38,12 +37,12 @@ source("modules/rowmaker_Cat.R", local = T)
 
 #db <- dataLoader()
 
-#Load hospital data
+#Load hospital data, check data/dataREanonymized.csv and utils/dataLoader.R to see what data is being loaded and how.
 db <- dataLoader()
 numVars <- db$numVars
 catVars <- db$catVars
 
-#Load QI data
+#Load QI data, check data/QI_info.csv and utils/QILoader.R to see what data is being loaded and how.
 QI_db <- QILoader()
 
 ui <- fluidPage(theme = bs_theme(version = 4, bootswatch = "minty"),
