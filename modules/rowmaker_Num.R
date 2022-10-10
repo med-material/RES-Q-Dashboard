@@ -5,10 +5,10 @@ rowmaker_Num_UI <- function(id, QI_title) {
   #The aligning can be changed via here as well as the visualisation size.
   fixedRow(
     column(2, h6(textOutput(ns("QIName")), title = QI_title, align = "left")),
+    column(7, plotlyOutput(ns("vis"), width = "500px", height = "80px"), align = "center"),
     column(1, h6(textOutput(ns("QIM1")), align = "center")),
     column(1, h6(textOutput(ns("QIM2")), align = "center")),
-    column(7, plotlyOutput(ns("vis"), width = "500px", height = "80px"), align = "center"),
-    #The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view
+    #The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view.
     column(1, align = "center", actionButton((ns("action")), label = NULL, icon = icon("play")))
   )
 }
@@ -17,27 +17,26 @@ rowmaker_Num <- function(id, QI, df) {
   moduleServer(
     id,
     function(input, output, session) {
-      
-      #Rendering the QI abbreviation
+      #Rendering the QI name
       output$QIName <- renderText({
         QI
       })
       
       #Generating the values that need to be passed to dataHandlerQI
       #index: at what QI row are we looking at
-      index <- match(QI, df$ABBREVIATION)
+      index <- match(QI, df$INDICATOR)
       dataType <- df$ATTRIBUTE_TYPE[index]
       QI_col <- df$COLUMN[index]
       aggType <- df$SUMMARIZE_BY[index]
       
-      #For these two fields, I assigned a random hospital with its matching country from the anonymised hospital data. 
-      #It's just the one I chose, feel free to pick another hospital and country combination that might be interesting.
+      #For these two fields, I assigned hand-picked hospital with its matching country from the anonymised hospital data. 
+      #Feel free to pick another hospital and country combination that might be interesting.
       hospital <- "uggeebfixudwdhb"
       country <- "vrprkigsxydwgni"
       
 
       
-      #If you want to see the values of these fields when running the app, uncomment the line below. It's kind of like a debugger that will stop execution there.
+      #If you want to see the values of these fields when running the app, un-comment the line below. It will stop run-time there.
       #browser()
       
       if (dataType == "Quantitative") {
@@ -52,7 +51,7 @@ rowmaker_Num <- function(id, QI, df) {
 
         
         if (dataType != "Quantitative" & aggType == "%") {
-          #For binary categorical data woth % aggType, the output is always a percentage so this adds the percentage sign to the metrics.
+          #For binary categorical data with % aggType, the output is always a percentage so this adds the percentage sign to the metrics.
           paste(as.character(round(row_df$Hospital[4], 1)),"%", sep = "")
         }
         

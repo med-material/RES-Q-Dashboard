@@ -1,0 +1,129 @@
+﻿Number,TAB,INDICATOR,ABBREVIATION,COLUMN,ATTRIBUTE_TYPE,SUMMARIZE_BY,NEW_DASHBOARD_VIS
+1,PC,Age,,age,Quantitative,median,number
+2,PC,Gender,,gender,Categorical,%,stacked_bargraph
+3,PC,NIHSS,,nihss_score,Quantitative,median,trend
+4,PC,BP systolic,,sys_blood_pressure,Quantitative,mean,trend
+5,PC,BP diastolic,,dis_blood_pressure,Quantitative,mean,trend
+6,PC,Glucose,,glucose,Quantitative,mean,trend
+7,PC,LDL cholestorol,,cholesterol,Quantitative,mean,trend
+8,PC,mRS 2-5,,prestroke_mrs,Quantitative,%,trend
+9,PC,COVID positive,,covid_test,Categorical_binary,%,trend
+10,PC,In-hospital stroke,,hospital_stroke,Categorical_binary,%,trend
+11,PC,Arrival pre-notified,,prenotification,Categorical_binary,%,trend
+12,PC,Hypertension,,risk_hypertension,Categorical_binary,%,trend
+13,PC,Diabetes,,risk_diabetes,Categorical_binary,%,trend
+14,PC,Hyperlipidemia,,risk_hyperlipidemia,Categorical_binary,%,trend
+15,PC,Active smoker,,risk_smoker,Categorical_binary,%,trend
+16,PC,Previous IS/TIA,,risk_previous_ischemic_stroke,Categorical_binary,%,trend
+17,PC,Previous ICH,,risk_previous_hemorrhagic_stroke,Categorical_binary,%,trend
+18,PC,Atrial Fib./Flutter,,risk_atrial_fibrilation,Categorical_binary,%,trend
+19,PC,Cor. Artery Disease / Previous MI,,risk_coronary_artery_disease_or_myocardial_infarction,Categorical_binary,%,trend
+20,PC,Cong. Heart Fail,,risk_congestive_heart_failure,Categorical_binary,%,trend
+21,PC,HIV,,risk_hiv,Categorical_binary,%,trend
+22,PC,Type of stroke,,stroke_type,Categorical,%,stacked_bargraph
+23,PC,Arrival,,,Categorical,%,stacked_bargraph
+24,PC,First received care,,,Categorical,%,stacked_bargraph
+25,PC,Hospitalized at unit,,hospitalized_in,Categorical,%,stacked_bargraph
+26,PC,Hospitalized at department,,department_type,Categorical,%,stacked_bargraph
+27,PC,Anti Diabetics,,before_onset_antidiabetics,Categorical_binary,%,trend
+28,PC,Anti Hypertensives,,before_onset_antihypertensives,Categorical_binary,%,trend
+29,PC,Aspirin (ASA),,before_onset_asa,Categorical_binary,%,trend
+30,PC,Cilostazol,,before_onset_cilostazol,Categorical_binary,%,trend
+31,PC,Clopidogrel,,before_onset_clopidrogel,Categorical_binary,%,trend
+32,PC,Ticagrelol,,before_onset_ticagrelor,Categorical_binary,%,trend
+33,PC,Ticlopidine,,before_onset_ticlopidine,Categorical_binary,%,trend
+34,PC,Prasugrel,,before_onset_prasugrel,Categorical_binary,%,trend
+"35,PC,""Dipyridamol, slow release"",,before_onset_dipyridamol,Categorical_binary,%,trend"
+36,PC,Warfarin,,before_onset_warfarin,Categorical_binary,%,trend
+37,PC,Low molecular weight heparin/heparin,,,Categorical_binary,%,trend
+38,PC,Dabigatran,,before_onset_dabigatran,Categorical_binary,%,trend
+39,PC,Rivoroxaban,,before_onset_rivaroxaban,Categorical_binary,%,trend
+40,PC,Apixaban,,before_onset_apixaban,Categorical_binary,%,trend
+41,PC,Edoxaban,,before_onset_edoxaban,Categorical_binary,%,trend
+42,PC,Statin,,before_onset_statin,Categorical_binary,%,trend
+43,PC,Ischemic stroke etiology,,,Categorical,%,stacked_bargraph
+44,PC,Stroke mimics,,stroke_mimics_diagnosis,Categorical,%,stacked_bargraph
+45,Bleeding,ICH volume,QI1,,Categorical_binary,%,trend
+46,Bleeding,Infratentorial bleeding,QI2,,Categorical_binary,%,trend
+47,Bleeding,Source of bleeding found,QI3,bleeding_source,Categorical_binary,%,trend
+48,Bleeding,Intraventricular bleeding,QI4,,Categorical_binary,%,trend
+49,Bleeding,ICH score,QI5,ich_score,Categorical,%,stacked_bargraph
+50,Bleeding,Neurosurgery for ICH,QI6,,Categorical,%,stacked_bargraph
+51,Bleeding,Neurosurgery for SAH,QI7,,Categorical,%,stacked_bargraph
+52,Bleeding,ICH bleeding cause,QI8,,Categorical,%,stacked_bargraph
+53,Bleeding,DVT prevention for ICH,QI9,,Categorical,%,stacked_bargraph
+54,Bleeding,Hunt-Hess,QI10,hunt_hess_score,Categorical,%,stacked_bargraph
+55,Imaging,Imaging modality,QI1,imaging_type,Categorical,%,stacked_bargraph
+56,Imaging,Site of occlusion,QI2,,Categorical,%,stacked_bargraph
+57,Imaging,Imaging not done at all,QI3,imaging_done,Categorical_binary,%,trend
+58,Imaging,Imaging done but outside your hospital,QI4,,Categorical_binary,%,trend
+59,Imaging,Door-to-imaging time,QI5,door_to_imaging,Quantitative,median,trend
+60,Imaging,CT perfusion score,QI6,perfusion_core,Quantitative,mean,trend
+61,Imaging,CT perfusion hypoperfusion,QI7,hypoperfusion_core,Quantitative,mean,trend
+62,Imaging,Carotid arteries imaging within 7 days after admission,QI8,,Categorical_binary,%,trend
+63,Imaging,Symptomatic carotid stenosis > 70%,QI9,,Categorical_binary,%,trend
+64,Imaging,Symptomatic carotid stenosis 50-70%,QI10,,Categorical_binary,%,trend
+65,Imaging,ICH volume,Q11,,Quantitative,mean,trend
+66,Treatment,Number of IVT,QI1,thrombolysis,Categorical_binary,count,trend
+67,Treatment,% IVT of all ischemic strokes,QI2,,Categorical_binary,%,trend
+68,Treatment,Arrival pre-notified,QI3,,Categorical_binary,%,trend
+"69,Treatment,""Onset-to-door time for IVT, median"",QI4,,Quantitative,median,trend"
+"70,Treatment,""Door-to-needle for IVT, median"",QI5,,Quantitative,median,trend"
+71,Treatment,Number of MT,QI6,thrombectomy,Categorical_binary,count,trend
+72,Treatment,% MT only of all ischemic strokes,QI7,,Categorical_binary,%,trend
+73,Treatment,% IVT+MT of all ischemic strokes,QI8,,Categorical_binary,%,trend
+"74,Treatment,""Door-to-groin for MT, median. Direct (primary transport)"",QI9,,Quantitative,median,trend"
+"75,Treatment,""Door-to-groin for MT, median. Drip-and-ship (secondary transport)"",QI10,,Quantitative,median,trend"
+"76,Treatment,""Door-in-door-out, median. For PSC, transport to CSC for MT"",Q11,,Quantitative,median,trend"
+77,Treatment,TICI scores,Q12,tici_score,Categorical,%,stacked_bargraph
+78,Treatment,Bleeding after IVT/MT,Q13,,Categorical,%,stacked_bargraph
+79,Treatment,Complications after MT,Q14,,Categorical,%,stacked_bargraph
+80,Treatment,DVT prevention,Q15,,Categorical,%,stacked_bargraph
+81,Treatment,Onset-to-door time distribution in %,Q16,,Categorical,%,stacked_bargraph
+"82,Treatment,""Door-to-imaging time, distribution in %"",Q17,,Categorical,%,stacked_bargraph"
+"83,Treatment,""Door-to-needle time for IVT, distribution in %"",Q18,,Categorical,%,stacked_bargraph"
+"84,Treatment,""Door-to-groin time for MT, distribution in %"",Q19,,Categorical,%,stacked_bargraph"
+85,PO,Decompressive hemicraniectomy of patients >60 years and > NIHSS,QI1,,Categorical_binary,%,trend
+86,PO,Carotid artery imaging <= 7 days after admission,QI2,,Categorical_binary,%,trend
+87,PO,>70% internal carotid artery stenosis,QI3,,Categorical_binary,%,trend
+88,PO,Carotid endarterectomy of patients with >70% ICA stenosis,QI4,,Categorical_binary,%,trend
+89,PO,Antipyretic administered for the first elevated temperature ?,QI5,,Categorical_binary,%,trend
+90,PO,Was insulin administered for the first elevated glucose (>=10 mmol/L)?,QI6,,Categorical_binary,%,trend
+91,PO,Dysphagia screening performed before given medication/food oraly,QI7,,Categorical_binary,%,trend
+92,PO,Physiotherapy initiated <= 72 hours after admission,QI8,physiotherapy_start_within_3days,Categorical_binary,%,trend
+93,PO,Patient examined by occupational therapist,QI9,occup_physiotherapy_received,Categorical_binary,%,trend
+94,PO,Who performed swallowing screen,QI10,,Categorical,%,stacked_bargraph
+95,PO,Reasons for not providing IVT,Q11,no_thrombolysis_reason,Categorical,%,stacked_bargraph
+96,PO,Atrial fibrillation/flutter,Q12,afib_flutter,Categorical,%,stacked_bargraph
+97,PO,Test for dysphagia screen,Q13,dysphagia_screening_type,Categorical,%,stacked_bargraph
+98,Discharge,Anti Diabetics,QI1,discharge_antidiabetics,Categorical_binary,%,trend
+99,Discharge,Anti Hypertensives,QI2,discharge_antihypertensives,Categorical_binary,%,trend
+100,Discharge,Aspirin (ASA) for ischemic stroke/TIA,QI3,discharge_asa,Categorical_binary,%,trend
+101,Discharge,Cilostazol,QI4,discharge_cilostazol,Categorical_binary,%,trend
+102,Discharge,Clopidogrel,QI5,discharge_clopidrogel,Categorical_binary,%,trend
+103,Discharge,Ticagrelol,QI6,discharge_ticagrelor,Categorical_binary,%,trend
+104,Discharge,Ticlopidine,QI7,discharge_ticlopidine,Categorical_binary,%,trend
+105,Discharge,Prasugrel,QI8,discharge_prasugrel,Categorical_binary,%,trend
+"106,Discharge,""Dipyridamol, slow release"",QI9,discharge_dipyridamol,Categorical_binary,%,trend"
+107,Discharge,Warfarin for AF,QI10,discharge_warfarin,Categorical_binary,%,trend
+108,Discharge,Low molecular weight heparin/heparin for AF,Q11,,Categorical_binary,%,trend
+109,Discharge,Dabigatran for AF,Q12,discharge_dabigatran,Categorical_binary,%,trend
+110,Discharge,Rivoroxaban for AF,Q13,discharge_rivaroxaban,Categorical_binary,%,trend
+111,Discharge,Apixaban for AF,Q14,discharge_apixaban,Categorical_binary,%,trend
+112,Discharge,Edoxaban for AF,Q15,discharge_edoxaban,Categorical_binary,%,trend
+113,Discharge,Statin for non-cardioembolic ischemic stroke,Q16,discharge_statin,Categorical_binary,%,trend
+114,Discharge,Complications,Q17,,Categorical,%,stacked_bargraph
+115,Discharge,Discharge destination,Q18,discharge_destination,Categorical,%,stacked_bargraph
+116,Discharge,Modified ranking scale discharge,Q19,discharge_mrs,Categorical,%,stacked_bargraph
+117,Discharge,Modified ranking scale 3 month,Q20,three_m_mrs,Categorical,%,stacked_bargraph
+118,Discharge,NIHSS discharge,Q21,discharge_nihss_score,Quantitative,median,trend
+119,Angel_Awards,Patients treated with door-to-needle time <= 60 minutes,,,Quantitative,%,
+120,Angel_Awards,Patients treated with door-to-needle time <= 45 minutes,,,Quantitative,%,
+121,Angel_Awards,Patients treated with door-to-groin time <= 120 minutes,,,Quantitative,%,
+122,Angel_Awards,Patients treated with door-to-groin time <= 90 minutes,,,Quantitative,%,
+123,Angel_Awards,Recanalization rate out of total ischemic incidence,,,Quantitative,%,
+124,Angel_Awards,Suspected stroke patients undergoing CT/MRI,,,Quantitative,%,
+125,Angel_Awards,Stroke patients undergoing dysphagia screening,,,Quantitative,%,
+126,Angel_Awards,Ischemic stroke patients discharged with antiplatelets,,,Quantitative,%,
+127,Angel_Awards,Atrial fibrilation patients discharged with anticoagulants,,,Quantitative,%,
+128,Angel_Awards,Stroke patients hospitalized in a dedicated stroke unit / ICU,,,Quantitative,%,

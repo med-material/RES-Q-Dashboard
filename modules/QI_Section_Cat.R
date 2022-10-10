@@ -3,12 +3,12 @@
 #Note the QI_List filters now for stacked_bargraph. All stacked_bargraph visualisation types are categorical (but some categorical end up in trends) hence the name.
 QI_Section_Cat_UI <- function(id, pageName) {
   ns <- NS(id)
-  QI_List <- QI_db %>% filter(TAB == pageName & NEW_DASHBOARD_VIS == "stacked_bargraph")
+  QI_List <- QI_db %>% filter(ONEPAGE == pageName & NEW_DASHBOARD_VIS == "stacked_bargraph")
   box(width = 12,
   uiOutput(ns("header_cat")),
   if (nrow(QI_List) != 0) {
     lapply(1:nrow(QI_List), function(i) {
-      rowmaker_Cat_UI(ns(QI_List$ABBREVIATION[i]), QI_List$INDICATOR[i])
+      rowmaker_Cat_UI(ns(QI_List$INDICATOR[i]), QI_List$INDICATOR[i])
     })
   }
   )
@@ -28,10 +28,11 @@ QI_Section_Cat <- function(id, pageName) {
         )
       })
       
-      QI_List <- QI_db %>% filter(TAB == pageName & NEW_DASHBOARD_VIS == "stacked_bargraph")
+      QI_List <- QI_db %>% filter(ONEPAGE == pageName & NEW_DASHBOARD_VIS == "stacked_bargraph")
       if (nrow(QI_List) != 0) {
         lapply(1:nrow(QI_List), function(i) {
-          rowmaker_Cat(QI_List$ABBREVIATION[i], QI_List$ABBREVIATION[i], QI_List)
+          #rowmaker_Cat(QI_List$ABBREVIATION[i], QI_List$ABBREVIATION[i], QI_List)
+          rowmaker_Cat(QI_List$INDICATOR[i], QI_List$INDICATOR[i], QI_List)
         })
       }
     }        

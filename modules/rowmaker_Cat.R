@@ -10,15 +10,17 @@ rowmaker_Cat_UI <- function(id, QI_title) {
   )
 }
 
+
 rowmaker_Cat <- function(id, QI, df) {
   moduleServer(
     id,
     function(input, output, session) {
+      #rendering QI name
       output$QIName <- renderText({
         QI
       })
       
-      index <- match(QI, df$ABBREVIATION)
+      index <- match(QI, df$INDICATOR)
       dataType <- df$ATTRIBUTE_TYPE[index]
       QI_col <- df$COLUMN[index]
       aggType <- df$SUMMARIZE_BY[index]
