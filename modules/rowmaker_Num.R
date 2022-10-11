@@ -5,7 +5,7 @@ rowmaker_Num_UI <- function(id, QI_title) {
   #The aligning can be changed via here as well as the visualisation size.
   fixedRow(
     column(2, h6(textOutput(ns("QIName")), title = QI_title, align = "left")),
-    column(7, plotlyOutput(ns("vis"), width = "500px", height = "80px"), align = "center"),
+    column(7, plotlyOutput(ns("vis"), width = "500px", height = "100px"), align = "center"),
     column(1, h6(textOutput(ns("QIM1")), align = "center")),
     column(1, h6(textOutput(ns("QIM2")), align = "center")),
     #The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view.
@@ -48,8 +48,6 @@ rowmaker_Num <- function(id, QI, df) {
       }
       
       output$QIM1 <- renderText({
-
-        
         if (dataType != "Quantitative" & aggType == "%") {
           #For binary categorical data with % aggType, the output is always a percentage so this adds the percentage sign to the metrics.
           paste(as.character(round(row_df$Hospital[4], 1)),"%", sep = "")
@@ -109,7 +107,6 @@ rowmaker_Num <- function(id, QI, df) {
         #Remove the plotly on hover options
         ggplotly(plot) %>% config(displayModeBar = FALSE)
       })
-      
     }
   )
 }
