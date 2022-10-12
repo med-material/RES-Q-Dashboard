@@ -10,6 +10,7 @@ library(ggforce)
 library(bslib)
 
 
+
 #Structure
 source("modules/dashboard_Structure.R", local = T)
 
@@ -54,7 +55,21 @@ server <- function(input, output, session) {
   track_usage(
     storage_mode = store_null()
   )
+  
   dashboard_Structure("Dashboard")
+  
+  numericvars <- rowmaker_Num
+  # categoricalvars <- callModule(rowmaker_Cat, "QISection_Cat")
+  
+  expandNumRes <- plot_Expanded(
+                          "plot",
+                          dataset = QI_db,
+                          numericvars = numericvars)
+  
+  # expandNumRes <- callModule(plot_Expanded,
+  #                         "plot",
+  #                         dataset = QI_db[index],
+  #                         categoricalvars = categoricalvars)
 }
 
 shinyApp(ui = ui, server = server)

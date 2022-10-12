@@ -1,5 +1,5 @@
 #This module takes as input its id as well as what database it should use for e.g column selection dropdowns etc.
-plot_Expanded_UI <- function(id, pageName) {
+plot_Expanded_UI <- function(id) {
   ns <- NS(id)
   
   #Storing the plot under this variable
@@ -68,46 +68,51 @@ plot_Expanded_UI <- function(id, pageName) {
   #  )
 }
   
-#use row_df
-plot_Expanded <- function(id, QI, pageName) {
+
+plot_Expanded <- function(id, dataset, numericvars) {
   moduleServer(
     id,
     function(input, output, session) {
+
+
+      #inputBtn <- eventReactive(action_button())
       
-      #Generating the values that need to be passed to dataHandlerQI
-      #index: at what QI row are we looking at
-      index <- match(QI, pageName$INDICATOR)
-      dataType <- pageName$ATTRIBUTE_TYPE[index]
-      QI_col <- pageName$COLUMN[index]
-      aggType <- pageName$SUMMARIZE_BY[index]
-      
-      #For these two fields, I assigned hand-picked hospital with its matching country from the anonymised hospital data. 
-      #Feel free to pick another hospital and country combination that might be interesting.
-      hospital <- "uggeebfixudwdhb"
-      country <- "vrprkigsxydwgni"
-      
-      
-      
-      #If you want to see the values of these fields when running the app, un-comment the line below. It will stop run-time there.
-      #browser()
-      
-      if (dataType == "Quantitative") {
-        expand_df <- dataHandlerQI(numVars, dataType, QI_col, hospital, country, aggType)
-      }
-      
-      else {
-        expand_df <- dataHandlerQI(catVars, dataType, QI_col, hospital, country, aggType)
-      }
-      browser()
       #Here we see the interactive plot. It selects from the database the chosen columns via input$variableName and generates a plot for it.
-      output$plot <- renderPlotly({
-        plot <- ggplot(expand_df, aes(x = YQ, group = 1)) + geom_point(aes(y = hospital, group = 1)) +
-          geom_point()
+      expandPlot_obj <- reactive({
+        plot <- ggplot(dataset, aes(x = numericvars$xvar()))  + 
+                geom_line(aes(y = numericvars$yvar(), group = 1)) +
+                geom_point(aes(y = numericvars$yvar(), group = 1, color = Flag)) +
+                
+                #Set flag colors here, there's one for every possible flag. 
+                #As of now there is only one for Good (data is present) and Missing (data is missing). 
+                #Potential flag ideas are best score this year, all time, etc where best needs to be defined as either highest = good or lowest = good.
+                scale_color_manual(values = c("#005a80",
+                                              "#ff7434",
+                                              "#353436",
+                                              "#02e302")) +
+                #Set theme here
+                theme(axis.ticks.x = element_blank(),
+                      axis.text.x = element_blank(),
+                      axis.title.x = element_blank(),
+                      axis.ticks.y = element_blank(),
+                      axis.text.y = element_blank(),
+                      axis.title.y = element_blank(),
+                      panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      panel.background = element_blank(),
+                      legend.position = "none") + 
+                
+        #Run plot and remove the on hover options for plotly
+        
+        return(plot)         
       
-        ggplotly(plot)
+      #%>% config(displayModeBar = FALSE)
       })
-    }
-  )
+      
+      output$expandPlot <- renderPlot({
+        expandPlot_obj()
+    })
+  })
 }
 
 
