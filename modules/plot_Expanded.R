@@ -8,8 +8,6 @@ plot_Expanded_UI <- function(id) {
       outputId = ns("plot")
     )
    )
-   
-}
 
   #   #Define a row containing dropdown menus to select variables & tickboxes for more plot options.
   #   fixedRow(
@@ -68,67 +66,54 @@ plot_Expanded_UI <- function(id) {
   #   tabPanel("Plot", plot_UI),
   #   tabPanel("Table", table_UI)
   #  )
+}
+  
+
+plot_Expanded <- function(id, dataset, numericvars) {
+  moduleServer(
+    id,
+    function(input, output, session) {
 
 
-
-# plot_Expanded <- function(id, dataset, numericvars) {
-#   moduleServer(
-#     id,
-    plot_Expanded <- function(input, output, session, rowmaker_Num_res) {
-      
-      
-      rowmaker_x_input <- reactive({
-        rowmaker_Num_res$xvar 
-      })
-      
-      rowmaker_y_input <- reactive({
-        rowmaker_Num_res$yvar 
-      })
-    
-    
-    
-      #browser()
-      #output$text <- renderText({rowmaker_input})
-    
       #inputBtn <- eventReactive(action_button())
       
       #Here we see the interactive plot. It selects from the database the chosen columns via input$variableName and generates a plot for it.
-    expandPlot_obj <- reactive({
-      plot <- ggplot(dataset, aes(x = rowmaker_Num_res$xvar()))  +
-              geom_line(aes(y = rowmaker_Num_res$yvar(), group = 1)) +
-              geom_point(aes(y = rowmaker_Num_res$yvar(), group = 1, color = Flag)) +
-
-              #Set flag colors here, there's one for every possible flag.
-              #As of now there is only one for Good (data is present) and Missing (data is missing).
-              #Potential flag ideas are best score this year, all time, etc where best needs to be defined as either highest = good or lowest = good.
-              scale_color_manual(values = c("#005a80",
-                                            "#ff7434",
-                                            "#353436",
-                                            "#02e302")) +
-              #Set theme here
-              theme(axis.ticks.x = element_blank(),
-                    axis.text.x = element_blank(),
-                    axis.title.x = element_blank(),
-                    axis.ticks.y = element_blank(),
-                    axis.text.y = element_blank(),
-                    axis.title.y = element_blank(),
-                    panel.grid.major = element_blank(),
-                    panel.grid.minor = element_blank(),
-                    panel.background = element_blank(),
-                    legend.position = "none") +
-
-      #Run plot and remove the on hover options for plotly
-
-      return(plot)
-
-    #%>% config(displayModeBar = FALSE)
+      expandPlot_obj <- reactive({
+        plot <- ggplot(dataset, aes(x = numericvars$xvar()))  + 
+                geom_line(aes(y = numericvars$yvar(), group = 1)) +
+                geom_point(aes(y = numericvars$yvar(), group = 1, color = Flag)) +
+                
+                #Set flag colors here, there's one for every possible flag. 
+                #As of now there is only one for Good (data is present) and Missing (data is missing). 
+                #Potential flag ideas are best score this year, all time, etc where best needs to be defined as either highest = good or lowest = good.
+                scale_color_manual(values = c("#005a80",
+                                              "#ff7434",
+                                              "#353436",
+                                              "#02e302")) +
+                #Set theme here
+                theme(axis.ticks.x = element_blank(),
+                      axis.text.x = element_blank(),
+                      axis.title.x = element_blank(),
+                      axis.ticks.y = element_blank(),
+                      axis.text.y = element_blank(),
+                      axis.title.y = element_blank(),
+                      panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      panel.background = element_blank(),
+                      legend.position = "none") + 
+                
+        #Run plot and remove the on hover options for plotly
+        
+        return(plot)         
+      
+      #%>% config(displayModeBar = FALSE)
+      })
+      
+      output$expandPlot <- renderPlot({
+        expandPlot_obj()
     })
-
-    output$expandPlot <- renderPlot({
-      expandPlot_obj()
   })
-  #})
- }
+}
 
 
 # plot_Expanded <- function(id, database) {
