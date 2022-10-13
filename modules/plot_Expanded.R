@@ -74,7 +74,7 @@ plot_Expanded <- function(id, dataset, numericvars) {
     id,
     function(input, output, session) {
 
-
+      browser()
       #inputBtn <- eventReactive(action_button())
       
       #Here we see the interactive plot. It selects from the database the chosen columns via input$variableName and generates a plot for it.

@@ -58,13 +58,14 @@ server <- function(input, output, session) {
   
   dashboard_Structure("Dashboard")
   
-  numericvars <- rowmaker_Num
+  rowmaker_res <- callModule(rowmaker_Num, "test")
+  
   # categoricalvars <- callModule(rowmaker_Cat, "QISection_Cat")
   
-  expandNumRes <- plot_Expanded(
-                          "plot",
-                          dataset = QI_db,
-                          numericvars = numericvars)
+  # expandNumRes <- plot_Expanded(
+  #                         "plot",
+  #                         dataset = QI_db,
+  #                         numericvars = numericvars)
   
   # expandNumRes <- callModule(plot_Expanded,
   #                         "plot",

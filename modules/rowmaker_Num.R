@@ -2,6 +2,12 @@
 rowmaker_Num_UI <- function(id, QI_title) {
   ns <- NS(id)
   
+  tagList(numericInput(
+    inputId = ns("first_input"),
+    label = "First input:",
+    value = 1
+  ))
+  
   #The aligning can be changed via here as well as the visualisation size.
   fixedRow(
     column(2, h6(textOutput(ns("QIName")), title = QI_title, align = "left")),
@@ -72,7 +78,7 @@ rowmaker_Num <- function(id, QI, df) {
         }
       })
       
-
+      
       
       ### CHANGE CODE BELOW TO CHANGE THE VISUALISATIONS IN THE TRENDLINE QI SECTION
       output$vis <- renderPlotly({
@@ -114,17 +120,11 @@ rowmaker_Num <- function(id, QI, df) {
       
       #shinyjs::click(id = "action")
 
-      return(
-        list(
+      return(list(
         #action_btn = reactive(input$action),
-        xvar = row_df$YQ,
-        yvar = row_df$Hospital
-        )
-      )
-      
-      
-
-      
+        xvar = reactive({row_df$YQ}),
+        yvar = reactive({row_df$Hospital})
+        ))
     }
   )
 }

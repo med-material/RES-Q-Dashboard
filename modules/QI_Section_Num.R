@@ -15,7 +15,7 @@ QI_Section_Num_UI <- function(id, pageName) {
     #lapply is short for list apply, it applies a function to every element in a list. 
     #Note we pass to rowmaker an ID as well as the full indicator from QI_Info
    lapply(1:nrow(QI_List), function(i) {
-     rowmaker_Num_UI(ns(QI_List$INDICATOR[i]), QI_List$INDICATOR[i])
+     rowmaker_Num_UI(ns("test"), QI_List$INDICATOR[i])
    })
   }
   )
