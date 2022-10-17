@@ -25,12 +25,13 @@ QI_Section_Num_UI <- function(id, pageName, QI_title) {
       lapply(1:nrow(QI_List), function(i) {
         fixedRow(
           column(2, h6(textOutput(ns("QIName")), title = QI_List$INDICATOR[i], align = "left")),
-          column(7, plotlyOutput(ns("vis"), width = "500px", height = "100px"), align = "center"),
+          column(7, plotlyOutput(ns("num_vis"), width = "500px", height = "100px"), align = "center"),
           column(1, h6(textOutput(ns("QIM1")), align = "center")),
           column(1, h6(textOutput(ns("QIM2")), align = "center")),
           # The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view.
-          column(1, align = "center", actionButton((inputId <- ns("test")), label = NULL, icon = icon("play")))
+          column(1, align = "center", actionButton((inputId <- ns(QI_List$INDICATOR[i])), label = NULL, icon = icon("play")))
         )
+         browser()
       })
     }
   )
@@ -49,24 +50,24 @@ QI_Section_Num <- function(id, pageName) {
           column(1, h6("More", align = "center"))
         )
       })
-
+      # browser()
       # Same logic as the UI side, only difference being rowmaker_Num takes an extra paremeter, the QI info list itself.
       # Note the QI list is generated twice because the UI and server side are at different scopes.
-      QI_List <- QI_db %>% filter(ONEPAGE == pageName & NEW_DASHBOARD_VIS == "trend")
-      if (nrow(QI_List) != 0) {
-        lapply(1:nrow(QI_List), function(i) {
+      QI_Num_List <- QI_db %>% filter(ONEPAGE == pageName & NEW_DASHBOARD_VIS == "trend")
+      if (nrow(QI_Num_List) != 0) {
+        lapply(1:nrow(QI_Num_List), function(i) {
           
           # Rendering the QI name
           output$QIName <- renderText({
-            QI_List$INDICATOR[i]
+            QI
           })
           
           # Generating the values that need to be passed to dataHandlerQI
           # index: at what QI row are we looking at
-          index <- match(QI_List$INDICATOR[i], QI_List$INDICATOR)
-          dataType <- QI_List$ATTRIBUTE_TYPE[index]
-          QI_col <- QI_List$COLUMN[index]
-          aggType <- QI_List$SUMMARIZE_BY[index]
+          index <- match(QI_Num_List$INDICATOR[i], QI_Num_List$INDICATOR)
+          dataType <- QI_Num_List$ATTRIBUTE_TYPE[index]
+          QI_col <- QI_Num_List$COLUMN[index]
+          aggType <- QI_Num_List$SUMMARIZE_BY[index]
           
           # For these two fields, I assigned hand-picked hospital with its matching country from the anonymised hospital data.
           # Feel free to pick another hospital and country combination that might be interesting.
@@ -76,7 +77,7 @@ QI_Section_Num <- function(id, pageName) {
           
           
           # If you want to see the values of these fields when running the app, un-comment the line below. It will stop run-time there.
-          # browser()
+          browser()
           
           if (dataType == "Quantitative") {
             row_df <- dataHandlerQI(numVars, dataType, QI_col, hospital, country, aggType)
@@ -108,7 +109,7 @@ QI_Section_Num <- function(id, pageName) {
             }
           })
           
-          # browser()
+          browser()
           
           ### CHANGE CODE BELOW TO CHANGE THE VISUALISATIONS IN THE TRENDLINE QI SECTION
           output$vis <- renderPlotly({
@@ -158,7 +159,7 @@ QI_Section_Num <- function(id, pageName) {
         })
       }
 
-      # return(indicator_name = QI_List$INDICATOR)
+      return(indicator_name = QI_Num_List$INDICATOR[i])
     }
   )
 }

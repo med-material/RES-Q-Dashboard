@@ -32,9 +32,9 @@ source("modules/QI_Section_Cat.R", local = T)
 source("modules/rowmaker_Cat.R", local = T)
 
 #If you want to have the logs folder prompted on application stop
-#onStop(function() {
+# onStop(function() {
 #  browseURL(url = "logs")
-#})
+# })
 
 #db <- dataLoader()
 
@@ -58,7 +58,7 @@ server <- function(input, output, session) {
   
   dashboard_Structure("Dashboard")
   
-  # rowmaker_res <- QI_Section_Num(QI_db$INDICATOR)
+  # QI_section_vals <- callModule(QI_Section_Num, "num_vis", QI_db)
   
   # categoricalvars <- callModule(rowmaker_Cat, "QISection_Cat")
   
