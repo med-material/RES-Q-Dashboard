@@ -31,6 +31,7 @@ QI_Section_Num_UI <- function(id, pageName, QI_title) {
           # The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view.
           column(1, align = "center", actionButton((inputId <- ns(QI_List$INDICATOR[i])), label = NULL, icon = icon("play")))
         )
+         browser()
       })
     }
   )
@@ -49,7 +50,9 @@ QI_Section_Num <- function(id, pageName) {
           column(1, h6("More", align = "center"))
         )
       })
-      # browser()
+      
+       browser()
+       
       # Same logic as the UI side, only difference being rowmaker_Num takes an extra paremeter, the QI info list itself.
       # Note the QI list is generated twice because the UI and server side are at different scopes.
       QI_Num_List <- QI_db %>% filter(ONEPAGE == pageName & NEW_DASHBOARD_VIS == "trend")
@@ -58,7 +61,7 @@ QI_Section_Num <- function(id, pageName) {
 
           # Rendering the QI name
           output$QIName <- renderText({
-            QI
+            QI_Num_List$INDICATOR[i]
           })
           
           # Generating the values that need to be passed to dataHandlerQI
@@ -76,7 +79,7 @@ QI_Section_Num <- function(id, pageName) {
           
           
           # If you want to see the values of these fields when running the app, un-comment the line below. It will stop run-time there.
-          #browser()
+           browser()
           
           if (dataType == "Quantitative") {
             row_df <- dataHandlerQI(numVars, dataType, QI_col, hospital, country, aggType)
@@ -108,7 +111,7 @@ QI_Section_Num <- function(id, pageName) {
             }
           })
           
-          #browser()
+          browser()
           
           ### CHANGE CODE BELOW TO CHANGE THE VISUALISATIONS IN THE TRENDLINE QI SECTION
           output$vis <- renderPlotly({
@@ -146,10 +149,12 @@ QI_Section_Num <- function(id, pageName) {
                 panel.grid.minor = element_blank(),
                 panel.background = element_blank(),
                 legend.position = "none"
-              )
+              ) + 
+              config(displayModeBar = FALSE)
             
             # Remove the plotly on hover options
-            ggplotly(plot) %>% config(displayModeBar = FALSE)
+            #ggplotly(plot) %>% config(displayModeBar = FALSE)
+            return(plot)
           })
           
           # shinyjs::click(id = id)
@@ -158,7 +163,8 @@ QI_Section_Num <- function(id, pageName) {
         })
       }
 
-      #return(indicator_name = "QI_Num_List$INDICATOR[i]")
+      # return(indicator_name = "QI_Num_List$INDICATOR")
+      
     }
   )
 }

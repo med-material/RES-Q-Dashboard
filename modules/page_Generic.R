@@ -6,7 +6,7 @@ page_Generic_UI <- function(id, pageName) {
   fluidPage(
     fixedRow(
       box(width = 6,
-        #QI_Section_Num_UI(ns("QISection_Num"), pageName), 
+        QI_Section_Num_UI(ns("QISection_Num"), pageName), 
         br(),
         br(),
         br(),
@@ -23,7 +23,7 @@ page_Generic <- function(id, pageName) {
   moduleServer(
     id,
     function(input, output, session) {
-      #QI_Section_Num("QISection_Num", pageName)
+      QI_Section_Num("QISection_Num", pageName)
       QI_Section_Cat("QISection_Cat", pageName)
       plot_Expanded("numericvars")
     }
