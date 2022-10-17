@@ -28,7 +28,7 @@ source("utils/QILoader.R", local = T)
 source("modules/plot_Expanded.R", local = T)
 source("modules/QI_Section_Num.R", local = T)
 source("modules/QI_Section_Cat.R", local = T)
-source("modules/rowmaker_Num.R", local = T)
+#source("modules/rowmaker_Num.R", local = T)
 source("modules/rowmaker_Cat.R", local = T)
 
 #If you want to have the logs folder prompted on application stop
@@ -53,12 +53,12 @@ ui <- fluidPage(theme = bs_theme(version = 4, bootswatch = "minty"),
 server <- function(input, output, session) {
   # Store JSON with logs in the logs dir
   track_usage(
-    storage_mode = store_null()
+    storage_mode = store_null(console = TRUE)
   )
   
   dashboard_Structure("Dashboard")
   
-  rowmaker_res <- callModule(rowmaker_Num, "test")
+  # rowmaker_res <- QI_Section_Num(QI_db$INDICATOR)
   
   # categoricalvars <- callModule(rowmaker_Cat, "QISection_Cat")
   
@@ -72,5 +72,6 @@ server <- function(input, output, session) {
   #                         dataset = QI_db[index],
   #                         categoricalvars = categoricalvars)
 }
+
 
 shinyApp(ui = ui, server = server)
