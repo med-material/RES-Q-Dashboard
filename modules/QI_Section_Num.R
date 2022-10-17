@@ -31,7 +31,6 @@ QI_Section_Num_UI <- function(id, pageName, QI_title) {
           # The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view.
           column(1, align = "center", actionButton((inputId <- ns(QI_List$INDICATOR[i])), label = NULL, icon = icon("play")))
         )
-         browser()
       })
     }
   )
@@ -56,7 +55,7 @@ QI_Section_Num <- function(id, pageName) {
       QI_Num_List <- QI_db %>% filter(ONEPAGE == pageName & NEW_DASHBOARD_VIS == "trend")
       if (nrow(QI_Num_List) != 0) {
         lapply(1:nrow(QI_Num_List), function(i) {
-          
+
           # Rendering the QI name
           output$QIName <- renderText({
             QI
@@ -77,7 +76,7 @@ QI_Section_Num <- function(id, pageName) {
           
           
           # If you want to see the values of these fields when running the app, un-comment the line below. It will stop run-time there.
-          browser()
+          #browser()
           
           if (dataType == "Quantitative") {
             row_df <- dataHandlerQI(numVars, dataType, QI_col, hospital, country, aggType)
@@ -109,7 +108,7 @@ QI_Section_Num <- function(id, pageName) {
             }
           })
           
-          browser()
+          #browser()
           
           ### CHANGE CODE BELOW TO CHANGE THE VISUALISATIONS IN THE TRENDLINE QI SECTION
           output$vis <- renderPlotly({
@@ -159,7 +158,7 @@ QI_Section_Num <- function(id, pageName) {
         })
       }
 
-      return(indicator_name = QI_Num_List$INDICATOR[i])
+      #return(indicator_name = "QI_Num_List$INDICATOR[i]")
     }
   )
 }

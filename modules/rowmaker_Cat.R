@@ -69,16 +69,7 @@ rowmaker_Cat <- function(id, QI, df) {
           ggplotly(plot) %>% config(displayModeBar = FALSE)
         }
       })
-      
-      #shinyjs::click(id = "action")
-      
-      return(
-        list(
-          #action_btn = reactive(input$action),
-          xvar = row_df$YQ,
-          yvar = row_df$Hospital
-        )
-      )
+
       
     }
   )

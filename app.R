@@ -57,20 +57,6 @@ server <- function(input, output, session) {
   )
   
   dashboard_Structure("Dashboard")
-  
-  # QI_section_vals <- callModule(QI_Section_Num, "num_vis", QI_db)
-  
-  # categoricalvars <- callModule(rowmaker_Cat, "QISection_Cat")
-  
-  # expandNumRes <- plot_Expanded(
-  #                         "plot",
-  #                         dataset = QI_db,
-  #                         numericvars = numericvars)
-  
-  # expandNumRes <- callModule(plot_Expanded,
-  #                         "plot",
-  #                         dataset = QI_db[index],
-  #                         categoricalvars = categoricalvars)
 }
 
 
