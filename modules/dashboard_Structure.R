@@ -13,7 +13,7 @@ dashboard_Structure_UI <- function(id) {
     "RES-Q Dashboard",
     tabPanel(
       "Hospital Overview",
-      page_Generic_UI(ns("HO"), "HO")
+      page_Generic_UI(ns("Imaging"), "Imaging")
     )
     # tabPanel(
     #   "Hospital Overview",
@@ -54,7 +54,7 @@ dashboard_Structure<- function(id) {
   moduleServer(
     id,
     function(input, output, session) {
-      page_Generic("HO", "HO")
+      page_Generic("Imaging", "Imaging")
       # page_Generic("Bleeding", "Bleeding")
       # page_Generic("Imaging", "Imaging")
       # page_Generic("Treatment", "Treatment")

@@ -3,7 +3,7 @@
 
 QI_Section_Num_UI <- function(id, pageName) {
   ns <- NS(id)
-  QI_List <- QI_db %>% filter(ONEPAGE == pageName & NEW_DASHBOARD_VIS == "trend")
+  QI_List <- QI_db %>% filter(TAB == pageName & NEW_DASHBOARD_VIS == "trend")
   box(width = 12,
   
   #Render the ui from the severside with the title "header_num"
@@ -37,7 +37,7 @@ QI_Section_Num <- function(id, pageName) {
       
       #Same logic as the UI side, only difference being rowmaker_Num takes an extra paremeter, the QI info list itself.
       #Note the QI list is generated twice because the UI and server side are at different scopes. 
-      QI_List <- QI_db %>% filter(ONEPAGE == pageName & NEW_DASHBOARD_VIS == "trend")
+      QI_List <- QI_db %>% filter(TAB == pageName & NEW_DASHBOARD_VIS == "trend")
       if (nrow(QI_List) != 0) {
         lapply(1:nrow(QI_List), function(i) {
           rowmaker_Num(QI_List$INDICATOR[i], QI_List$INDICATOR[i], QI_List)
