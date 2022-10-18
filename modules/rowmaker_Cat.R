@@ -6,7 +6,7 @@ rowmaker_Cat_UI <- function(id, QI_title) {
   fixedRow(
     column(2, h6(textOutput(ns("QIName")), title = QI_title, align = "left")),
     column(9, plotlyOutput(ns("vis"), width = "600px", height = "80"), align = "center"),
-    column(1, align = "center", actionButton((ns("action")), label = NULL, icon = icon("play")))
+    #column(1, align = "center", actionButton((ns("action")), label = NULL, icon = icon("play")))
   )
 }
 

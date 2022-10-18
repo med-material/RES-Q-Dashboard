@@ -6,10 +6,10 @@ rowmaker_Num_UI <- function(id, QI_title) {
   fixedRow(
     column(2, h6(textOutput(ns("QIName")), title = QI_title, align = "left")),
     column(7, plotlyOutput(ns("vis"), width = "350px", height = "150px"), align = "center"),
-    column(1, h6(textOutput(ns("QIM1")), align = "center")),
-    column(1, h6(textOutput(ns("QIM2")), align = "center")),
+    column(1, h6(textOutput(ns("QIM1")), align = "left")),
+    column(1, h6(textOutput(ns("QIM2")), align = "left")),
     # The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view.
-    column(1, align = "center", actionButton((ns("action")), label = NULL, icon = icon("play")))
+    #column(1, align = "center", actionButton((ns("action")), label = NULL, icon = icon("play")))
   )
   # browser()
 }

@@ -28,11 +28,11 @@ QI_Section_Num <- function(id, pageName) {
     function(input, output, session) {
       output$header_num <- renderUI({
         fixedRow(
-          column(2, h6("QI", align = "center")),
+          column(2, h6("QI", align = "left")),
           column(7, h6("Visual", align = "center")),
-          column(1, h6("Hospital", align = "center")),
-          column(1, h6("National", align = "center")),
-          column(1, h6("More", align = "center"))
+          column(1, h6("Hospital", align = "left")),
+          column(1, h6("National", align = "left")),
+          #column(1, h6("More", align = "center"))
         )
       })
 

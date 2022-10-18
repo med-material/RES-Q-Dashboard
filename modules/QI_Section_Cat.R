@@ -23,9 +23,9 @@ QI_Section_Cat <- function(id, pageName) {
       # Renders the header for the categorical QI's
       output$header_cat <- renderUI({
         fixedRow(
-          column(2, h6("QI", align = "center")),
+          column(2, h6("QI", align = "left")),
           column(9, h6("Visual", align = "center")),
-          column(1, h6("More", align = "center"))
+          #column(1, h6("More", align = "center"))
         )
       })
 
