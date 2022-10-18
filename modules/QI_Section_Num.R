@@ -149,12 +149,12 @@ QI_Section_Num <- function(id, pageName) {
                 panel.grid.minor = element_blank(),
                 panel.background = element_blank(),
                 legend.position = "none"
-              ) + 
-              config(displayModeBar = FALSE)
+              ) 
+              
             
             # Remove the plotly on hover options
             #ggplotly(plot) %>% config(displayModeBar = FALSE)
-            return(plot)
+            return(plot) %>% config(displayModeBar = FALSE)
           })
           
           # shinyjs::click(id = id)
