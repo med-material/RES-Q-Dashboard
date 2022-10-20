@@ -1,9 +1,7 @@
 The dashboard's goal is to present a quick overview over a large number of stroke quality care data for clincians spread across several pages (horizontal top bar navigation) 
-This includes numeric and categorical parameters. 
-![QI Real Data](Images/Update_29_06.png)
+This includes numeric and categorical parameters. To get to this goal a modular restructuring had to be done for the code and now the architecture looks as following:
+![App Architecture](https://user-images.githubusercontent.com/25637660/196938227-54238f0d-63d0-40c5-b244-76bcc81c98e1.jpg)
 
-To get to this goal a modular restructuring had to be done for the code and now the architecture looks as following:
-![Code Architecture](Images/Architecture_08_07.png)
 
 Notice how the annotated screenshot and the architecture tie together:
 
