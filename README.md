@@ -1,6 +1,6 @@
 The dashboard's goal is to present a quick overview over a large number of stroke quality care data for clincians.
 This includes numeric and categorical parameters. To get to this goal a modular restructuring had to be done for the code and now the architecture looks as following:
-![App Architecture](https://user-images.githubusercontent.com/25637660/196938227-54238f0d-63d0-40c5-b244-76bcc81c98e1.jpg)
+![App Architecture](https://user-images.githubusercontent.com/25637660/196942503-7fc0e7dd-2664-46b4-b4d2-f5400c8c7768.jpg)
 
 
 Notice how the annotated screenshot and the architecture tie together:
