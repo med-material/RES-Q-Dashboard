@@ -5,7 +5,7 @@ rowmaker_Num_UI <- function(id, QI_title) {
   # The aligning can be changed via here as well as the visualisation size.
   fixedRow(
     column(2, h6(textOutput(ns("QIName")), title = QI_title, align = "left")),
-    column(7, plotlyOutput(ns("vis"), width = "350px", height = "70px"), align = "center"),
+    column(7, plotlyOutput(ns("vis"), width = "350px", height = "120px"), align = "center"),
     column(1, h6(textOutput(ns("QIM1")), align = "left")),
     column(1, h6(textOutput(ns("QIM2")), align = "left")),
     # The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view.
@@ -102,8 +102,8 @@ rowmaker_Num <- function(id, QI, df) {
             panel.grid.minor = element_blank(),
             panel.background = element_blank(),
             legend.position = "none"
-          ) +
-          coord_cartesian()
+          ) + coord_cartesian(ylim = c(NA,NA))
+          
           
 
         # Remove the plotly on hover options
