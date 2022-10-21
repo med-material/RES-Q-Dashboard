@@ -6,18 +6,17 @@ page_Generic_UI <- function(id, pageName) {
   fluidPage(
     fixedRow(
       box(
-        width = 8,
+        width = 6,
         QI_Section_Num_UI(ns("QISection_Num"), pageName),
         br(),
         br(),
         br(),
         QI_Section_Cat_UI(ns("QISection_Cat"), pageName)
-      )
-      # ),
-      # column(
-      #   6,
-      #   plot_Expanded_UI(ns("VisSection"), mtcars)
-      # )
+       ),
+       column(
+         6,
+         plot_Expanded_UI(ns("VisSection"), mtcars)
+       )
     )
   )
 }
@@ -28,7 +27,7 @@ page_Generic <- function(id, pageName) {
     function(input, output, session) {
       QI_Section_Num("QISection_Num", pageName)
       QI_Section_Cat("QISection_Cat", pageName)
-      # plot_Expanded("VisSection", mtcars)
+      plot_Expanded("VisSection", mtcars, FALSE)
     }
   )
 }

@@ -9,7 +9,7 @@ rowmaker_Num_UI <- function(id, QI_title) {
     column(1, h6(textOutput(ns("QIM1")), align = "left")),
     column(1, h6(textOutput(ns("QIM2")), align = "left")),
     # The below column produces the buttons under the "More" column, these have no functionality yet but are supposed to connect the QI section to the expanded view.
-    #column(1, align = "center", actionButton((ns("action")), label = NULL, icon = icon("play")))
+    column(1, align = "center", actionButton(ns("btnPress"), label = NULL, icon = icon("play")))
   )
   # browser()
 }
@@ -64,7 +64,13 @@ rowmaker_Num <- function(id, QI, df) {
           as.character(round(row_df$Country[4], 1))
         }
       })
-
+        
+      observeEvent(input$btnPress,{
+        browser()
+        plot_Expanded("VisSection", mtcars, TRUE)
+        #callModule(module = plot_Expanded, id = "VisSection",
+        #           database = mtcars, test = TRUE)
+      })
 
       ### CHANGE CODE BELOW TO CHANGE THE VISUALISATIONS IN THE TRENDLINE QI SECTION
       output$vis <- renderPlotly({
@@ -108,6 +114,7 @@ rowmaker_Num <- function(id, QI, df) {
 
         # Remove the plotly on hover options
         ggplotly(plot) %>% config(displayModeBar = FALSE)
+      
       })
     }
   )
