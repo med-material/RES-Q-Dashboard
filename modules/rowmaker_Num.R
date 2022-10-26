@@ -64,9 +64,8 @@ rowmaker_Num <- function(id, QI, df) {
           as.character(round(row_df$Country[4], 1))
         }
       })
-      
       observeEvent(input$btnPress,{
-        callModule(plot_Expanded, "VisSection", reactive(QI))
+        QI_name(QI_col)
                   
       })
       

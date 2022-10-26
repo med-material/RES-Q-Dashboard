@@ -48,16 +48,15 @@ plot_Expanded_UI <- function(id, database) {
    moduleServer(
      id,
      function(input, output, session) {
-       QI_name <- reactiveVal(QI)
        
-       browser()
        #validate(need(df(), "Waiting for data..."), errorClass = character(0))
        #QI_data <- df
        #browser()
 #       # Here we see the interactive plot. It selects from the database the chosen columns via input$variableName and generates a plot for it.
-        if(!is.null(QI_name)) {
        output$plot <- renderPlotly({
+         if(!is.null(QI_name())) {
          QI_data <- numVars %>% filter(QI == QI_name()) %>% na.omit()
+
          #plot <- ggplot(database, aes(x = .data[[input$selected_col]], y = .data[[input$selected_col2]])) +
          #geom_point()
          plot <- ggplot(QI_data, aes(x = YQ)) +
@@ -68,12 +67,13 @@ plot_Expanded_UI <- function(id, database) {
            plot <- plot + geom_smooth(se = FALSE)
          }
          ggplotly(plot)
+         }
        })
       
 # 
 #       # This will define how the dataTable will look, here we chose a list pagelength of 5 and it takes it displays the chosen variables from the dropdown.
-       output$table <- DT::renderDataTable(QI_data %>% select(YQ, Value), options = list(pageLength = 5))
-        }
+       #output$table <- DT::renderDataTable(QI_data %>% select(YQ, Value), options = list(pageLength = 5))
+        
      }
    )
  }
