@@ -55,6 +55,7 @@ server <- function(input, output, session) {
     storage_mode = store_null()
   )
   dashboard_Structure("Dashboard")
+  
 }
 
 shinyApp(ui = ui, server = server)

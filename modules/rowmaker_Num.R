@@ -64,11 +64,8 @@ rowmaker_Num <- function(id, QI, df) {
           as.character(round(row_df$Country[4], 1))
         }
       })
-        
       
-      observeEvent(input$btnPress,{
-        plot_Expanded("VisSection", "door_to_needle")
-      })
+      
 
       ### CHANGE CODE BELOW TO CHANGE THE VISUALISATIONS IN THE TRENDLINE QI SECTION
       output$vis <- renderPlotly({
@@ -106,7 +103,8 @@ rowmaker_Num <- function(id, QI, df) {
             panel.grid.minor = element_blank(),
             panel.background = element_blank(),
             legend.position = "none"
-          ) + coord_cartesian(ylim = c(NA,NA))
+          ) + 
+          coord_cartesian(ylim = c(NA,NA))
           
           
 
@@ -114,6 +112,20 @@ rowmaker_Num <- function(id, QI, df) {
         ggplotly(plot) %>% config(displayModeBar = FALSE)
       
       })
+      # 
+      # toReturn<-reactive({
+      #   observeEvent(input$btnPress,{
+      #     plot_Expanded("VisSection", QI)
+      #   })
+      #   #df=row_df
+      # })
+      # 
+      
+      observeEvent(input$btnPress,{
+             QI_name(QI)
+           })
+      
+      #return(toReturn)
     }
   )
 }
