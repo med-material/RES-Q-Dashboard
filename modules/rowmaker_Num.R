@@ -65,11 +65,9 @@ rowmaker_Num <- function(id, QI, df) {
         }
       })
         
+      
       observeEvent(input$btnPress,{
-        browser()
-        plot_Expanded("VisSection", mtcars, TRUE)
-        #callModule(module = plot_Expanded, id = "VisSection",
-        #           database = mtcars, test = TRUE)
+        plot_Expanded("VisSection", "door_to_needle")
       })
 
       ### CHANGE CODE BELOW TO CHANGE THE VISUALISATIONS IN THE TRENDLINE QI SECTION

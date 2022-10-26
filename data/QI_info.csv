@@ -33,7 +33,7 @@
 32,PC,Ticagrelol,,before_onset_ticagrelor,Categorical_binary,%,trend
 33,PC,Ticlopidine,,before_onset_ticlopidine,Categorical_binary,%,trend
 34,PC,Prasugrel,,before_onset_prasugrel,Categorical_binary,%,trend
-"35,PC,""Dipyridamol, slow release"",,before_onset_dipyridamol,Categorical_binary,%,trend"
+"35,PC,""Dipyridamol, slow release"",,before_onset_dipyridamol,Categorical_binary,%,trend",,,,,,,
 36,PC,Warfarin,,before_onset_warfarin,Categorical_binary,%,trend
 37,PC,Low molecular weight heparin/heparin,,,Categorical_binary,%,trend
 38,PC,Dabigatran,,before_onset_dabigatran,Categorical_binary,%,trend
@@ -66,23 +66,23 @@
 65,Imaging,ICH volume,Q11,,Quantitative,mean,trend
 66,Treatment,Number of IVT,QI1,thrombolysis,Categorical_binary,count,trend
 67,Treatment,% IVT of all ischemic strokes,QI2,,Categorical_binary,%,trend
-68,Treatment,Arrival pre-notified,QI3,,Categorical_binary,%,trend
-"69,Treatment,""Onset-to-door time for IVT, median"",QI4,,Quantitative,median,trend"
-"70,Treatment,""Door-to-needle for IVT, median"",QI5,,Quantitative,median,trend"
+68,Treatment,Arrival pre-notified,QI3,prenotification,Categorical_binary,%,trend
+"69,Treatment,""Onset-to-door time for IVT, median"",QI4,,Quantitative,median,trend",,,,,,,
+70,Treatment,"Door-to-needle for IVT, median",QI5,door_to_needle,Quantitative,median,trend
 71,Treatment,Number of MT,QI6,thrombectomy,Categorical_binary,count,trend
 72,Treatment,% MT only of all ischemic strokes,QI7,,Categorical_binary,%,trend
 73,Treatment,% IVT+MT of all ischemic strokes,QI8,,Categorical_binary,%,trend
-"74,Treatment,""Door-to-groin for MT, median. Direct (primary transport)"",QI9,,Quantitative,median,trend"
-"75,Treatment,""Door-to-groin for MT, median. Drip-and-ship (secondary transport)"",QI10,,Quantitative,median,trend"
-"76,Treatment,""Door-in-door-out, median. For PSC, transport to CSC for MT"",Q11,,Quantitative,median,trend"
+"74,Treatment,""Door-to-groin for MT, median. Direct (primary transport)"",QI9,,Quantitative,median,trend",,,,,,,
+"75,Treatment,""Door-to-groin for MT, median. Drip-and-ship (secondary transport)"",QI10,,Quantitative,median,trend",,,,,,,
+"76,Treatment,""Door-in-door-out, median. For PSC, transport to CSC for MT"",Q11,,Quantitative,median,trend",,,,,,,
 77,Treatment,TICI scores,Q12,tici_score,Categorical,%,stacked_bargraph
 78,Treatment,Bleeding after IVT/MT,Q13,,Categorical,%,stacked_bargraph
 79,Treatment,Complications after MT,Q14,,Categorical,%,stacked_bargraph
 80,Treatment,DVT prevention,Q15,,Categorical,%,stacked_bargraph
 81,Treatment,Onset-to-door time distribution in %,Q16,,Categorical,%,stacked_bargraph
-"82,Treatment,""Door-to-imaging time, distribution in %"",Q17,,Categorical,%,stacked_bargraph"
-"83,Treatment,""Door-to-needle time for IVT, distribution in %"",Q18,,Categorical,%,stacked_bargraph"
-"84,Treatment,""Door-to-groin time for MT, distribution in %"",Q19,,Categorical,%,stacked_bargraph"
+"82,Treatment,""Door-to-imaging time, distribution in %"",Q17,,Categorical,%,stacked_bargraph",,,,,,,
+"83,Treatment,""Door-to-needle time for IVT, distribution in %"",Q18,,Categorical,%,stacked_bargraph",,,,,,,
+"84,Treatment,""Door-to-groin time for MT, distribution in %"",Q19,,Categorical,%,stacked_bargraph",,,,,,,
 85,PO,Decompressive hemicraniectomy of patients >60 years and > NIHSS,QI1,,Categorical_binary,%,trend
 86,PO,Carotid artery imaging <= 7 days after admission,QI2,,Categorical_binary,%,trend
 87,PO,>70% internal carotid artery stenosis,QI3,,Categorical_binary,%,trend
@@ -104,7 +104,7 @@
 103,Discharge,Ticagrelol,QI6,discharge_ticagrelor,Categorical_binary,%,trend
 104,Discharge,Ticlopidine,QI7,discharge_ticlopidine,Categorical_binary,%,trend
 105,Discharge,Prasugrel,QI8,discharge_prasugrel,Categorical_binary,%,trend
-"106,Discharge,""Dipyridamol, slow release"",QI9,discharge_dipyridamol,Categorical_binary,%,trend"
+"106,Discharge,""Dipyridamol, slow release"",QI9,discharge_dipyridamol,Categorical_binary,%,trend",,,,,,,
 107,Discharge,Warfarin for AF,QI10,discharge_warfarin,Categorical_binary,%,trend
 108,Discharge,Low molecular weight heparin/heparin for AF,Q11,,Categorical_binary,%,trend
 109,Discharge,Dabigatran for AF,Q12,discharge_dabigatran,Categorical_binary,%,trend

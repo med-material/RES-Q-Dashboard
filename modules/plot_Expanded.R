@@ -9,30 +9,7 @@ plot_Expanded_UI <- function(id, database) {
     ),
 
     # Define a row containing dropdown menus to select variables & tickboxes for more plot options.
-    fixedRow(
-      column(
-        6,
-        align = "center",
-        selectInput(
-          inputId = ns("selected_col"),
-          label = "Select column",
-          # By using choices = colnames(db) we give the user a choice of what variables to plot.
-          # Can also use a subset of colnames if some variables should not be able to be chosen.
-          choices = colnames(database),
-          selected = colnames(database)[1]
-        )
-      ),
-      column(
-        6,
-        align = "center",
-        selectInput(
-          inputId = ns("selected_col2"),
-          label = "Select column",
-          choices = colnames(database),
-          selected = colnames(database)[2]
-        )
-      )
-    ),
+
     fixedRow(
       column(
         6,
@@ -67,33 +44,30 @@ plot_Expanded_UI <- function(id, database) {
    )
  }
 # 
- plot_Expanded <- function(id, database, test) {
+ plot_Expanded <- function(id, QI_name) {
    moduleServer(
      id,
      function(input, output, session) {
+       QI_data <- numVars %>% filter(QI == QI_name) %>% na.omit()
+       browser()  
 #       # Here we see the interactive plot. It selects from the database the chosen columns via input$variableName and generates a plot for it.
        output$plot <- renderPlotly({
-         browser()
          #plot <- ggplot(database, aes(x = .data[[input$selected_col]], y = .data[[input$selected_col2]])) +
          #geom_point()
-         plot <- ggplot(database, aes(x = .data[[input$selected_col]], y = .data[[input$selected_col2]])) +
+         plot <- ggplot(QI_data, aes(x = YQ, y = Value)) +
            geom_point()
 # 
 #         # Checks if line smoothing has been selected by the user.
          if (input$smooth_line == TRUE) {
            plot <- plot + geom_smooth(se = FALSE)
          }
-         browser()
-         if (test == TRUE) {
-           plot <- plot + geom_geom_smooth(se = FALSE)
-         }
-         
+
          ggplotly(plot)
        })
        
 # 
 #       # This will define how the dataTable will look, here we chose a list pagelength of 5 and it takes it displays the chosen variables from the dropdown.
-       output$table <- DT::renderDataTable(database %>% select(input$selected_col, input$selected_col2), options = list(pageLength = 5))
+       output$table <- DT::renderDataTable(QI_data %>% select(YQ, Value), options = list(pageLength = 5))
      }
    )
  }
