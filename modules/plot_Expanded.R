@@ -44,11 +44,12 @@ plot_Expanded_UI <- function(id, database) {
    )
  }
 # 
- plot_Expanded <- function(id) {
+ plot_Expanded <- function(id, QI) {
    moduleServer(
      id,
      function(input, output, session) {
-       QI_data <- numVars %>% filter(QI == QI_name()) %>% na.omit()
+       QI_name <- reactiveVal(QI)
+       
        browser()
        #validate(need(df(), "Waiting for data..."), errorClass = character(0))
        #QI_data <- df
@@ -56,6 +57,7 @@ plot_Expanded_UI <- function(id, database) {
 #       # Here we see the interactive plot. It selects from the database the chosen columns via input$variableName and generates a plot for it.
         if(!is.null(QI_name)) {
        output$plot <- renderPlotly({
+         QI_data <- numVars %>% filter(QI == QI_name()) %>% na.omit()
          #plot <- ggplot(database, aes(x = .data[[input$selected_col]], y = .data[[input$selected_col2]])) +
          #geom_point()
          plot <- ggplot(QI_data, aes(x = YQ)) +

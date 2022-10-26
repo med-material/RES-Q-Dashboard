@@ -27,9 +27,7 @@ page_Generic <- function(id, pageName) {
     function(input, output, session) {
       QI_Section_Num("QISection_Num", pageName)
       QI_Section_Cat("QISection_Cat", pageName)
-      
-      QI_name <- reactiveVal(NULL)
-      plot_Expanded("VisSection")
+      plot_Expanded("VisSection", NULL)
       
       
     }

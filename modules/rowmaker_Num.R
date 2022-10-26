@@ -65,6 +65,10 @@ rowmaker_Num <- function(id, QI, df) {
         }
       })
       
+      observeEvent(input$btnPress,{
+        callModule(plot_Expanded, "VisSection", reactive(QI))
+                  
+      })
       
 
       ### CHANGE CODE BELOW TO CHANGE THE VISUALISATIONS IN THE TRENDLINE QI SECTION
@@ -121,9 +125,6 @@ rowmaker_Num <- function(id, QI, df) {
       # })
       # 
       
-      observeEvent(input$btnPress,{
-             QI_name(QI)
-           })
       
       #return(toReturn)
     }
