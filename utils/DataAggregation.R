@@ -118,6 +118,8 @@ agg_data <- dataset[, catVars_cols] %>%
 # trend from last 4quarters, 
 # trend since beginning
 
+dataset %>% left_join(angel_awards,by = c("QI" = "baseVariable"))
+
 agg_data <- agg_data  %>% select(hospital_country,hospital_name,year,quarter, QI, subgroup,agg_function,Value)
 options("scipen"=999)
 
