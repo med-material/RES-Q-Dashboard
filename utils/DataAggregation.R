@@ -14,6 +14,7 @@ country_names <- c("Far far away", "Neverland", "Over the rainbow")
 dataset$site_country <- as.factor(dataset$site_country)
 levels(dataset$site_country) <- country_names
 
+#setting some convenience names for analysis/readability, still compatible with older Code in the dashboard 
 dataset <- dataset %>%
   mutate(patient_id = subject_id, hospital = site_id, hospital_name = site_name, hospital_country = site_country, year = discharge_year, quarter = discharge_quarter) %>%
   mutate(YQ = paste(discharge_year, discharge_quarter)) %>%
@@ -112,11 +113,18 @@ agg_data <- dataset[, catVars_cols] %>%
   mutate(hospital_name = "all") %>%
   rbind(agg_data)
 
+
+
 # todo
+# AngelThresholds - define dnt_leq_60 etc. 
+# first time above (angel/national/own) threshold 
 # last4Quarter values instead of year/quarter, 
-# first above threshold,  
+#
 # trend from last 4quarters, 
 # trend since beginning
+# abstract away through a function the above agg_data sequence
+# aggdata <- add.aggNum(dataset, aggdata, groupby=c('QI, hospital_country, year, quarter, Value'))
+# aggdata <- add.aggCat(dataset, aggdata, groupby=c('QI, hospital_country, year, quarter, Value'))
 
 dataset %>% left_join(angel_awards,by = c("QI" = "baseVariable"))
 
