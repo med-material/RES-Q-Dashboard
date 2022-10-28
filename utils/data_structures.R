@@ -1,17 +1,176 @@
+library(googlesheets4)
+structureData<- read_sheet('https://docs.google.com/spreadsheets/d/1MrhG4S0lIzMI6-J7iiURH5LDJ0fAl3RoqFwqMTxXiCY/',sheet=3)
+structureData <- structureData %>% 
+  filter(isStudProj=="x") %>%
+  mutate(across('conditionForAggr', str_replace, 'total cohort', '')) %>%
+  mutate(across('conditionForAggr', str_replace, ']', ')')) %>%
+  mutate(across('conditionForAggr', str_replace, 'in \\[', '%in% c('))
+
+all_quarters <- c("Q1", "Q2", "Q3", "Q4")
+all_years <- 2017:2022
+
+# KPI variables -----------------------------------------------------------
+KPIs <- c(
+  "discharge_mrs",
+  "door_to_door",
+  "door_to_groin",
+  "door_to_imaging",
+  "door_to_needle",
+  "dysphagia_screening_done",
+  "onset_to_door",
+  "prestroke_mrs",
+  "three_m_mrs",
+  "thrombectomy",
+  "thrombolysis"
+)
+
+# key columns -------------------------------------------------------------
+key_cols <- c("site_country", 
+              "site_name", "site_id", 
+              "discharge_year", 
+              "discharge_quarter", 
+              "YQ", 
+              "subject_id")
+
+
+# categorical variables -----------------------------------------------------------------
+
+catVars <- c(
+  "afib_flutter",
+  "before_onset_antidiabetics",
+  "before_onset_antihypertensives",
+  "before_onset_apixaban",
+  "before_onset_asa",
+  "before_onset_cilostazol",
+  "before_onset_clopidrogel",
+  "before_onset_dabigatran",
+  "before_onset_dipyridamol",
+  "before_onset_edoxaban",
+  "before_onset_prasugrel",
+  "before_onset_rivaroxaban",
+  "before_onset_statin",
+  "before_onset_ticagrelor",
+  "before_onset_ticlopidine",
+  "before_onset_warfarin",
+  "bleeding_reason_aneurysm",
+  "bleeding_reason_angiopathy",
+  "bleeding_reason_anticoagulant",
+  "bleeding_reason_hypertension",
+  "bleeding_reason_malformation",
+  "bleeding_reason_other",
+  "bleeding_source",
+  "carotid_stenosis_level",
+  "covid_test",
+  "department_type",
+  "discharge_antidiabetics",
+  "discharge_antihypertensives",
+  "discharge_any_anticoagulant",
+  "discharge_any_antiplatelet",
+  "discharge_apixaban",
+  "discharge_asa",
+  "discharge_cilostazol",
+  "discharge_clopidrogel",
+  "discharge_dabigatran",
+  "discharge_destination",
+  "discharge_dipyridamol",
+  "discharge_edoxaban",
+  "discharge_mrs",
+  "discharge_prasugrel",
+  "discharge_rivaroxaban",
+  "discharge_statin",
+  "discharge_ticagrelor",
+  "discharge_ticlopidine",
+  "discharge_warfarin",
+  "dysphagia_screening_done",
+  "dysphagia_screening_type",
+  "etiology_cardioembolism",
+  "etiology_cryptogenic_stroke",
+  "etiology_large_artery",
+  "etiology_other",
+  "etiology_small_vessel",
+  "first_arrival_hosp",
+  "first_hospital",
+  "gender",
+  "glucose_level",
+  "hemicraniectomy",
+  "hospital_stroke",
+  "hospitalized_in",
+  "hunt_hess_score",
+  "ich_score",
+  "imaging_done",
+  "imaging_type",
+  "insulin_administration",
+  "no_thrombolysis_reason",
+  "occup_physiotherapy_received",
+  "physiotherapy_start_within_3days",
+  "prenotification",
+  "risk_atrial_fibrilation",
+  "risk_congestive_heart_failure",
+  "risk_coronary_artery_disease_or_myocardial_infarction",
+  "risk_diabetes",
+  "risk_hiv",
+  "risk_hyperlipidemia",
+  "risk_hypertension",
+  "risk_previous_hemorrhagic_stroke",
+  "risk_previous_ischemic_stroke",
+  "risk_smoker",
+  "stroke_mimics_diagnosis",
+  "stroke_type",
+  "three_m_mrs",
+  "thrombectomy",
+  "thrombolysis",
+  "tici_score"
+)
+
+
+# numerical variables -----------------------------------------------------
+
+numVars <- c('age',
+ 'bleeding_volume_value',
+ 'cholesterol',
+ 'dis_blood_pressure',
+ 'discharge_nihss_score',
+ 'door_to_groin',
+ 'door_to_imaging',
+ 'door_to_needle',
+ 'glucose',
+ 'hypoperfusion_core',
+ 'nihss_score',
+ 'onset_to_door',
+ 'perfusion_core',
+ 'prestroke_mrs',
+ 'sys_blood_pressure'
+)
+# risk factor variables ---------------------------------------------------
+riskFactors <- c(
+  "risk_atrial_fibrilation",
+  "risk_congestive_heart_failure",
+  "risk_coronary_artery_disease_or_myocardial_infarction",
+  "risk_diabetes",
+  "risk_hiv",
+  "risk_hyperlipidemia",
+  "risk_hypertensions",
+  "risk_previous_hemorrhagic_stroke",
+  "risk_previous_ischemic_stroke",
+  "risk_smoker"
+)
+# AngelAwards variables and cutoffs -------------------------------------------------------------
 
 angel_awards <- tibble::tribble(
-  ~nameOfAggr, ~gold, ~platinum, ~diamond,
-  "dnt_leq_60", 50, NA, 75,
-  "dnt_leq_45", NA, 0, 50,
-  "dgt_leq_120", 50, NA, 75,
-  "dgt_leq_90", NA, 0, 50,
-  "rec_total_is", 5, 15, 25,
-  "p_ct_mri_first_hosp", 80, 85, 90,
-  "p_dys_screen", 80, 85, 90,
-  "isp_dis_antiplat", 80, 85, 90,
-  "af_p_dis_anticoag", 80, 85, 90,
-  "sp_hosp_stroke_unit_ICU", NA, 0, 1
-)
+  ~baseVariable, ~nameOfAggr, ~gold, ~platinum, ~diamond, ~cond,
+  "door_to_needle", "dnt_leq_60", 50, NA, 75, "x",
+  "door_to_needle","dnt_leq_45", NA, 0, 50,
+  "door_to_groin","dgt_leq_120", 50, NA, 75,
+  "door_to_groin","dgt_leq_90", NA, 0, 50,
+  "thrombolysis","rec_total_is", 5, 15, 25,
+  "imaging_done","p_ct_mri_first_hosp", 80, 85, 90,
+  "dysphagia_screening_type","p_dys_screen", 80, 85, 90,
+  "discharge_any_antiplatelet ","isp_dis_antiplat", 80, 85, 90,
+  "discharge_any_anticoagulant","af_p_dis_anticoag", 80, 85, 90,
+  "hospitalized_in","sp_hosp_stroke_unit_ICU", NA, 0, 1)
+
+
+# award handler function --------------------------------------------------
 
 awardHandler <- function(currentValue, goldThresh, platThresh, diaThresh) {
   awardList <- c("Gold", "Platinum", "Diamond")
