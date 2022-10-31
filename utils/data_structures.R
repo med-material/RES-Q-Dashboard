@@ -157,17 +157,17 @@ riskFactors <- c(
 # AngelAwards variables and cutoffs -------------------------------------------------------------
 
 angel_awards <- tibble::tribble(
-  ~baseVariable, ~nameOfAggr, ~gold, ~platinum, ~diamond, ~cond,
-  "door_to_needle", "dnt_leq_60", 50, NA, 75, "x",
-  "door_to_needle","dnt_leq_45", NA, 0, 50,
-  "door_to_groin","dgt_leq_120", 50, NA, 75,
-  "door_to_groin","dgt_leq_90", NA, 0, 50,
-  "thrombolysis","rec_total_is", 5, 15, 25,
-  "imaging_done","p_ct_mri_first_hosp", 80, 85, 90,
-  "dysphagia_screening_type","p_dys_screen", 80, 85, 90,
-  "discharge_any_antiplatelet ","isp_dis_antiplat", 80, 85, 90,
-  "discharge_any_anticoagulant","af_p_dis_anticoag", 80, 85, 90,
-  "hospitalized_in","sp_hosp_stroke_unit_ICU", NA, 0, 1)
+  ~QI, ~nameOfAggr, ~gold, ~platinum, ~diamond, ~cond,
+  "door_to_needle", "dnt_leq_60", 50, NA, 75, "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True & door_to_needle <= 60",
+  "door_to_needle","dnt_leq_45", NA, 0, 50, "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True & door_to_needle <= 45",
+  "door_to_groin","dgt_leq_120", 50, NA, 75, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 120",
+  "door_to_groin","dgt_leq_90", NA, 0, 50, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 90",
+  "thrombolysis","rec_total_is", 5, 15, 25, "stroke_type=='ischemic'",
+  "imaging_done","p_ct_mri_first_hosp", 80, 85, 90, "total_cohort",
+  "dysphagia_screening_type","p_dys_screen", 80, 85, 90, "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",
+  "discharge_any_antiplatelet","isp_dis_antiplat", 80, 85, 90, "discharge_destination!='dead'",
+  "discharge_any_anticoagulant","af_p_dis_anticoag", 80, 85, 90, "discharge_destination!='dead'",
+  "hospitalized_in","sp_hosp_stroke_unit_ICU", NA, 0, 1, "total_cohort")
 
 
 # award handler function --------------------------------------------------
@@ -177,7 +177,7 @@ awardHandler <- function(currentValue, goldThresh, platThresh, diaThresh) {
   threshList <- c(goldThresh, platThresh, diaThresh)
   award <- "Stroke Ready"
 
-  if (!(is.na(currentValue))) {
+  if(!(is.na(currentValue)))
     for (i in 1:length(threshList)) {
       if (!(is.na(threshList[i]))) {
         if (currentValue >= threshList[i]) {
@@ -185,6 +185,6 @@ awardHandler <- function(currentValue, goldThresh, platThresh, diaThresh) {
         }
       }
     }
-  }
+  
   return(award)
 }
