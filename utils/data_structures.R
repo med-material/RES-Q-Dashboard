@@ -1,5 +1,6 @@
 library(googlesheets4)
-structureData<- read_sheet('https://docs.google.com/spreadsheets/d/1MrhG4S0lIzMI6-J7iiURH5LDJ0fAl3RoqFwqMTxXiCY/',sheet=3)
+library(gsheet)
+structureData<- gsheet2tbl('https://docs.google.com/spreadsheets/d/1MrhG4S0lIzMI6-J7iiURH5LDJ0fAl3RoqFwqMTxXiCY/edit#gid=1936144053',sheet=3)
 structureData <- structureData %>% 
   filter(isStudProj=="x") %>%
   mutate(across('conditionForAggr', str_replace, 'total cohort', '')) %>%
