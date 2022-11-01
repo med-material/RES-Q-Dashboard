@@ -114,17 +114,7 @@ agg_data <- dataset[, catVars_cols] %>%
   mutate(hospital_name = "all") %>%
   rbind(agg_data)
 
-# plotting a derived measure (quarterly median DNT for one hospital) ------
 
-plot_data <- agg_data %>% 
-  #mutate(YQ = paste(year, quarter)) %>%
-  filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ)) 
-
-fig <- ggplot(plot_data, aes(x=YQ,y=median,group=1)) +
-  geom_line() +
-  geom_point()
-
-fig
 # todo
 # AngelThresholds - define dnt_leq_60 etc. 
 # first time above (angel/national/own) threshold 
@@ -186,4 +176,16 @@ cond<-angel_awards%>%filter(eval(parse(text=cond)))
 # timePlaces<-unique(agg_data[,c('hospital_country','hospital_name','year','quarter')])
 # agg_allCombos<-full_join(timePlaces,measures,by=character())
 # agg_data3 <- left_join(agg_allCombos,agg_data)
+
+# plotting a derived measure (quarterly median DNT for one hospital) ------
+
+# plot_data <- agg_data %>% 
+#   #mutate(YQ = paste(year, quarter)) %>%
+#   filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ)) 
+# 
+# fig <- ggplot(plot_data, aes(x=YQ,y=median,group=1)) +
+#   geom_line() +
+#   geom_point()
+# 
+# fig
 
