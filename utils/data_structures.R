@@ -13,7 +13,6 @@ all_years <- 2017:2022
 # KPI variables -----------------------------------------------------------
 KPIs <- c(
   "discharge_mrs",
-  "door_to_door",
   "door_to_groin",
   "door_to_imaging",
   "door_to_needle",
