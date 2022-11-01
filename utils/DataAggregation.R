@@ -4,7 +4,7 @@ library(tidyverse)
 library(ggplot2)
 dataset <- tibble::as_tibble(read.csv("data/dataREanonymized.csv"))
 dataset[dataset == ""] <- NA
-
+#sf
 #set fantasy hospital names
 hospital_Names <- c("Progress Center", "Paradise Clinic", "Angelvale Clinic", "Memorial Hospital", "Rose Clinic", "General Hospital", "Mercy Center", "Hope Hospital", "Samaritan Hospital")
 dataset$site_name <- as.factor(dataset$site_name)
