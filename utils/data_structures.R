@@ -142,6 +142,20 @@ numVars <- c('age',
  'prestroke_mrs',
  'sys_blood_pressure'
 )
+
+# condition columns --------------------------------------------------------
+
+cond_cols <- c("stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True & door_to_needle <= 60",
+  "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True & door_to_needle <= 45",
+  "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 120",
+  "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 90",
+  "stroke_type=='ischemic'",
+  "True",
+  "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",
+  "discharge_destination!='dead'",
+  "discharge_destination!='dead'",
+  "True")
+
 # risk factor variables ---------------------------------------------------
 riskFactors <- c(
   "risk_atrial_fibrilation",
@@ -164,11 +178,11 @@ angel_awards <- tibble::tribble(
   "door_to_groin","dgt_leq_120", 50, NA, 75, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 120",
   "door_to_groin","dgt_leq_90", NA, 0, 50, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 90",
   "thrombolysis","rec_total_is", 5, 15, 25, "stroke_type=='ischemic'",
-  "imaging_done","p_ct_mri_first_hosp", 80, 85, 90, "total_cohort",
+  "imaging_done","p_ct_mri_first_hosp", 80, 85, 90, "True",
   "dysphagia_screening_type","p_dys_screen", 80, 85, 90, "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",
   "discharge_any_antiplatelet","isp_dis_antiplat", 80, 85, 90, "discharge_destination!='dead'",
   "discharge_any_anticoagulant","af_p_dis_anticoag", 80, 85, 90, "discharge_destination!='dead'",
-  "hospitalized_in","sp_hosp_stroke_unit_ICU", NA, 0, 1, "total_cohort")
+  "hospitalized_in","sp_hosp_stroke_unit_ICU", NA, 0, 1, "True")
 
 
 # award handler function --------------------------------------------------

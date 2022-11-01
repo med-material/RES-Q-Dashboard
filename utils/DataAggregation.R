@@ -1,6 +1,7 @@
 # import and data column definitions --------------------------------------
 source("utils/data_structures.R")
 library(tidyverse)
+library(ggplot2)
 dataset <- tibble::as_tibble(read.csv("data/dataREanonymized.csv"))
 dataset[dataset == ""] <- NA
 
@@ -17,22 +18,23 @@ levels(dataset$site_country) <- country_names
 #setting some convenience names for analysis/readability, still compatible with older Code in the dashboard 
 dataset <- dataset %>%
   mutate(patient_id = subject_id, hospital = site_id, hospital_name = site_name, hospital_country = site_country, year = discharge_year, quarter = discharge_quarter) %>%
-  mutate(YQ = paste(discharge_year, discharge_quarter)) %>%
+  mutate(YQ = paste(year, quarter)) %>%
   relocate(all_of(key_cols), .before = where(is.character)) %>%
   #       relocate(c(year,quarter,YQ), .after = country)
   filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y")))
 
-key_cols <- c(key_cols, "patient_id", "hospital", "hospital_name", "hospital_country", "year", "quarter")
+key_cols <- c(key_cols, "patient_id", "hospital", "hospital_name",
+              "hospital_country", "year", "quarter")
 
 # Relevant columns from the dataset for the QI's HARDCODED. There might be a smarter way to do this.
 
 numVars_cols <-c(key_cols,numVars)
-catVars_cols <- c(key_cols,catVars)
+catVars_cols <-c(key_cols,catVars)
 
 # aggregation -------------------------------------------------------------
 agg_data <- dataset[, numVars_cols] %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, hospital_name, year, quarter) %>%
+  group_by(QI, hospital_country, hospital_name, year, quarter, YQ) %>%
   summarise(median = median(Value, na.rm = TRUE)) 
 # %>%
 #   pivot_longer(cols = median, names_to = "agg_function", values_to = "Value")
@@ -72,7 +74,7 @@ agg_data <- dataset[, numVars_cols] %>%
 agg_data <- dataset[, catVars_cols] %>%
   mutate(across(catVars, as.character)) %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, hospital_name, year, quarter, Value) %>%
+  group_by(QI, hospital_country, hospital_name, year, quarter, YQ, Value) %>%
   summarise (number_of_cases = n()) %>%
   mutate(percent = number_of_cases / sum(number_of_cases)) %>%
   rename(subgroup = Value) %>%
@@ -112,9 +114,17 @@ agg_data <- dataset[, catVars_cols] %>%
   mutate(hospital_name = "all") %>%
   rbind(agg_data)
 
+# plotting a derived measure (quarterly median DNT for one hospital) ------
 
+plot_data <- agg_data %>% 
+  #mutate(YQ = paste(year, quarter)) %>%
+  filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ)) 
 
+fig <- ggplot(plot_data, aes(x=YQ,y=median,group=1)) +
+  geom_line() +
+  geom_point()
 
+fig
 # todo
 # AngelThresholds - define dnt_leq_60 etc. 
 # first time above (angel/national/own) threshold 
@@ -125,6 +135,19 @@ options("scipen"=999)
 
 # show only one specific hospital - reducing the rows in the dataset for debugging. 
 # agg_data<-agg_data %>% filter(hospital_name == "Progress Center")
+
+aa_cols<-c(angel_awards$QI,"stroke_type","first_hospital","hospital_stroke","thrombectomy","post_acute_care")
+
+cond_dataset<-dataset%>% 
+  select(unique(aa_cols)) %>%
+  pivot_longer(aa_cols, names_to="QI", values_to="Value")
+
+# right_join with angel awards by QI 
+cond_dataset <- cond_dataset %>%
+  pivot_longer(-aa_cols, names_to = "QI") %>%
+  right_join(angel_awards, by="QI") %>%
+  group_by(nameOfAggr) 
+#summarize(val )
 
 agg_data<-agg_data %>% 
   filter(hospital_name == "Progress Center", agg_function == "percent") %>%
@@ -137,7 +160,7 @@ award_given_data<-agg_data %>%
   merge(angel_awards,by = "QI") %>%
   mutate(award_given = awardHandler_v(Value*100, gold, platinum, diamond))
 
-cond<-award_given_data%>%right_join(agg_data,by="QI")
+cond<-award_given_data%>%right_join(dataset,by="QI")
 
 cond<-angel_awards%>%filter(eval(parse(text=cond)))
 
