@@ -3,6 +3,7 @@ source("utils/data_structures.R")
 library(tidyverse)
 library(ggplot2)
 dataset <- tibble::as_tibble(read.csv("data/dataREanonymized.csv"))
+#convert all empty strings to NA
 dataset[dataset == ""] <- NA
 #sf
 #set fantasy hospital names
@@ -114,12 +115,15 @@ agg_data <- dataset[, catVars_cols] %>%
   mutate(hospital_name = "all") %>%
   rbind(agg_data)
 
+agg_data <- agg_data 
+
+
 
 # todo
 # AngelThresholds - define dnt_leq_60 etc. 
 # first time above (angel/national/own) threshold 
 # last4Quarter values instead of year/quarter, 
-
+#dataset %>% .[.$YQ=="2022 Q1",]
 
 options("scipen"=999)
 
@@ -179,11 +183,9 @@ cond<-angel_awards%>%filter(eval(parse(text=cond)))
 
 # plotting a derived measure (quarterly median DNT for one hospital) ------
 
-# plot_data <- agg_data %>% 
-#   #mutate(YQ = paste(year, quarter)) %>%
-#   filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ)) 
-# 
-# fig <- ggplot(plot_data, aes(x=YQ,y=median,group=1)) +
+# agg_data %>% 
+#   filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ)) %>%
+#   ggplot(plot_data, aes(x=YQ,y=median,group=1)) +
 #   geom_line() +
 #   geom_point()
 # 
