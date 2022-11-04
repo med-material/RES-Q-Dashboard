@@ -1,4 +1,6 @@
 # import and data column definitions --------------------------------------
+library(googlesheets4)
+library(gsheet)
 library(tidyverse)
 source("utils/data_structures.R")
 dataset <- tibble::as_tibble(read.csv("data/dataREanonymized.csv"))
