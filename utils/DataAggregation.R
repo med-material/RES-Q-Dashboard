@@ -146,15 +146,22 @@ agg_data <- dataset[, catVars_cols] %>%
   mutate(hospital_name = "all") %>%
   rbind(agg_data)
 
+
 #REMOVE means for standard numerica vars and medians for the percentages
 agg_data <- agg_data %>%
   filter((QI %in% pctCols & agg_function=='pct') | 
            (QI %in% numVars  & (agg_function=='median'|agg_function=='median' ))| 
            (QI %in% catVars))
 
-# agg_data <- 
-#   agg_data %>% 
-#   filter
+options("scipen"=999)
+
+# plotting a derived measure (quarterly median DNT for one hospital) ------
+
+fig<-agg_data %>%
+  filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ)) %>%
+  ggplot(aes(x=YQ,y=median,group=1)) +
+  geom_line() +
+  geom_point()
 
 
 
@@ -164,11 +171,38 @@ agg_data <- agg_data %>%
 # last4Quarter values instead of year/quarter, 
 # dataset %>% .[.$YQ=="2022 Q1",]   SUM_IF
 
-options("scipen"=999)
+
 
 # show only one specific hospital - reducing the rows in the dataset for debugging. 
 # agg_data<-agg_data %>% filter(hospital_name == "Progress Center")
 
+cond_dataset<-dataset%>% 
+  select(unique(aa_cols)) %>%
+  pivot_longer(aa_cols, names_to="QI", values_to="Value")
+
+# right_join with angel awards by QI 
+cond_dataset <- cond_dataset %>%
+  pivot_longer(-aa_cols, names_to = "QI") %>%
+  right_join(angel_awards, by="QI") %>%
+  group_by(nameOfAggr) 
+#summarize(val )
+
+agg_data<-agg_data %>% 
+  filter(hospital_name == "Progress Center", agg_function == "percent") %>%
+  mutate(YQ = paste(year, quarter)) %>%
+  relocate(c(hospital_name,YQ), .after=hospital_country)
+
+awardHandler_v <- Vectorize(awardHandler)
+
+award_given_data<-agg_data %>% 
+  merge(angel_awards,by = "QI") %>%
+  mutate(award_given = awardHandler_v(Value*100, gold, platinum, diamond))
+
+cond<-award_given_data%>%right_join(dataset,by="QI")
+
+cond<-angel_awards%>%filter(eval(parse(text=cond)))
+
+aa_cols<-c(angel_awards$QI,"stroke_type","first_hospital","hospital_stroke","thrombectomy","post_acute_care")
 
 cond_dataset<-dataset%>% 
   select(unique(aa_cols)) %>%
@@ -197,6 +231,7 @@ cond<-award_given_data%>%right_join(dataset,by="QI")
 cond<-angel_awards%>%filter(eval(parse(text=cond)))
 
 
+
 #%>% select(hospital_country,hospital_name,year,quarter, YQ, QI, subgroup,agg_function,nameOfAggr,Value,award_given)
 
 # condx=
@@ -219,13 +254,4 @@ cond<-angel_awards%>%filter(eval(parse(text=cond)))
 # agg_allCombos<-full_join(timePlaces,measures,by=character())
 # agg_data3 <- left_join(agg_allCombos,agg_data)
 
-# plotting a derived measure (quarterly median DNT for one hospital) ------
-
-# agg_data %>% 
-#   filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ)) %>%
-#   ggplot(plot_data, aes(x=YQ,y=median,group=1)) +
-#   geom_line() +
-#   geom_point()
-# 
-# fig
 

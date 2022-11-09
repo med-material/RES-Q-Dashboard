@@ -1,3 +1,4 @@
+#not needed when called from DataAggregation.R: library(tidyverse)
 library(googlesheets4)
 library(gsheet)
 structureData<- gsheet2tbl('https://docs.google.com/spreadsheets/d/1MrhG4S0lIzMI6-J7iiURH5LDJ0fAl3RoqFwqMTxXiCY/edit#gid=1936144053',sheet=3)
@@ -169,25 +170,36 @@ riskFactors <- c(
   "risk_smoker"
 )
 # AngelAwards variables and cutoffs -------------------------------------------------------------
+pctCols<- c("dnt_leq_60",
+            "dnt_leq_45",
+            "dgt_leq_120",
+            "dgt_leq_90",
+            "rec_total_is",
+            "mri_first_hosp",
+            "isp_dis_antiplat",
+            "af_p_dis_anticoag",
+            "sp_hosp_stroke_unit_ICU")
 
 angel_awards <- tibble::tribble(
-  ~QI, ~nameOfAggr, ~gold, ~platinum, ~diamond, ~cond,
-  "door_to_needle", "dnt_leq_60", 50, NA, 75, "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True & door_to_needle <= 60",
-  "door_to_needle","dnt_leq_45", NA, 0, 50, "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True & door_to_needle <= 45",
-  "door_to_groin","dgt_leq_120", 50, NA, 75, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 120",
-  "door_to_groin","dgt_leq_90", NA, 0, 50, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 90",
-  "thrombolysis","rec_total_is", 5, 15, 25, "stroke_type=='ischemic'",
-  "imaging_done","p_ct_mri_first_hosp", 80, 85, 90, "True",
-  "dysphagia_screening_type","p_dys_screen", 80, 85, 90, "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",
-  "discharge_any_antiplatelet","isp_dis_antiplat", 80, 85, 90, "discharge_destination!='dead'",
-  "discharge_any_anticoagulant","af_p_dis_anticoag", 80, 85, 90, "discharge_destination!='dead'",
-  "hospitalized_in","sp_hosp_stroke_unit_ICU", NA, 0, 1, "True")
-
+  ~QI, ~nameOfAggr, ~aggCond, ~gold, ~platinum, ~diamond, ~cond,
+  "door_to_needle", "dnt_leq_60","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True",
+  "door_to_needle","dnt_leq_45", "<=45", NA, 0, 50, "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True",
+  "door_to_groin","dgt_leq_120","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True",
+  "door_to_groin","dgt_leq_90", "<=90", NA, 0, 50, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True",
+  "thrombolysis","rec_total_is", "== True", 5, 15, 25, "stroke_type=='ischemic'",
+  "imaging_done","p_ct_mri_first_hosp", "imaging_done==True", 80, 85, 90, "first_hospital==True",
+  "dysphagia_screening_type","p_dys_screen", "%in% c('GUSS','water test','other', 'ASSIST')" , 80, 85, 90, "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",
+  "discharge_any_antiplatelet","isp_dis_antiplat", "=='True'", 80, 85, 90, "discharge_destination!='dead'",
+  "discharge_any_anticoagulant","af_p_dis_anticoag", "=='True'", 80, 85, 90, "discharge_destination!='dead'",
+  "hospitalized_in","sp_hosp_stroke_unit_ICU", "=='ICU/stroke unit'", NA, 0, 1, "True")
+  
+aa_cols<-c(angel_awards$QI,"stroke_type","first_hospital","hospital_stroke","thrombectomy","post_acute_care")
 
 # award handler function --------------------------------------------------
 
 awardHandler <- function(currentValue, goldThresh, platThresh, diaThresh) {
   awardList <- c("Gold", "Platinum", "Diamond")
+  awardLevel <- c(0:3)
   threshList <- c(goldThresh, platThresh, diaThresh)
   award <- "Stroke Ready"
 
@@ -199,6 +211,8 @@ awardHandler <- function(currentValue, goldThresh, platThresh, diaThresh) {
         }
       }
     }
-  
+  if(is.na(goldThresh) & is.na(platThresh) &is.na(diaThresh)){award=NA}
   return(award)
 }
+
+awardHandler_v <- Vectorize(awardHandler)
