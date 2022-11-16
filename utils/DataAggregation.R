@@ -173,8 +173,6 @@ agg_dataNum<-  agg_dataNum %>%
          ) 
 
 
-
-
 # #remove all irrelevant combinations 
 # agg_dataNum <- agg_dataNum %>%
 #   filter((QI %in% pctCols & agg_function=='pct') | 
@@ -183,19 +181,20 @@ agg_dataNum<-  agg_dataNum %>%
 
 
 agg_dataCat <- dataset[, catVars_cols] %>%
-  mutate(across(catVars, as.character)) %>%
+  mutate(across(catVars, as.character)) %>% 
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, hospital_name, year, quarter, YQ, Value) %>%
-  summarise(numOfDataPoints = sum(!is.na(Value))) %>%
-  mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
-  rename(subgroup = Value) %>%
+  group_by(QI, hospital_country, hospital_name, year, quarter, YQ, ) %>%
+  mutate(Totnumber_of_cases = sum(!is.na(Value))) %>%
+  group_by(Value, add=TRUE) %>%
+  summarise(percent = ifelse(sum(!is.na(Value))==0, NA, sum(!is.na(Value)) / sum(Totnumber_of_cases))) %>%
+  rename(subgroup = Value) %>% View()
   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value")
 
 agg_dataCat <- dataset[, catVars_cols] %>%
   mutate(across(catVars, as.character)) %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
   group_by(QI, hospital_country, hospital_name, year, Value) %>%
-  summarise (numOfDataPoints = sum(!is.na(Value))) %>%
+  summarise (number_of_cases = sum(!is.na(Value))) %>%
   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
   rename(subgroup = Value) %>%
   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
@@ -208,7 +207,7 @@ agg_dataCat <- dataset[, catVars_cols] %>%
   mutate(across(catVars, as.character)) %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
   group_by(QI, hospital_country, hospital_name, year, Value) %>%
-  summarise (numOfDataPoints = sum(!is.na(Value))) %>%
+  summarise (number_of_cases = sum(!is.na(Value))) %>%
   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
   rename(subgroup = Value) %>%
   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
@@ -221,7 +220,7 @@ agg_dataCat <- dataset[, catVars_cols] %>%
   mutate(across(catVars, as.character)) %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
   group_by(QI, hospital_country, year, quarter, Value) %>%
-  summarise (numOfDataPoints = sum(!is.na(Value))) %>%
+  summarise (number_of_cases = sum(!is.na(Value))) %>%
   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
   rename(subgroup = Value) %>%
   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
@@ -236,13 +235,8 @@ full.gridCat<-  timeGrid %>%
   mutate(YQ=ifelse(quarter=="all",NA,paste(year, quarter)))
 
 agg_dataCat<-left_join(full.gridCat,agg_dataCat)
+agg_dataCat <- unique(agg_dataCat)
 
-
-# #REMOVE means for standard numerical vars and medians for the percentages
-# agg_data <- agg_data %>%
-#   filter((QI %in% pctCols & agg_function=='pct') | 
-#            (QI %in% numVars  & (agg_function=='median'|agg_function=='median' ))| 
-#            (QI %in% catVars))
 
 options("scipen"=999)
 
@@ -255,62 +249,17 @@ agg_dataNum %>%
   geom_point(aes(size=numOfDataPoints))
 
 
-
-# todo
-# first time above (angel/own recent best) threshold 
-# last4Quarter values instead of year/quarter, 
-# dataset %>% .[.$YQ=="2022 Q1",]   SUM_IF
-
-
+# todos for students
+# not requested by students> last4Quarter values instead of year/quarter, 
 
 # # show only one specific hospital - reducing the rows in the dataset for debugging. 
-# # agg_data<-agg_data %>% filter(hospital_name == "Progress Center")
-# 
-# cond_dataset<-dataset%>% 
-#   select(unique(aa_cols)) %>%
-#   pivot_longer(aa_cols, names_to="QI", values_to="Value")
-# 
-# # right_join with angel awards by QI 
-# cond_dataset <- cond_dataset %>%
-#   pivot_longer(-aa_cols, names_to = "QI") %>%
-#   right_join(angel_awards, by="QI") %>%
-#   group_by(nameOfAggr) 
-# #summarize(val )
-# 
-# agg_data<-agg_data %>% 
-#   filter(hospital_name == "Progress Center", agg_function == "percent") %>%
-#   mutate(YQ = paste(year, quarter)) %>%
-#   relocate(c(hospital_name,YQ), .after=hospital_country)
+# agg_dataNum<-agg_dataNum %>% filter(hospital_name == "Progress Center")
+# agg_dataCat<-agg_dataCat %>% filter(hospital_name == "Progress Center")
 
-# 
-# 
-# cond<-award_given_data%>%right_join(dataset,by="QI")
-# cond<-angel_awards%>%filter(eval(parse(text=cond)))
-# 
-# aa_cols<-c(angel_awards$QI,"stroke_type","first_hospital","hospital_stroke","thrombectomy","post_acute_care")
-# 
-# cond_dataset<-dataset%>% 
-#   select(unique(aa_cols)) %>%
-#   pivot_longer(aa_cols, names_to="QI", values_to="Value")
-# 
-# # right_join with angel awards by QI 
-# cond_dataset <- cond_dataset %>%
-#   pivot_longer(-aa_cols, names_to = "QI") %>%
-#   right_join(angel_awards, by="QI") %>%
-#   group_by(nameOfAggr) 
-# #summarize(val )
-# 
-# agg_data<-agg_data %>% 
-#   filter(hospital_name == "Progress Center", agg_function == "percent") %>%
-#   mutate(YQ = paste(year, quarter)) %>%
-#   relocate(c(hospital_name,YQ), .after=hospital_country)
-# 
-# 
-# award_given_data<-agg_data %>% 
-#   merge(angel_awards,by = "QI") %>%
-#   mutate(award_given = awardHandler_v(Value*100, gold, platinum, diamond))
-# 
-# cond<-award_given_data%>%right_join(dataset,by="QI")
-# 
-# cond<-angel_awards%>%filter(eval(parse(text=cond)))
+# #REMOVE means for standard numerical vars and medians for the percentages
+# agg_data <- agg_data %>%
+#   filter((QI %in% pctCols & agg_function=='pct') | 
+#            (QI %in% numVars  & (agg_function=='median'|agg_function=='median' ))| 
+#            (QI %in% catVars))
+
 
