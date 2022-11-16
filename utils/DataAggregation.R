@@ -172,6 +172,17 @@ agg_dataNum<-  agg_dataNum %>%
          isFirstTimeDiamond = ifelse(CSoAboveDiamond==1 & qualifiesForDiamond==1,1,0),
          ) 
 
+options("scipen"=999)
+
+# plotting a derived measure (quarterly median DNT for one hospital) ------
+
+agg_dataNum %>%
+  filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ),) %>%
+  ggplot(aes(x=YQ,y=median,group=1)) +
+  geom_line() +
+  geom_point(aes(size=numOfDataPoints))
+
+
 
 # #remove all irrelevant combinations 
 # agg_dataNum <- agg_dataNum %>%
@@ -238,15 +249,6 @@ agg_dataNum<-  agg_dataNum %>%
 # agg_dataCat <- unique(agg_dataCat)
 
 
-options("scipen"=999)
-
-# plotting a derived measure (quarterly median DNT for one hospital) ------
-
-agg_dataNum %>%
-  filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ),) %>%
-  ggplot(aes(x=YQ,y=median,group=1)) +
-  geom_line() +
-  geom_point(aes(size=numOfDataPoints))
 
 
 # todos for students
