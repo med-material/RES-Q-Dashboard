@@ -146,15 +146,33 @@ agg_dataNum<- agg_dataNum %>%
   right_join(agg_dataNum) %>%
   mutate(MedianAsAsGoodOrBetterThanCountry=ifelse(median>=CountryMedian,1,0))
 
+#remove duplicate rows
+agg_dataNum <- unique(agg_dataNum) %>%
+  arrange(hospital_country, hospital_name,year,quarter,QI)
+
+
+agg_dataNum <- agg_dataNum %>% 
+  pivot_wider(names_from = angelAwardLevel,
+              names_glue = "qualifiesFor{angelAwardLevel}",
+              values_from =angelAwardLevel,
+              values_fn = list(angelAwardLevel = ~ 1), values_fill = list(angelAwardLevel = 0)) 
+
 
 # add temporally derived data - first time above thresholds
 agg_dataNum<-  agg_dataNum %>%
-  group_by(isCountryAgg,isYearAgg,QI) %>%
-  mutate(CSoAboveThresh = cumsum(ifelse(is.na(MedianAsAsGoodOrBetterThanCountry), 0, MedianAsAsGoodOrBetterThanCountry)),
-         isFirstTimeAsGoodOrBetterThanCountry=ifelse(CSoAboveThresh==1 & MedianAsAsGoodOrBetterThanCountry==1,1,0)) 
+  arrange(hospital_country, hospital_name,year,quarter,QI) %>%
+  group_by(hospital_country, hospital_name,year,quarter,QI) %>%
+  mutate(CSoAboveCountry = cumsum(ifelse(is.na(MedianAsAsGoodOrBetterThanCountry), 0, MedianAsAsGoodOrBetterThanCountry)),
+         CSoAboveDiamond = cumsum(qualifiesForDiamond),
+         CSoAbovePlatinum = cumsum(qualifiesForPlatinum) + CSoAboveDiamond,
+         CSoAboveGold = cumsum(qualifiesForGold) + CSoAbovePlatinum,
+         isFirstTimeAsGoodOrBetterThanCountry = ifelse(CSoAboveCountry==1 & MedianAsAsGoodOrBetterThanCountry==1,1,0),
+         isFirstTimeGold = ifelse(CSoAboveGold==1 & qualifiesForGold==1,1,0),
+         isFirstTimePlatinum = ifelse(CSoAbovePlatinum==1 & qualifiesForPlatinum==1,1,0),
+         isFirstTimeDiamond = ifelse(CSoAboveDiamond==1 & qualifiesForDiamond==1,1,0),
+         ) 
 
-# %>% 
-#   select(-c(gold:diamond))
+
 
 
 # #remove all irrelevant combinations 
@@ -184,6 +202,7 @@ agg_dataCat <- dataset[, catVars_cols] %>%
   mutate(quarter = "all",
          YQ=NA) %>%
   rbind(agg_dataCat)
+
 
 agg_dataCat <- dataset[, catVars_cols] %>%
   mutate(across(catVars, as.character)) %>%
@@ -229,98 +248,69 @@ options("scipen"=999)
 
 # plotting a derived measure (quarterly median DNT for one hospital) ------
 
-agg_data %>%
+agg_dataNum %>%
   filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ),) %>%
-  ggplot(aes(x=YQ,y=Value,group=1)) +
+  ggplot(aes(x=YQ,y=median,group=1)) +
   geom_line() +
-  geom_point()
+  geom_point(aes(size=numOfDataPoints))
 
 
 
 # todo
-# compare to national (merge in all national vals) and angel cut-offs isBetterThanNat 
-# first time above (angel/national/own) threshold 
+# first time above (angel/own recent best) threshold 
 # last4Quarter values instead of year/quarter, 
 # dataset %>% .[.$YQ=="2022 Q1",]   SUM_IF
 
 
 
-# show only one specific hospital - reducing the rows in the dataset for debugging. 
-# agg_data<-agg_data %>% filter(hospital_name == "Progress Center")
+# # show only one specific hospital - reducing the rows in the dataset for debugging. 
+# # agg_data<-agg_data %>% filter(hospital_name == "Progress Center")
+# 
+# cond_dataset<-dataset%>% 
+#   select(unique(aa_cols)) %>%
+#   pivot_longer(aa_cols, names_to="QI", values_to="Value")
+# 
+# # right_join with angel awards by QI 
+# cond_dataset <- cond_dataset %>%
+#   pivot_longer(-aa_cols, names_to = "QI") %>%
+#   right_join(angel_awards, by="QI") %>%
+#   group_by(nameOfAggr) 
+# #summarize(val )
+# 
+# agg_data<-agg_data %>% 
+#   filter(hospital_name == "Progress Center", agg_function == "percent") %>%
+#   mutate(YQ = paste(year, quarter)) %>%
+#   relocate(c(hospital_name,YQ), .after=hospital_country)
 
-cond_dataset<-dataset%>% 
-  select(unique(aa_cols)) %>%
-  pivot_longer(aa_cols, names_to="QI", values_to="Value")
-
-# right_join with angel awards by QI 
-cond_dataset <- cond_dataset %>%
-  pivot_longer(-aa_cols, names_to = "QI") %>%
-  right_join(angel_awards, by="QI") %>%
-  group_by(nameOfAggr) 
-#summarize(val )
-
-agg_data<-agg_data %>% 
-  filter(hospital_name == "Progress Center", agg_function == "percent") %>%
-  mutate(YQ = paste(year, quarter)) %>%
-  relocate(c(hospital_name,YQ), .after=hospital_country)
-
-
+# 
+# 
+# cond<-award_given_data%>%right_join(dataset,by="QI")
+# cond<-angel_awards%>%filter(eval(parse(text=cond)))
+# 
+# aa_cols<-c(angel_awards$QI,"stroke_type","first_hospital","hospital_stroke","thrombectomy","post_acute_care")
+# 
+# cond_dataset<-dataset%>% 
+#   select(unique(aa_cols)) %>%
+#   pivot_longer(aa_cols, names_to="QI", values_to="Value")
+# 
+# # right_join with angel awards by QI 
+# cond_dataset <- cond_dataset %>%
+#   pivot_longer(-aa_cols, names_to = "QI") %>%
+#   right_join(angel_awards, by="QI") %>%
+#   group_by(nameOfAggr) 
+# #summarize(val )
+# 
+# agg_data<-agg_data %>% 
+#   filter(hospital_name == "Progress Center", agg_function == "percent") %>%
+#   mutate(YQ = paste(year, quarter)) %>%
+#   relocate(c(hospital_name,YQ), .after=hospital_country)
+# 
+# 
 # award_given_data<-agg_data %>% 
 #   merge(angel_awards,by = "QI") %>%
-#   mutate(award_given = )
-
-cond<-award_given_data%>%right_join(dataset,by="QI")
-cond<-angel_awards%>%filter(eval(parse(text=cond)))
-
-aa_cols<-c(angel_awards$QI,"stroke_type","first_hospital","hospital_stroke","thrombectomy","post_acute_care")
-
-cond_dataset<-dataset%>% 
-  select(unique(aa_cols)) %>%
-  pivot_longer(aa_cols, names_to="QI", values_to="Value")
-
-# right_join with angel awards by QI 
-cond_dataset <- cond_dataset %>%
-  pivot_longer(-aa_cols, names_to = "QI") %>%
-  right_join(angel_awards, by="QI") %>%
-  group_by(nameOfAggr) 
-#summarize(val )
-
-agg_data<-agg_data %>% 
-  filter(hospital_name == "Progress Center", agg_function == "percent") %>%
-  mutate(YQ = paste(year, quarter)) %>%
-  relocate(c(hospital_name,YQ), .after=hospital_country)
-
-
-award_given_data<-agg_data %>% 
-  merge(angel_awards,by = "QI") %>%
-  mutate(award_given = awardHandler_v(Value*100, gold, platinum, diamond))
-
-cond<-award_given_data%>%right_join(dataset,by="QI")
-
-cond<-angel_awards%>%filter(eval(parse(text=cond)))
-
-
-
-#%>% select(hospital_country,hospital_name,year,quarter, YQ, QI, subgroup,agg_function,nameOfAggr,Value,award_given)
-
-# condx=
-# dataset %>% filter(eval(parse(text=condx)))
-
-
-#
-# trend from last 4quarters, 
-# trend since beginning
-# abstract away through a function the above agg_data sequence
-# agg_data <- add.aggNum(dataset, aggdata, groupby=c('QI, hospital_country, year, quarter, Value'))
-# agg_data <- add.aggCat(dataset, aggdata, groupby=c('QI, hospital_country, year, quarter, Value'))
-
-  
-
-# agg_data2 <- agg_data %>% ungroup() %>% expand(hospital_country, hospital_name, year, quarter,QI,agg_function)
-
-# measures <- unique(agg_data[,c('QI','subgroup','agg_function')])
-# timePlaces<-unique(agg_data[,c('hospital_country','hospital_name','year','quarter')])
-# agg_allCombos<-full_join(timePlaces,measures,by=character())
-# agg_data3 <- left_join(agg_allCombos,agg_data)
-
+#   mutate(award_given = awardHandler_v(Value*100, gold, platinum, diamond))
+# 
+# cond<-award_given_data%>%right_join(dataset,by="QI")
+# 
+# cond<-angel_awards%>%filter(eval(parse(text=cond)))
 
