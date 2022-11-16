@@ -180,62 +180,62 @@ agg_dataNum<-  agg_dataNum %>%
 #            (QI %in% catVars))
 
 
-agg_dataCat <- dataset[, catVars_cols] %>%
-  mutate(across(catVars, as.character)) %>% 
-  pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, hospital_name, year, quarter, YQ, ) %>%
-  mutate(Totnumber_of_cases = sum(!is.na(Value))) %>%
-  group_by(Value, add=TRUE) %>%
-  summarise(percent = ifelse(sum(!is.na(Value))==0, NA, sum(!is.na(Value)) / sum(Totnumber_of_cases))) %>%
-  rename(subgroup = Value) %>% View()
-  pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value")
-
-agg_dataCat <- dataset[, catVars_cols] %>%
-  mutate(across(catVars, as.character)) %>%
-  pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, hospital_name, year, Value) %>%
-  summarise (number_of_cases = sum(!is.na(Value))) %>%
-  mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
-  rename(subgroup = Value) %>%
-  pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
-  mutate(quarter = "all",
-         YQ=NA) %>%
-  rbind(agg_dataCat)
-
-
-agg_dataCat <- dataset[, catVars_cols] %>%
-  mutate(across(catVars, as.character)) %>%
-  pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, hospital_name, year, Value) %>%
-  summarise (number_of_cases = sum(!is.na(Value))) %>%
-  mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
-  rename(subgroup = Value) %>%
-  pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
-  mutate(quarter = "all", 
-         hospital_name = "all",
-         YQ=NA) %>%
-  rbind(agg_dataCat)
-
-agg_dataCat <- dataset[, catVars_cols] %>%
-  mutate(across(catVars, as.character)) %>%
-  pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, year, quarter, Value) %>%
-  summarise (number_of_cases = sum(!is.na(Value))) %>%
-  mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
-  rename(subgroup = Value) %>%
-  pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
-  mutate(hospital_name = "all") %>%
-  rbind(agg_dataCat)
-
-
-CatMeasureGrid<-as_tibble(unique(agg_dataCat[,c('QI','agg_function')]) )
-full.gridCat<-  timeGrid %>% 
-  merge(hospitalGrid) %>% 
-  merge(CatMeasureGrid) %>% 
-  mutate(YQ=ifelse(quarter=="all",NA,paste(year, quarter)))
-
-agg_dataCat<-left_join(full.gridCat,agg_dataCat)
-agg_dataCat <- unique(agg_dataCat)
+# agg_dataCat <- dataset[, catVars_cols] %>%
+#   mutate(across(catVars, as.character)) %>% 
+#   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
+#   group_by(QI, hospital_country, hospital_name, year, quarter, YQ, ) %>%
+#   mutate(Totnumber_of_cases = sum(!is.na(Value))) %>%
+#   group_by(Value, add=TRUE) %>%
+#   summarise(percent = ifelse(sum(!is.na(Value))==0, NA, sum(!is.na(Value)) / sum(Totnumber_of_cases))) %>%
+#   rename(subgroup = Value) %>% View()
+#   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value")
+# 
+# agg_dataCat <- dataset[, catVars_cols] %>%
+#   mutate(across(catVars, as.character)) %>%
+#   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
+#   group_by(QI, hospital_country, hospital_name, year, Value) %>%
+#   summarise (number_of_cases = sum(!is.na(Value))) %>%
+#   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
+#   rename(subgroup = Value) %>%
+#   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
+#   mutate(quarter = "all",
+#          YQ=NA) %>%
+#   rbind(agg_dataCat)
+# 
+# 
+# agg_dataCat <- dataset[, catVars_cols] %>%
+#   mutate(across(catVars, as.character)) %>%
+#   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
+#   group_by(QI, hospital_country, hospital_name, year, Value) %>%
+#   summarise (number_of_cases = sum(!is.na(Value))) %>%
+#   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
+#   rename(subgroup = Value) %>%
+#   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
+#   mutate(quarter = "all", 
+#          hospital_name = "all",
+#          YQ=NA) %>%
+#   rbind(agg_dataCat)
+# 
+# agg_dataCat <- dataset[, catVars_cols] %>%
+#   mutate(across(catVars, as.character)) %>%
+#   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
+#   group_by(QI, hospital_country, year, quarter, Value) %>%
+#   summarise (number_of_cases = sum(!is.na(Value))) %>%
+#   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
+#   rename(subgroup = Value) %>%
+#   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
+#   mutate(hospital_name = "all") %>%
+#   rbind(agg_dataCat)
+# 
+# 
+# CatMeasureGrid<-as_tibble(unique(agg_dataCat[,c('QI','agg_function')]) )
+# full.gridCat<-  timeGrid %>% 
+#   merge(hospitalGrid) %>% 
+#   merge(CatMeasureGrid) %>% 
+#   mutate(YQ=ifelse(quarter=="all",NA,paste(year, quarter)))
+# 
+# agg_dataCat<-left_join(full.gridCat,agg_dataCat)
+# agg_dataCat <- unique(agg_dataCat)
 
 
 options("scipen"=999)
