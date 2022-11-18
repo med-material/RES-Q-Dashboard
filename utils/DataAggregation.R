@@ -75,15 +75,15 @@ angel_conds<-angel_awards %>% select(QI, cond) %>% unique()
 # aggregation -------------------------------------------------------------
 # add quarterly hospital aggregates of numVars (currently only DNT)
 agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
-  pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>%
+  pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
   left_join(angel_conds) %>%
-  group_by(QI, h_country, h_name, year, quarter, YQ) %>%
+  group_by(QI, h_country, h_name, year, quarter, YQ) %>% View()
   summarise(median = median(Value, na.rm = TRUE),
             data_Pts = sum(!is.na(Value)),
             data_missing = sum(ifelse(is.na(cond), 
                                       is.na(Value),
                                       ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
- mutate(pct_missing = data_missing/(data_missing+data_Pts))
+ mutate(pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing+data_Pts)*100,1)))
 # %>% 
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
 
