@@ -4,6 +4,7 @@ library(gsheet)
 library(tidyverse)
 source("utils/data_structures.R")
 dataset <- tibble::as_tibble(read.csv("data/dataREanonymized.csv"))
+
 #convert all empty strings to NA
 dataset[dataset == ""] <- NA
 #convert all columns based on boolean/logical values from char to logical
@@ -28,25 +29,27 @@ dataset <- dataset %>%
 
 
 #set fantasy hospital names
-hospital_Names <- c("Progress Center", "Paradise Clinic", "Angelvale Clinic", "Memorial Hospital", "Rose Clinic", "General Hospital", "Mercy Center", "Hope Hospital", "Samaritan Hospital")
+hospital_Names <- c("Progress", "Paradise", "Angelvale", "Memorial", "Rose", "General", "Mercy", "Hope", "Samaritan")
 dataset$site_name <- as.factor(dataset$site_name)
 levels(dataset$site_name) <- hospital_Names
 
 #set fantasy country names
-country_names <- c("Far far away", "Neverland", "Over the rainbow")
+country_names <- c("Far away", "Neverland", "Over rainbow")
 dataset$site_country <- as.factor(dataset$site_country)
 levels(dataset$site_country) <- country_names
 
+# dataset <- dataset %>%
+#   filter(site_country=="Over rainbow", discharge_year==2016)
 #setting some convenience names for analysis/readability, still compatible with older Code in the dashboard 
 dataset <- dataset %>%
-  mutate(patient_id = subject_id, hospital = site_id, hospital_name = site_name, hospital_country = site_country, year = discharge_year, quarter = discharge_quarter) %>%
+  mutate(patient_id = subject_id, hospital = site_id, h_name = site_name, h_country = site_country, year = discharge_year, quarter = discharge_quarter) %>%
   mutate(YQ = paste(year, quarter)) %>%
   relocate(all_of(key_cols), .before = where(is.character)) %>%
   #       relocate(c(year,quarter,YQ), .after = country)
   filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y")))
 
-key_cols <- c(key_cols, "patient_id", "hospital", "hospital_name",
-              "hospital_country", "year", "quarter")
+key_cols <- c(key_cols, "patient_id", "hospital", "h_name",
+              "h_country", "year", "quarter")
 
 # Relevant columns from the dataset for the QI's HARDCODED. There might be a smarter way to do this.
 
@@ -57,66 +60,70 @@ catVars_cols <-c(key_cols,catVars)
 # add quarterly hospital aggregates of numVars
 agg_dataNum <- dataset[, numVars_cols] %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, hospital_name, year, quarter, YQ) %>%
+  group_by(QI, h_country, h_name, year, quarter, YQ) %>%
   summarise(median = median(Value, na.rm = TRUE),
-            numOfDataPoints = sum(!is.na(Value)),
-            pct = ifelse(is.nan(mean(Value, na.rm = TRUE)),NA,mean(Value, na.rm = TRUE)*100),
-            coverage_pct=sum(!(is.na(Value)))/n()) 
+            data_Pts = sum(!is.na(Value)),
+            pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
+            coverage_pct=sum(!(is.na(Value)))/n()*100) 
 # %>% 
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
 
 # add yearly hospital aggregates of numVars
 agg_dataNum <- dataset[, numVars_cols] %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, hospital_name, year, YQ) %>%
+  group_by(QI, h_country, h_name, year) %>%
   summarise(
     median = median(Value, na.rm = TRUE),
-    numOfDataPoints = sum(!is.na(Value)),
-    pct = ifelse(is.nan(mean(Value, na.rm = TRUE)),NA,mean(Value, na.rm = TRUE)*100),
+    data_Pts = sum(!is.na(Value)),
+    pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
     coverage_pct=sum(!(is.na(Value)))/n()) %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
   mutate(quarter = "all",
-         YQ=NA) %>%
+         YQ= as.character(year)) %>%
   rbind(agg_dataNum)
 
 # add quarterly country aggregates of numVars
 agg_dataNum <- dataset[, numVars_cols] %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, year, quarter) %>%
+  group_by(QI, h_country, year, quarter) %>%
   summarise(
     median = median(Value, na.rm = TRUE),
-    numOfDataPoints = sum(!is.na(Value)),
-    pct = ifelse(is.nan(mean(Value, na.rm = TRUE)),NA,mean(Value, na.rm = TRUE)*100),
+    data_Pts = sum(!is.na(Value)),
+    pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
     coverage_pct=sum(!(is.na(Value)))/n()) %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
-  mutate(hospital_name = "all") %>%
+  mutate(h_name = "all",
+         YQ=paste(year, quarter)) %>%
   rbind(agg_dataNum)
 
 # add yearly country aggregates of numVars
 agg_dataNum <- dataset[, numVars_cols] %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, hospital_country, year) %>%
+  group_by(QI, h_country, year) %>%
   summarise(
     median = median(Value, na.rm = TRUE),
-    numOfDataPoints = sum(!is.na(Value)),
-    pct = ifelse(is.nan(mean(Value, na.rm = TRUE)),NA,mean(Value, na.rm = TRUE)*100),
-    coverage_pct=sum(!(is.na(Value)))/n()) %>%
+    data_Pts = sum(!is.na(Value)),
+    pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
+    coverage_pct=sum(!(is.na(Value)))/n()*100)  %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
   mutate(quarter = "all",
-         hospital_name = "all",
-         YQ=NA) %>%
+         h_name = "all",
+         YQ=as.character(year)) %>% 
   rbind(agg_dataNum)
   
+agg_dataNum <- agg_dataNum %>%
+  mutate(isKPI=ifelse(QI %in% KPIs,TRUE,FALSE))
 
 #set up the grid so we know all the data that should exist and might be missing from the aggregates
 timeGrid<-as_tibble(unique(agg_dataNum[,c('year','quarter')]))
-hospitalGrid<-as_tibble(unique(agg_dataNum[,c('hospital_country','hospital_name')]) )
+hospitalGrid<-as_tibble(unique(agg_dataNum[,c('h_country','h_name')]) )
 NumMeasureGrid<-as_tibble(unique(agg_dataNum[,c('QI')]))
 # NumMeasureGrid<-as_tibble(unique(agg_dataNum[,c('QI','agg_function')]))
 full.grid<-  timeGrid %>% 
   merge(hospitalGrid) %>% 
   merge(NumMeasureGrid) %>% 
-  mutate(YQ=ifelse(quarter=="all",NA,paste(year, quarter)))
+  mutate(YQ=ifelse(quarter=="all",as.character(year),paste(year, quarter))) %>% 
+  unique()
 
 # creating full grid that includes all measures reported and those missing with NA
 agg_dataNum<-left_join(full.grid,agg_dataNum)
@@ -126,61 +133,65 @@ agg_dataNum<-angel_awards %>%
   select(nameOfAggr,gold,platinum, diamond) %>% 
   rename(QI=nameOfAggr) %>% 
   right_join(agg_dataNum) %>%
-  mutate(isKPI=ifelse(QI %in% pctCols,TRUE,FALSE),
-         isYearAgg=ifelse(is.na(YQ),TRUE,FALSE),
-         isCountryAgg=ifelse(hospital_name=="all",TRUE,FALSE)
+  mutate(isAngelKPI=ifelse(QI %in% pctCols,TRUE,FALSE),
+         isYearAgg=ifelse(quarter=="all",TRUE,FALSE),
+         isCountryAgg=ifelse(h_name=="all",TRUE,FALSE)
          ) %>%
-  arrange(hospital_country, hospital_name,year,quarter,QI)
+  arrange(h_country, h_name,year,quarter,QI)
   
 # adding awards to aggregation data
 agg_dataNum <- agg_dataNum %>% 
-  filter(isKPI) %>%
+  filter(isAngelKPI) %>%
   mutate(angelAwardLevel=awardHandler_v(pct, gold, platinum, diamond)) %>%
   right_join(agg_dataNum)
 
+agg_dataNum <- agg_dataNum %>% 
+  pivot_wider(names_from = angelAwardLevel,
+              names_glue = "qual4{angelAwardLevel}",
+              values_from =angelAwardLevel,
+              values_fn = list(angelAwardLevel = ~ 1), values_fill = list(angelAwardLevel = 0)) %>% select(-c(gold, platinum, diamond))
+
 # adding national comparisons to aggregation data
 agg_dataNum<- agg_dataNum %>% 
-  filter(isCountryAgg, isKPI) %>%
-  select(hospital_country, QI, year,quarter,median) %>% 
-  rename("CountryMedian"=median) %>% 
-  right_join(agg_dataNum) %>%
-  mutate(MedianAsAsGoodOrBetterThanCountry=ifelse(median>=CountryMedian,1,0))
+  filter(isCountryAgg==T, isKPI==T) %>% 
+  select(h_country, QI, year,quarter,median) %>%
+  rename("C_Median"=median) %>% 
+  right_join(agg_dataNum) %>% 
+  mutate(MedianGeg_C=ifelse(median>=C_Median,1,0))
 
 #remove duplicate rows
 agg_dataNum <- unique(agg_dataNum) %>%
-  arrange(hospital_country, hospital_name,year,quarter,QI)
-
-
-agg_dataNum <- agg_dataNum %>% 
-  pivot_wider(names_from = angelAwardLevel,
-              names_glue = "qualifiesFor{angelAwardLevel}",
-              values_from =angelAwardLevel,
-              values_fn = list(angelAwardLevel = ~ 1), values_fill = list(angelAwardLevel = 0)) 
-
+  arrange(h_country, h_name,year,quarter,QI)
 
 # add temporally derived data - first time above thresholds
 agg_dataNum<-  agg_dataNum %>%
-  arrange(hospital_country, hospital_name,year,quarter,QI) %>%
-  group_by(hospital_country, hospital_name,year,quarter,QI) %>%
-  mutate(CSoAboveCountry = cumsum(ifelse(is.na(MedianAsAsGoodOrBetterThanCountry), 0, MedianAsAsGoodOrBetterThanCountry)),
-         CSoAboveDiamond = cumsum(qualifiesForDiamond),
-         CSoAbovePlatinum = cumsum(qualifiesForPlatinum) + CSoAboveDiamond,
-         CSoAboveGold = cumsum(qualifiesForGold) + CSoAbovePlatinum,
-         isFirstTimeAsGoodOrBetterThanCountry = ifelse(CSoAboveCountry==1 & MedianAsAsGoodOrBetterThanCountry==1,1,0),
-         isFirstTimeGold = ifelse(CSoAboveGold==1 & qualifiesForGold==1,1,0),
-         isFirstTimePlatinum = ifelse(CSoAbovePlatinum==1 & qualifiesForPlatinum==1,1,0),
-         isFirstTimeDiamond = ifelse(CSoAboveDiamond==1 & qualifiesForDiamond==1,1,0),
+  arrange(h_country, h_name,year,quarter,QI) %>%
+  group_by(h_country, h_name,year,quarter,QI) %>%
+  mutate(CSoAboveCountry = cumsum(ifelse(is.na(MedianGeg_C), 0, MedianGeg_C)),
+         CSoAboveDiamond = cumsum(qual4Diamond),
+         CSoAbovePlatinum = cumsum(qual4Platinum) + CSoAboveDiamond,
+         CSoAboveGold = cumsum(qual4Gold) + CSoAbovePlatinum,
+         is1stgeqC = ifelse(CSoAboveCountry==1 & MedianGeg_C==1,1,0),
+         is1stGold = ifelse(CSoAboveGold==1 & qual4Gold==1,1,0),
+         is1stPlat = ifelse(CSoAbovePlatinum==1 & qual4Platinum==1,1,0),
+         is1stDiam = ifelse(CSoAboveDiamond==1 & qual4Diamond==1,1,0),
          ) 
+
+
 
 options("scipen"=999)
 
 # plotting a derived measure (quarterly median DNT for one hospital) ------
 
-agg_dataNum %>%
-  filter(hospital_name == "Samaritan Hospital", QI == "door_to_needle", !is.na(YQ),) %>%
+df<-agg_dataNum %>%
+  filter(isYearAgg==FALSE, h_name == "Samaritan", QI == "door_to_needle", !is.na(YQ),) 
+  
+df %>%
   ggplot(aes(x=YQ,y=median,group=1)) +
   geom_line() +
-  geom_point(aes(size=numOfDataPoints))
+  geom_point(df[df$], colour=red, size=6)
+  geom_point(aes(size=data_Pts)) + 
+  
 
 
 
@@ -194,17 +205,17 @@ agg_dataNum %>%
 # agg_dataCat <- dataset[, catVars_cols] %>%
 #   mutate(across(catVars, as.character)) %>% 
 #   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-#   group_by(QI, hospital_country, hospital_name, year, quarter, YQ, ) %>%
+#   group_by(QI, h_country, h_name, year, quarter, YQ, ) %>%
 #   mutate(Totnumber_of_cases = sum(!is.na(Value))) %>%
 #   group_by(Value, add=TRUE) %>%
 #   summarise(percent = ifelse(sum(!is.na(Value))==0, NA, sum(!is.na(Value)) / sum(Totnumber_of_cases))) %>%
-#   rename(subgroup = Value) %>% View()
+#   rename(subgroup = Value) %>%
 #   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value")
 # 
 # agg_dataCat <- dataset[, catVars_cols] %>%
 #   mutate(across(catVars, as.character)) %>%
 #   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-#   group_by(QI, hospital_country, hospital_name, year, Value) %>%
+#   group_by(QI, h_country, h_name, year, Value) %>%
 #   summarise (number_of_cases = sum(!is.na(Value))) %>%
 #   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
 #   rename(subgroup = Value) %>%
@@ -217,25 +228,25 @@ agg_dataNum %>%
 # agg_dataCat <- dataset[, catVars_cols] %>%
 #   mutate(across(catVars, as.character)) %>%
 #   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-#   group_by(QI, hospital_country, hospital_name, year, Value) %>%
+#   group_by(QI, h_country, h_name, year, Value) %>%
 #   summarise (number_of_cases = sum(!is.na(Value))) %>%
 #   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
 #   rename(subgroup = Value) %>%
 #   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
 #   mutate(quarter = "all", 
-#          hospital_name = "all",
+#          h_name = "all",
 #          YQ=NA) %>%
 #   rbind(agg_dataCat)
 # 
 # agg_dataCat <- dataset[, catVars_cols] %>%
 #   mutate(across(catVars, as.character)) %>%
 #   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-#   group_by(QI, hospital_country, year, quarter, Value) %>%
+#   group_by(QI, h_country, year, quarter, Value) %>%
 #   summarise (number_of_cases = sum(!is.na(Value))) %>%
 #   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
 #   rename(subgroup = Value) %>%
 #   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
-#   mutate(hospital_name = "all") %>%
+#   mutate(h_name = "all") %>%
 #   rbind(agg_dataCat)
 # 
 # 
@@ -255,8 +266,8 @@ agg_dataNum %>%
 # not requested by students> last4Quarter values instead of year/quarter, 
 
 # # show only one specific hospital - reducing the rows in the dataset for debugging. 
-# agg_dataNum<-agg_dataNum %>% filter(hospital_name == "Progress Center")
-# agg_dataCat<-agg_dataCat %>% filter(hospital_name == "Progress Center")
+# agg_dataNum<-agg_dataNum %>% filter(h_name == "Progress Center")
+# agg_dataCat<-agg_dataCat %>% filter(h_name == "Progress Center")
 
 # #REMOVE means for standard numerical vars and medians for the percentages
 # agg_data <- agg_data %>%
