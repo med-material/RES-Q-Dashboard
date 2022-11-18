@@ -145,16 +145,16 @@ numVars <- c('age',
 
 # condition columns --------------------------------------------------------
 
-cond_cols <- c("stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True & door_to_needle <= 60",
-  "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True & door_to_needle <= 45",
-  "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 120",
-  "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True & door_to_groin <= 90",
+cond_cols <- c("stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE & door_to_needle <= 60",
+  "stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE & door_to_needle <= 45",
+  "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE & door_to_groin <= 120",
+  "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE & door_to_groin <= 90",
   "stroke_type=='ischemic'",
-  "True",
+  "TRUE",
   "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",
   "discharge_destination!='dead'",
   "discharge_destination!='dead'",
-  "True")
+  "TRUE")
 
 # risk factor variables ---------------------------------------------------
 riskFactors <- c(
@@ -182,16 +182,16 @@ pctCols<- c("dnt_leq_60",
 
 angel_awards <- tibble::tribble(
   ~QI, ~nameOfAggr, ~aggCond, ~gold, ~platinum, ~diamond, ~cond,
-  "door_to_needle", "dnt_leq_60","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True",
-  "door_to_needle","dnt_leq_45", "<=45", NA, 0, 50, "stroke_type=='ischemic' & thrombolysis == True & hospital_stroke != True & first_hospital == True",
-  "door_to_groin","dgt_leq_120","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True",
-  "door_to_groin","dgt_leq_90", "<=90", NA, 0, 50, "stroke_type=='ischemic' & thrombectomy == True & hospital_stroke != True & first_hospital == True",
-  "thrombolysis","rec_total_is", "== True", 5, 15, 25, "stroke_type=='ischemic'",
-  "imaging_done","p_ct_mri_first_hosp", "imaging_done==True", 80, 85, 90, "first_hospital==True",
+  "door_to_needle", "dnt_leq_60","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE",
+  "door_to_needle","dnt_leq_45", "<=45", NA, 0, 50, "stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE",
+  "door_to_groin","dgt_leq_120","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE",
+  "door_to_groin","dgt_leq_90", "<=90", NA, 0, 50, "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE",
+  "thrombolysis","rec_total_is", "== TRUE", 5, 15, 25, "stroke_type=='ischemic'",
+  "imaging_done","p_ct_mri_first_hosp", "imaging_done==TRUE", 80, 85, 90, "first_hospital==TRUE",
   "dysphagia_screening_type","p_dys_screen", "%in% c('GUSS','water test','other', 'ASSIST')" , 80, 85, 90, "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",
-  "discharge_any_antiplatelet","isp_dis_antiplat", "=='True'", 80, 85, 90, "discharge_destination!='dead'",
-  "discharge_any_anticoagulant","af_p_dis_anticoag", "=='True'", 80, 85, 90, "discharge_destination!='dead'",
-  "hospitalized_in","sp_hosp_stroke_unit_ICU", "=='ICU/stroke unit'", NA, 0, 1, "True")
+  "discharge_any_antiplatelet","isp_dis_antiplat", "=='TRUE'", 80, 85, 90, "discharge_destination!='dead'",
+  "discharge_any_anticoagulant","af_p_dis_anticoag", "=='TRUE'", 80, 85, 90, "discharge_destination!='dead'",
+  "hospitalized_in","sp_hosp_stroke_unit_ICU", "=='ICU/stroke unit'", NA, 0, 1, "TRUE")
   
 aa_cols<-c(angel_awards$QI,"stroke_type","first_hospital","hospital_stroke","thrombectomy","post_acute_care")
 

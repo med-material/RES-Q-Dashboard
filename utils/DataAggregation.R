@@ -33,15 +33,13 @@ dataset <- dataset %>%
   #       relocate(c(year,quarter,YQ), .after = country)
   filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y")))
 
-dataset <- dataset %>%
-  #filter(!is.na(prenotification)) 
-filter(h_country=="Over rainbow", discharge_year==2016)
 
 key_cols <- c(key_cols, "patient_id", "hospital", "h_name",
               "h_country", "year", "quarter")
 
-keep_cols <- c(key_cols, "gender", "stroke_type", "prenotification", "imaging_done", "door_to_needle", "thrombolysis", "hospital_stroke", "first_hospital")
-dataset <- dataset %>% select(keep_cols)
+keep_cols <- c(key_cols, "door_to_needle","gender", "stroke_type", "prenotification", "imaging_done",  "thrombolysis", "hospital_stroke", "first_hospital","dnt_missing","dnt_leq_60", "dnt_leq_45")
+ctrl_cols <- c("gender", "stroke_type", "prenotification", "imaging_done",  "thrombolysis", "hospital_stroke", "first_hospital")
+
 
 #computations need to be verified with ICRC
 
@@ -60,22 +58,32 @@ dataset <- dataset %>%
     # dysphagia_screening=ifelse(post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined'),NA)
   )
 
-# Relevant columns from the dataset for the QI's HARDCODED. There might be a smarter way to do this.
+#simplify for students to have fewer columns to work with
+numVars <- intersect(keep_cols,numVars)
+catVars <- intersect(keep_cols,catVars)
+pctCols <- intersect(keep_cols,pctCols)
+dataset <- dataset %>% select(c(keep_cols))
 
-numVars_cols <-c(key_cols,numVars,pctCols)
+
+# Relevant columns from the dataset for the QI's HARDCODED. There might be a smarter way to do this.
+numVars_cols <-c(key_cols,numVars)
 catVars_cols <-c(key_cols,catVars)
 
+#NA conditions for missing data
+angel_conds<-angel_awards %>% select(QI, cond) %>% unique()
+
 # aggregation -------------------------------------------------------------
-# add quarterly hospital aggregates of numVars
-agg_dataNum <- dataset[, numVars_cols] %>%
-  pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
+# add quarterly hospital aggregates of numVars (currently only DNT)
+agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
+  pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>%
+  left_join(angel_conds) %>%
   group_by(QI, h_country, h_name, year, quarter, YQ) %>%
   summarise(median = median(Value, na.rm = TRUE),
             data_Pts = sum(!is.na(Value)),
-            data_missing = sum(is.na(Value)), 
-            pct_missing = ifelse(is.nan(mean(is.na(Value), na.rm = TRUE)),NA,mean(is.na(Value), na.rm = TRUE)*100),
-            pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
-            coverage_pct=sum(!(is.na(Value)))/n()*100) 
+            data_missing = sum(ifelse(is.na(cond), 
+                                      is.na(Value),
+                                      ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
+ mutate(pct_missing = data_missing/(data_missing+data_Pts))
 # %>% 
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
 
@@ -168,7 +176,8 @@ agg_dataNum<- agg_dataNum %>%
   select(h_country, QI, year,quarter,median) %>%
   rename("C_Median"=median) %>% 
   right_join(agg_dataNum) %>% 
-  mutate(MedianGeg_C=ifelse(median>=C_Median,1,0))
+  mutate(MedianGeg_C=ifelse(median>=C_Median,1,0),
+         diffFromC = median - C_Median)
 
 #remove duplicate rows
 agg_dataNum <- unique(agg_dataNum) %>%
