@@ -15,6 +15,7 @@ dataset[,to.conv] <- sapply(dataset[,to.conv], as.logical)
 
 dataset <- dataset %>% 
   mutate(
+    dnt_missing = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(!is.na(door_to_needle),0,1),NA),
     dnt_leq_60 = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_needle>60,0,1) ,NA),
     dnt_leq_45 = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_needle>45,0,1) ,NA),
     dgt_leq_120= ifelse(stroke_type=='ischemic' & thrombectomy == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_groin>120,0,1), NA),
@@ -38,8 +39,8 @@ country_names <- c("Far away", "Neverland", "Over rainbow")
 dataset$site_country <- as.factor(dataset$site_country)
 levels(dataset$site_country) <- country_names
 
-# dataset <- dataset %>%
-#   filter(site_country=="Over rainbow", discharge_year==2016)
+ dataset <- dataset %>%
+  filter(site_country=="Over rainbow", discharge_year==2016)
 #setting some convenience names for analysis/readability, still compatible with older Code in the dashboard 
 dataset <- dataset %>%
   mutate(patient_id = subject_id, hospital = site_id, h_name = site_name, h_country = site_country, year = discharge_year, quarter = discharge_quarter) %>%
@@ -50,6 +51,9 @@ dataset <- dataset %>%
 
 key_cols <- c(key_cols, "patient_id", "hospital", "h_name",
               "h_country", "year", "quarter")
+
+keep_cols <- c(key_cols,.... Mathias)
+dataset <- dataset %>% select(keep_cols)
 
 # Relevant columns from the dataset for the QI's HARDCODED. There might be a smarter way to do this.
 
