@@ -11,22 +11,7 @@ dataset[dataset == ""] <- NA
 to.conv <- sapply(dataset, function(x) all(x %in% c("False", "True", NA)))
 dataset[,to.conv] <- sapply(dataset[,to.conv], as.logical)
 
-#computations need to be verified with ICRC
 
-dataset <- dataset %>% 
-  mutate(
-    dnt_missing = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(!is.na(door_to_needle),0,1),NA),
-    dnt_leq_60 = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_needle>60,0,1) ,NA),
-    dnt_leq_45 = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_needle>45,0,1) ,NA),
-    dgt_leq_120= ifelse(stroke_type=='ischemic' & thrombectomy == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_groin>120,0,1), NA),
-    dgt_leq_90 = ifelse(stroke_type=='ischemic' & thrombectomy == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_groin> 90,0,1) ,NA),
-    rec_total_is=ifelse(stroke_type=='ischemic', ifelse(thrombolysis== T,1,0) ,NA),
-    mri_first_hosp= ifelse(first_hospital==T, ifelse(imaging_done==T,1,0),NA),
-    isp_dis_antiplat = ifelse(discharge_destination!='dead',ifelse(discharge_any_antiplatelet==T,1,0),NA),
-    af_p_dis_anticoag = ifelse(discharge_destination!='dead',ifelse(discharge_any_anticoagulant==T,1,0),NA),
-    sp_hosp_stroke_unit_ICU = ifelse(hospitalized_in=='ICU/stroke unit',1,0)
-    # dysphagia_screening=ifelse(post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined'),NA)
-    )
 
 
 #set fantasy hospital names
@@ -39,8 +24,7 @@ country_names <- c("Far away", "Neverland", "Over rainbow")
 dataset$site_country <- as.factor(dataset$site_country)
 levels(dataset$site_country) <- country_names
 
-dataset <- dataset %>%
-  filter(site_country=="Over rainbow", discharge_year==2016)
+
 #setting some convenience names for analysis/readability, still compatible with older Code in the dashboard 
 dataset <- dataset %>%
   mutate(patient_id = subject_id, hospital = site_id, h_name = site_name, h_country = site_country, year = discharge_year, quarter = discharge_quarter) %>%
@@ -49,11 +33,32 @@ dataset <- dataset %>%
   #       relocate(c(year,quarter,YQ), .after = country)
   filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y")))
 
-key_cols <- c(key_cols, "patient_id", "age", "hospital", "h_name",
+dataset <- dataset %>%
+  #filter(!is.na(prenotification)) 
+filter(h_country=="Over rainbow", discharge_year==2016)
+
+key_cols <- c(key_cols, "patient_id", "hospital", "h_name",
               "h_country", "year", "quarter")
 
-keep_cols <- c(key_cols, "gender", "stroke_type", "prenotification", "imaging_done", "door_to_needle")
+keep_cols <- c(key_cols, "gender", "stroke_type", "prenotification", "imaging_done", "door_to_needle", "thrombolysis", "hospital_stroke", "first_hospital")
 dataset <- dataset %>% select(keep_cols)
+
+#computations need to be verified with ICRC
+
+dataset <- dataset %>% 
+  mutate(
+    dnt_missing = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(!is.na(door_to_needle),0,1),NA),
+    dnt_leq_60 = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_needle>60,0,1) ,NA),
+    dnt_leq_45 = ifelse(stroke_type=='ischemic' & thrombolysis == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_needle>45,0,1) ,NA)
+    # dgt_leq_120= ifelse(stroke_type=='ischemic' & thrombectomy == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_groin>120,0,1), NA),
+    # dgt_leq_90 = ifelse(stroke_type=='ischemic' & thrombectomy == T & hospital_stroke != T & first_hospital == T,ifelse(door_to_groin> 90,0,1) ,NA),
+    # rec_total_is=ifelse(stroke_type=='ischemic', ifelse(thrombolysis== T,1,0) ,NA),
+    # mri_first_hosp= ifelse(first_hospital==T, ifelse(imaging_done==T,1,0),NA),
+    # isp_dis_antiplat = ifelse(discharge_destination!='dead',ifelse(discharge_any_antiplatelet==T,1,0),NA),
+    # af_p_dis_anticoag = ifelse(discharge_destination!='dead',ifelse(discharge_any_anticoagulant==T,1,0),NA),
+    # sp_hosp_stroke_unit_ICU = ifelse(hospitalized_in=='ICU/stroke unit',1,0)
+    # dysphagia_screening=ifelse(post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined'),NA)
+  )
 
 # Relevant columns from the dataset for the QI's HARDCODED. There might be a smarter way to do this.
 
@@ -62,7 +67,7 @@ catVars_cols <-c(key_cols,catVars)
 
 # aggregation -------------------------------------------------------------
 # add quarterly hospital aggregates of numVars
-agg_dataNum <- dataset[, keep_cols] %>%
+agg_dataNum <- dataset[, numVars_cols] %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
   group_by(QI, h_country, h_name, year, quarter, YQ) %>%
   summarise(median = median(Value, na.rm = TRUE),
