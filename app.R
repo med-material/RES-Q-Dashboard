@@ -41,6 +41,7 @@ source("modules/rowmaker_Cat.R", local = T)
 db <- dataLoader()
 numVars <- db$numVars
 catVars <- db$catVars
+QI_name <- reactiveVal(NULL)
 
 #Load QI data, check data/QI_info.csv and utils/QILoader.R to see what data is being loaded and how.
 QI_db <- QILoader()
@@ -55,6 +56,7 @@ server <- function(input, output, session) {
     storage_mode = store_null()
   )
   dashboard_Structure("Dashboard")
+  
 }
 
 shinyApp(ui = ui, server = server)

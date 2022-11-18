@@ -39,7 +39,7 @@ country_names <- c("Far away", "Neverland", "Over rainbow")
 dataset$site_country <- as.factor(dataset$site_country)
 levels(dataset$site_country) <- country_names
 
- dataset <- dataset %>%
+dataset <- dataset %>%
   filter(site_country=="Over rainbow", discharge_year==2016)
 #setting some convenience names for analysis/readability, still compatible with older Code in the dashboard 
 dataset <- dataset %>%
@@ -49,10 +49,10 @@ dataset <- dataset %>%
   #       relocate(c(year,quarter,YQ), .after = country)
   filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y")))
 
-key_cols <- c(key_cols, "patient_id", "hospital", "h_name",
+key_cols <- c(key_cols, "patient_id", "age", "hospital", "h_name",
               "h_country", "year", "quarter")
 
-keep_cols <- c(key_cols,.... Mathias)
+keep_cols <- c(key_cols, "gender", "stroke_type", "prenotification", "imaging_done", "door_to_needle")
 dataset <- dataset %>% select(keep_cols)
 
 # Relevant columns from the dataset for the QI's HARDCODED. There might be a smarter way to do this.
@@ -62,11 +62,13 @@ catVars_cols <-c(key_cols,catVars)
 
 # aggregation -------------------------------------------------------------
 # add quarterly hospital aggregates of numVars
-agg_dataNum <- dataset[, numVars_cols] %>%
+agg_dataNum <- dataset[, keep_cols] %>%
   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
   group_by(QI, h_country, h_name, year, quarter, YQ) %>%
   summarise(median = median(Value, na.rm = TRUE),
             data_Pts = sum(!is.na(Value)),
+            data_missing = sum(is.na(Value)), 
+            pct_missing = ifelse(is.nan(mean(is.na(Value), na.rm = TRUE)),NA,mean(is.na(Value), na.rm = TRUE)*100),
             pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
             coverage_pct=sum(!(is.na(Value)))/n()*100) 
 # %>% 
