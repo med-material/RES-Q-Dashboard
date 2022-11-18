@@ -77,9 +77,9 @@ angel_conds<-angel_awards %>% select(QI, cond) %>% unique()
 agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
   pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
   left_join(angel_conds) %>%
-  group_by(QI, h_country, h_name, year, quarter, YQ) %>% View()
+  group_by(QI, h_country, h_name, year, quarter, YQ) %>%
   summarise(median = median(Value, na.rm = TRUE),
-            data_Pts = sum(!is.na(Value)),
+            data_Pts = sum(!is.na(Value)), 
             data_missing = sum(ifelse(is.na(cond), 
                                       is.na(Value),
                                       ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
@@ -88,46 +88,54 @@ agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
 
 # add yearly hospital aggregates of numVars
-agg_dataNum <- dataset[, numVars_cols] %>%
-  pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, h_country, h_name, year) %>%
-  summarise(
-    median = median(Value, na.rm = TRUE),
-    data_Pts = sum(!is.na(Value)),
-    pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
-    coverage_pct=sum(!(is.na(Value)))/n()) %>%
-  # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
+  agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
+    pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
+    left_join(angel_conds) %>%
+    group_by(QI, h_country, h_name, year) %>%
+    summarise(
+      median = median(Value, na.rm = TRUE),
+      data_Pts = sum(!is.na(Value)),
+      data_missing = sum(ifelse(is.na(cond), 
+                                is.na(Value),
+                                ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
   mutate(quarter = "all",
-         YQ= as.character(year)) %>%
+         YQ= as.character(year),
+         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing+data_Pts)*100,1))) %>%
   rbind(agg_dataNum)
 
 # add quarterly country aggregates of numVars
-agg_dataNum <- dataset[, numVars_cols] %>%
-  pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-  group_by(QI, h_country, year, quarter) %>%
-  summarise(
-    median = median(Value, na.rm = TRUE),
-    data_Pts = sum(!is.na(Value)),
-    pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
-    coverage_pct=sum(!(is.na(Value)))/n()) %>%
+  agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
+    pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
+    left_join(angel_conds) %>%
+    group_by(QI, h_country, year, quarter) %>%
+    summarise(
+      median = median(Value, na.rm = TRUE),
+      data_Pts = sum(!is.na(Value)),
+      data_missing = sum(ifelse(is.na(cond), 
+                                is.na(Value),
+                                ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
   mutate(h_name = "all",
-         YQ=paste(year, quarter)) %>%
+         YQ=paste(year, quarter),
+         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing+data_Pts)*100,1))) %>%
   rbind(agg_dataNum)
 
 # add yearly country aggregates of numVars
-agg_dataNum <- dataset[, numVars_cols] %>%
-  pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
+  agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
+    pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
+    left_join(angel_conds) %>%
   group_by(QI, h_country, year) %>%
   summarise(
     median = median(Value, na.rm = TRUE),
     data_Pts = sum(!is.na(Value)),
-    pct = ifelse(is.nan(mean(!is.na(Value), na.rm = TRUE)),NA,mean(!is.na(Value), na.rm = TRUE)*100),
-    coverage_pct=sum(!(is.na(Value)))/n()*100)  %>%
+    data_missing = sum(ifelse(is.na(cond), 
+                              is.na(Value),
+                              ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
   mutate(quarter = "all",
          h_name = "all",
-         YQ=as.character(year)) %>% 
+         YQ=as.character(year),
+         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing+data_Pts)*100,1))) %>% 
   rbind(agg_dataNum)
   
 agg_dataNum <- agg_dataNum %>%
@@ -209,8 +217,8 @@ df<-agg_dataNum %>%
 df %>%
   ggplot(aes(x=YQ,y=median,group=1)) +
   geom_line() +
-  geom_point(df[df$], colour=red, size=6)
-  geom_point(aes(size=data_Pts)) + 
+  geom_point(df[df$], colour=red, size=6) +
+  geom_point(aes(size=data_Pts)) 
   
 
 
