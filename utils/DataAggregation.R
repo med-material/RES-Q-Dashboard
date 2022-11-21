@@ -233,9 +233,13 @@ createAggs <- function(df, colName){
   return(agg_data)
 }
 
+
+
 agg_dataNum <- rbind(agg_dataNum,createAggs(df,"first_hospital"))
 agg_dataNum <- rbind(agg_dataNum,createAggs(df,"prenotification"))
 agg_dataNum <- rbind(agg_dataNum,createAggs(df,"imaging_done"))
+
+agg_dataNum $subGroupVal<- as.character(agg_dataNum$subGroupVal)
 
 agg_dataNum <- rbind(agg_dataNum,createAggs(df,"stroke_type"))
 agg_dataNum <- rbind(agg_dataNum,createAggs(df,"gender"))
@@ -316,7 +320,7 @@ df<-agg_dataNum %>%
 df %>%
   ggplot(aes(x=YQ,y=median,group=1)) +
   geom_line() +
-  geom_point(df[df$], colour=red, size=6) +
+  #geom_point(df[df$data_missing], colour="red", size=6) +
   geom_point(aes(size=data_Pts)) 
   
 
