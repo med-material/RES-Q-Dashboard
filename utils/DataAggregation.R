@@ -103,7 +103,26 @@ agg_dataNum<-  df  %>%
 
 # %>% 
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
- 
+ createAggsT <- function(df, colName){
+   df %>% select(QI, nameOfAggr, colName) %>% dplyr::group_by(nameOfAggr, colName)%>% rename( gg=colName) %>% mutate(xyz=colName) %>% View()
+ }
+   
+ createAggs <- function(df, colName){
+   agg_data<-  df  %>%
+     dplyr::group_by(QI, nameOfAggr, h_country, h_name, year, quarter, YQ, isAngelKPI, aggFunc, !! sym(colName)) %>% 
+     summarise(Value= ifelse(first(isAngelKPI) == FALSE, 
+                             median(Val2agg, na.rm = TRUE),
+                             round(mean(Val2agg,na.rm = TRUE)*100,1)),
+     data_Pts = sum(!is.na(Val2agg)), 
+     data_missing = sum(isMissingData)) %>%
+     rename(subGroupVal=colName) %>%
+     mutate(subGroup=colName)
+   
+   #MATHIAS ADD ALL THE OTHER AGGREGATION PARTS HERE - use !! sym(colName) to refer to the variable in dplyr pipes
+   
+   
+   return(agg_data)
+   }
   
 # add yearly hospital aggregates of numVars
   agg_dataNum <- df %>%
