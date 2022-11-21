@@ -100,7 +100,6 @@ agg_dataNum<-  df  %>%
                           ),
             data_Pts = sum(!is.na(Val2agg)), 
             data_missing = sum(isMissingData)) 
-
 # %>% 
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
  createAggsT <- function(df, colName){
@@ -134,14 +133,11 @@ agg_dataNum<-  df  %>%
                     median(Val2agg, na.rm = TRUE),
                     round(mean(Val2agg,na.rm = TRUE)*100,1)
       ),
-      median = median(Value, na.rm = TRUE),
+      #median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Value)),
-      data_missing = sum(ifelse(is.na(cond), 
-                                is.na(Value),
-                                ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
+      data_missing = sum(isMissingData)) %>%
   mutate(quarter = "all",
-         YQ= as.character(year),
-         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing+data_Pts)*100,1))) %>%
+         YQ= as.character(year)) %>%
   rbind(agg_dataNum)
 
 # add quarterly country aggregates of numVars
@@ -154,15 +150,11 @@ agg_dataNum<-  df  %>%
                     median(Val2agg, na.rm = TRUE),
                     round(mean(Val2agg,na.rm = TRUE)*100,1)
       ),
-      median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Value)),
-      data_missing = sum(ifelse(is.na(cond), 
-                                is.na(Value),
-                                ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
+      data_missing = sum(isMissingData)) %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
   mutate(h_name = "all",
-         YQ=paste(year, quarter),
-         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing+data_Pts)*100,1))) %>%
+         YQ=paste(year, quarter)) %>%
   rbind(agg_dataNum)
 
 # add yearly country aggregates of numVars
@@ -175,21 +167,18 @@ agg_dataNum<-  df  %>%
                   median(Val2agg, na.rm = TRUE),
                   round(mean(Val2agg,na.rm = TRUE)*100,1)
     ),
-    median = median(Value, na.rm = TRUE),
+    #median = median(Value, na.rm = TRUE),
     data_Pts = sum(!is.na(Value)),
-    data_missing = sum(ifelse(is.na(cond), 
-                              is.na(Value),
-                              ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
+    data_missing = sum(isMissingData)) %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
   mutate(quarter = "all",
          h_name = "all",
-         YQ=as.character(year),
-         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing+data_Pts)*100,1))) %>% 
+         YQ=as.character(year)) %>% 
   rbind(agg_dataNum)
   
 agg_dataNum <- agg_dataNum %>%
   mutate(isKPI=ifelse(QI %in% KPIs,TRUE,FALSE),
-         pct_missing = ifelse(data_Pts==0,0,round(data_missing/data_Pts*100,1)))
+         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing + data_Pts)*100,1)))
 
 #set up the grid so we know all the data that should exist and might be missing from the aggregates
 timeGrid<-as_tibble(unique(agg_dataNum[,c('year','quarter')]))
@@ -231,11 +220,11 @@ agg_dataNum <- agg_dataNum %>%
 # adding national comparisons to aggregation data
 agg_dataNum<- agg_dataNum %>% 
   filter(isCountryAgg==T, isKPI==T) %>% 
-  select(h_country, QI, year,quarter,median) %>%
-  rename("C_Median"=median) %>% 
+  select(h_country, QI, year,quarter,Value) %>%
+  rename("C_Median"=Value) %>% 
   right_join(agg_dataNum) %>% 
-  mutate(MedianGeg_C=ifelse(median>=C_Median,1,0),
-         diffFromC = median - C_Median)
+  mutate(MedianGeg_C=ifelse(Value>=C_Median,1,0),
+         diffFromC = Value - C_Median)
 
 #remove duplicate rows
 agg_dataNum <- unique(agg_dataNum) %>%
