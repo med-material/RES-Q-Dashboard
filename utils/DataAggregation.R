@@ -70,28 +70,46 @@ numVars_cols <-c(key_cols,numVars)
 catVars_cols <-c(key_cols,catVars)
 
 #NA conditions for missing data
-angel_conds<-angel_awards %>% select(QI, cond) %>% unique()
+angel_conds<-angel_awards %>% select(QI, cond, aggCond,nameOfAggr,isAngelKPI) %>% unique()
 
+agg_conds<- angel_conds %>% select(QI, cond, aggCond) %>% unique() %>% mutate(nameOfAggr=QI)
+  rbind(angel_conds)
+
+  eval_vec = Vectorize(eval.parent, vectorize.args = "expr")
+ 
+# merge data with conditions and derive variables 
+ df<- dataset[, c(numVars_cols,ctrl_cols)] %>%
+    pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
+    left_join(angel_conds) %>% 
+    mutate(Val2agg=ifelse(eval(parse(text=cond)),
+                         ifelse(isAngelKPI == FALSE,
+                                Value,
+                                ifelse(eval_vec(parse(text=paste(Value,aggCond))),
+                                       1,0)),
+                         NA),
+           isMissingData = ifelse(is.na(Value) & eval(parse(text=cond)),1,0),
+           aggFunc=ifelse(isAngelKPI,"pct","median"))
+  
 # aggregation -------------------------------------------------------------
 # add quarterly hospital aggregates of numVars (currently only DNT)
-agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
-  pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
-  left_join(angel_conds) %>%
-  group_by(QI, h_country, h_name, year, quarter, YQ) %>%
-  summarise(median = median(Value, na.rm = TRUE),
-            data_Pts = sum(!is.na(Value)), 
-            data_missing = sum(ifelse(is.na(cond), 
-                                      is.na(Value),
-                                      ifelse(eval(parse(text=cond)),is.na(Value),NA)),na.rm = T)) %>%
- mutate(pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing+data_Pts)*100,1)))
+agg_dataNum<-  df  %>%
+   group_by(QI, nameOfAggr, h_country, h_name, year, quarter, YQ, isAngelKPI,aggFunc) %>% 
+   summarise(Value= ifelse(first(isAngelKPI) == FALSE, 
+                          median(Val2agg, na.rm = TRUE),
+                          round(mean(Val2agg,na.rm = TRUE)*100,1)
+                          ),
+            data_Pts = sum(!is.na(Val2agg)), 
+            data_missing = sum(isMissingData)) 
+
 # %>% 
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
-
+ 
+  
 # add yearly hospital aggregates of numVars
   agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
     pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
-    group_by(QI, h_country, h_name, year) %>%
+    group_by(QI, h_country, h_name, year, isAngelKPI,aggFunc) %>%
     summarise(
       median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Value)),
@@ -107,7 +125,7 @@ agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
   agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
     pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
-    group_by(QI, h_country, year, quarter) %>%
+    group_by(QI, h_country, year, quarter, isAngelKPI,aggFunc) %>%
     summarise(
       median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Value)),
@@ -124,7 +142,7 @@ agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
   agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
     pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
-  group_by(QI, h_country, year) %>%
+  group_by(QI, h_country, year, isAngelKPI,aggFunc) %>%
   summarise(
     median = median(Value, na.rm = TRUE),
     data_Pts = sum(!is.na(Value)),
@@ -139,7 +157,8 @@ agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
   rbind(agg_dataNum)
   
 agg_dataNum <- agg_dataNum %>%
-  mutate(isKPI=ifelse(QI %in% KPIs,TRUE,FALSE))
+  mutate(isKPI=ifelse(QI %in% KPIs,TRUE,FALSE),
+         pct_missing = ifelse(data_Pts==0,0,round(data_missing/data_Pts*100,1)))
 
 #set up the grid so we know all the data that should exist and might be missing from the aggregates
 timeGrid<-as_tibble(unique(agg_dataNum[,c('year','quarter')]))
