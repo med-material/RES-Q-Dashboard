@@ -101,28 +101,12 @@ agg_dataNum<-  df  %>%
             data_Pts = sum(!is.na(Val2agg)), 
             data_missing = sum(isMissingData)) 
 # %>% 
-  # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
- createAggsT <- function(df, colName){
-   df %>% select(QI, nameOfAggr, colName) %>% dplyr::group_by(nameOfAggr, colName)%>% rename( gg=colName) %>% mutate(xyz=colName) %>% View()
- }
+ #  # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value")
+ # createAggsT <- function(df, colName){
+ #   df %>% select(QI, nameOfAggr, colName) %>% dplyr::group_by(nameOfAggr, colName)%>% rename( gg=colName) %>% mutate(xyz=colName) %>% View()
+ # }
    
- createAggs <- function(df, colName){
-   agg_data<-  df  %>%
-     dplyr::group_by(QI, nameOfAggr, h_country, h_name, year, quarter, YQ, isAngelKPI, aggFunc, !! sym(colName)) %>% 
-     summarise(Value= ifelse(first(isAngelKPI) == FALSE, 
-                             median(Val2agg, na.rm = TRUE),
-                             round(mean(Val2agg,na.rm = TRUE)*100,1)),
-     data_Pts = sum(!is.na(Val2agg)), 
-     data_missing = sum(isMissingData)) %>%
-     rename(subGroupVal=colName) %>%
-     mutate(subGroup=colName)
-   
-   #MATHIAS ADD ALL THE OTHER AGGREGATION PARTS HERE - use !! sym(colName) to refer to the variable in dplyr pipes
-   
-   
-   return(agg_data)
-   }
-  
+ 
 # add yearly hospital aggregates of numVars
   agg_dataNum <- df %>%
     # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
@@ -178,7 +162,34 @@ agg_dataNum<-  df  %>%
   
 agg_dataNum <- agg_dataNum %>%
   mutate(isKPI=ifelse(QI %in% KPIs,TRUE,FALSE),
-         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing + data_Pts)*100,1)))
+         pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing + data_Pts)*100,1)),
+         subGroupVal=NA,
+         subGroup=NA)
+
+
+createAggs <- function(df, colName){
+  agg_data<-  df  %>%
+    dplyr::group_by(QI, nameOfAggr, h_country, h_name, year, quarter, YQ, isAngelKPI, aggFunc, !! sym(colName)) %>% 
+    summarise(Value= ifelse(first(isAngelKPI) == FALSE, 
+                            median(Val2agg, na.rm = TRUE),
+                            round(mean(Val2agg,na.rm = TRUE)*100,1)),
+              data_Pts = sum(!is.na(Val2agg)), 
+              data_missing = sum(isMissingData)) %>%
+    rename(subGroupVal=colName) %>%
+    mutate(subGroup=colName)
+  
+  #MATHIAS ADD ALL THE OTHER AGGREGATION PARTS HERE - use !! sym(colName) to refer to the variable in dplyr pipes
+  # the three others.
+  
+  return(agg_data)
+}
+
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"first_hospital"))
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"first_hospital"))
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"first_hospital"))
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"first_hospital"))
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"first_hospital"))
+
 
 #set up the grid so we know all the data that should exist and might be missing from the aggregates
 timeGrid<-as_tibble(unique(agg_dataNum[,c('year','quarter')]))
@@ -199,8 +210,7 @@ agg_dataNum<-angel_awards %>%
   select(nameOfAggr,gold,platinum, diamond) %>% 
   rename(QI=nameOfAggr) %>% 
   right_join(agg_dataNum) %>%
-  mutate(isAngelKPI=ifelse(QI %in% pctCols,TRUE,FALSE),
-         isYearAgg=ifelse(quarter=="all",TRUE,FALSE),
+  mutate(isYearAgg=ifelse(quarter=="all",TRUE,FALSE),
          isCountryAgg=ifelse(h_name=="all",TRUE,FALSE)
          ) %>%
   arrange(h_country, h_name,year,quarter,QI)
