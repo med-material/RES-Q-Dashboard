@@ -361,10 +361,10 @@ options("scipen" = 999)
 
 # plotting a derived measure (quarterly median DNT for one hospital) ------
 
-df <- agg_dataNum %>%
+dfx <- agg_dataNum %>%
   filter(isYearAgg == FALSE, h_name == "Samaritan", QI == "door_to_needle", year=="2019", aggFunc == "median", !is.na(YQ))
 
-df %>%
+dfx %>%
   ggplot(aes(x = YQ, y = Value, group = 1)) +
   geom_line() +
   geom_point(df$is1stgeC, colour="red", size=6) +
