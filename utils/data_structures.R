@@ -181,17 +181,19 @@ pctCols<- c("dnt_leq_60",
             "sp_hosp_stroke_unit_ICU")
 
 angel_awards <- tibble::tribble(
-  ~QI, ~nameOfAggr, ~aggCond, ~gold, ~platinum, ~diamond, ~cond,
-  "door_to_needle", "dnt_leq_60","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE",
-  "door_to_needle","dnt_leq_45", "<=45", NA, 0, 50, "stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE",
-  "door_to_groin","dgt_leq_120","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE",
-  "door_to_groin","dgt_leq_90", "<=90", NA, 0, 50, "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE",
-  "thrombolysis","rec_total_is", "== TRUE", 5, 15, 25, "stroke_type=='ischemic'",
-  "imaging_done","p_ct_mri_first_hosp", "imaging_done==TRUE", 80, 85, 90, "first_hospital==TRUE",
-  "dysphagia_screening_type","p_dys_screen", "%in% c('GUSS','water test','other', 'ASSIST')" , 80, 85, 90, "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",
-  "discharge_any_antiplatelet","isp_dis_antiplat", "=='TRUE'", 80, 85, 90, "discharge_destination!='dead'",
-  "discharge_any_anticoagulant","af_p_dis_anticoag", "=='TRUE'", 80, 85, 90, "discharge_destination!='dead'",
-  "hospitalized_in","sp_hosp_stroke_unit_ICU", "=='ICU/stroke unit'", NA, 0, 1, "TRUE")
+  ~QI, ~nameOfAggr, ~aggCond, ~gold, ~platinum, ~diamond, ~cond, ~isAngelKPI,
+  "door_to_needle", "door_to_needle","", NA, NA, NA, "stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE", FALSE,
+  "door_to_groin","door_to_groin","", NA, NA, NA, "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE", FALSE,
+  "door_to_needle", "dnt_leq_60","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE", TRUE,
+  "door_to_needle","dnt_leq_45", "<=45", NA, 0, 50, "stroke_type=='ischemic' & thrombolysis == TRUE & hospital_stroke != TRUE & first_hospital == TRUE", TRUE,
+  "door_to_groin","dgt_leq_120","<=60", 50, NA, 75, "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE", TRUE,
+  "door_to_groin","dgt_leq_90", "<=90", NA, 0, 50, "stroke_type=='ischemic' & thrombectomy == TRUE & hospital_stroke != TRUE & first_hospital == TRUE", TRUE,
+  "thrombolysis","rec_total_is", "== TRUE", 5, 15, 25, "stroke_type=='ischemic'",  TRUE,
+  "imaging_done","p_ct_mri_first_hosp", "==TRUE", 80, 85, 90, "first_hospital==TRUE",  TRUE,
+  "dysphagia_screening_type","p_dys_screen", "%in% c('GUSS','water test','other', 'ASSIST')" , 80, 85, 90, "post_acute_care == 'yes' & stroke_type %in% c('ischemic','transient ischemic','intracerebral hemorrhage', 'undetermined')",  TRUE,
+  "discharge_any_antiplatelet","isp_dis_antiplat", "=='TRUE'", 80, 85, 90, "discharge_destination!='dead'", TRUE,
+  "discharge_any_anticoagulant","af_p_dis_anticoag", "=='TRUE'", 80, 85, 90, "discharge_destination!='dead'", TRUE,
+  "hospitalized_in","sp_hosp_stroke_unit_ICU", "=='ICU/stroke unit'", NA, 0, 1, "TRUE", TRUE)
   
 aa_cols<-c(angel_awards$QI,"stroke_type","first_hospital","hospital_stroke","thrombectomy","post_acute_care")
 
