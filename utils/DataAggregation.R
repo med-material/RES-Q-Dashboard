@@ -300,8 +300,9 @@ agg_dataNum <- left_join(full.grid, agg_dataNum)
 
 # merge in the angel awards thresholds and mark YearAggregates
 agg_dataNum <- angel_awards %>%
-  select(nameOfAggr, gold, platinum, diamond) %>%
-  rename(QI = nameOfAggr) %>%
+  filter(isAngelKPI) %>%
+  select(QI, gold, platinum, diamond) %>%
+  # rename(QI = nameOfAggr) %>%
   right_join(agg_dataNum) %>%
   mutate(
     isYearAgg = ifelse(quarter == "all", TRUE, FALSE),
@@ -344,9 +345,9 @@ agg_dataNum <- agg_dataNum %>%
   arrange(h_country, h_name, year, quarter, QI) %>%
   group_by(h_country, h_name, year, quarter, QI) %>%
   mutate(
-    qual4Diamond = NA,
-    qual4Platinum = NA,
-    qual4Gold = NA,
+    # qual4Diamond = NA,
+    # qual4Platinum = NA,
+    # qual4Gold = NA,
     CSoAboveCountry = cumsum(ifelse(is.na(MedianGeg_C), 0, MedianGeg_C)),
     CSoAboveDiamond = cumsum(qual4Diamond),
     CSoAbovePlatinum = cumsum(qual4Platinum) + CSoAboveDiamond,
