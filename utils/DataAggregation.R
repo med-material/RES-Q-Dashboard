@@ -148,7 +148,7 @@ agg_dataNum<-  df  %>%
                   median(Val2agg, na.rm = TRUE),
                   round(mean(Val2agg,na.rm = TRUE)*100,1)
     ),
-    median = median(Value, na.rm = TRUE),
+    #median = median(Value, na.rm = TRUE),
     data_Pts = sum(!is.na(Value)),
     data_missing = sum(isMissingData)) %>%
   # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
@@ -201,11 +201,11 @@ agg_dataNum <- agg_dataNum %>%
 # adding national comparisons to aggregation data
 agg_dataNum<- agg_dataNum %>% 
   filter(isCountryAgg==T, isKPI==T) %>% 
-  select(h_country, QI, year,quarter,median) %>%
-  rename("C_Median"=median) %>% 
+  select(h_country, QI, year,quarter,Value) %>%
+  rename("C_Median"=Value) %>% 
   right_join(agg_dataNum) %>% 
-  mutate(MedianGeg_C=ifelse(median>=C_Median,1,0),
-         diffFromC = median - C_Median)
+  mutate(MedianGeg_C=ifelse(Value>=C_Median,1,0),
+         diffFromC = Value - C_Median)
 
 #remove duplicate rows
 agg_dataNum <- unique(agg_dataNum) %>%
