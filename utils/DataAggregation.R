@@ -106,11 +106,15 @@ agg_dataNum<-  df  %>%
  
   
 # add yearly hospital aggregates of numVars
-  agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
-    pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
+  agg_dataNum <- df %>%
+    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
     group_by(QI, h_country, h_name, year, isAngelKPI,aggFunc) %>%
     summarise(
+      Value= ifelse(first(isAngelKPI) == FALSE, 
+                    median(Val2agg, na.rm = TRUE),
+                    round(mean(Val2agg,na.rm = TRUE)*100,1)
+      ),
       median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Value)),
       data_missing = sum(ifelse(is.na(cond), 
@@ -122,11 +126,15 @@ agg_dataNum<-  df  %>%
   rbind(agg_dataNum)
 
 # add quarterly country aggregates of numVars
-  agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
-    pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
+  agg_dataNum <- df %>%
+    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
     group_by(QI, h_country, year, quarter, isAngelKPI,aggFunc) %>%
     summarise(
+      Value= ifelse(first(isAngelKPI) == FALSE, 
+                    median(Val2agg, na.rm = TRUE),
+                    round(mean(Val2agg,na.rm = TRUE)*100,1)
+      ),
       median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Value)),
       data_missing = sum(ifelse(is.na(cond), 
@@ -139,11 +147,15 @@ agg_dataNum<-  df  %>%
   rbind(agg_dataNum)
 
 # add yearly country aggregates of numVars
-  agg_dataNum <- dataset[, c(numVars_cols,ctrl_cols)] %>%
-    pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
+  agg_dataNum <- df %>%
+    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
   group_by(QI, h_country, year, isAngelKPI,aggFunc) %>%
   summarise(
+    Value= ifelse(first(isAngelKPI) == FALSE, 
+                  median(Val2agg, na.rm = TRUE),
+                  round(mean(Val2agg,na.rm = TRUE)*100,1)
+    ),
     median = median(Value, na.rm = TRUE),
     data_Pts = sum(!is.na(Value)),
     data_missing = sum(ifelse(is.na(cond), 
@@ -188,7 +200,7 @@ agg_dataNum<-angel_awards %>%
 # adding awards to aggregation data
 agg_dataNum <- agg_dataNum %>% 
   filter(isAngelKPI) %>%
-  mutate(angelAwardLevel=awardHandler_v(pct, gold, platinum, diamond)) %>%
+  mutate(angelAwardLevel=awardHandler_v(Value, gold, platinum, diamond)) %>%
   right_join(agg_dataNum)
 
 agg_dataNum <- agg_dataNum %>% 
