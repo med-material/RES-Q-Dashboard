@@ -109,7 +109,6 @@ agg_dataNum<-  df  %>%
  
 # add yearly hospital aggregates of numVars
   agg_dataNum <- df %>%
-    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
     group_by(QI, h_country, h_name, year, isAngelKPI,aggFunc) %>%
     summarise(
@@ -126,7 +125,6 @@ agg_dataNum<-  df  %>%
 
 # add quarterly country aggregates of numVars
   agg_dataNum <- df %>%
-    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
     group_by(QI, h_country, year, quarter, isAngelKPI,aggFunc) %>%
     summarise(
@@ -136,14 +134,12 @@ agg_dataNum<-  df  %>%
       ),
       data_Pts = sum(!is.na(Value)),
       data_missing = sum(isMissingData)) %>%
-  # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
   mutate(h_name = "all",
          YQ=paste(year, quarter)) %>%
   rbind(agg_dataNum)
 
 # add yearly country aggregates of numVars
   agg_dataNum <- df %>%
-    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
   group_by(QI, h_country, year, isAngelKPI,aggFunc) %>%
   summarise(
@@ -151,10 +147,8 @@ agg_dataNum<-  df  %>%
                   median(Val2agg, na.rm = TRUE),
                   round(mean(Val2agg,na.rm = TRUE)*100,1)
     ),
-    #median = median(Value, na.rm = TRUE),
     data_Pts = sum(!is.na(Value)),
     data_missing = sum(isMissingData)) %>%
-  # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
   mutate(quarter = "all",
          h_name = "all",
          YQ=as.character(year)) %>% 
@@ -177,14 +171,10 @@ createAggs <- function(df, colName){
               data_Pts = sum(!is.na(Val2agg)), 
               data_missing = sum(isMissingData)) %>%
     rename(subGroupVal=colName) %>%
-    mutate(subGroup=colName)
-  
-  #MATHIAS ADD ALL THE OTHER AGGREGATION PARTS HERE - use !! sym(colName) to refer to the variable in dplyr pipes
-  # the three others.
+    mutate(subGroup=colName) 
   
   # add yearly hospital aggregates of numVars
   agg_data <- df %>%
-    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
     group_by(QI, h_country, h_name, year, isAngelKPI,aggFunc, !! sym(colName)) %>%
     summarise(
@@ -192,17 +182,16 @@ createAggs <- function(df, colName){
                     median(Val2agg, na.rm = TRUE),
                     round(mean(Val2agg,na.rm = TRUE)*100,1)
       ),
-      #median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Value)),
       data_missing = sum(isMissingData)) %>%
     mutate(quarter = "all",
            YQ= as.character(year)) %>%
     rename(subGroupVal=colName) %>%
-    mutate(subGroup=colName)
+    mutate(subGroup=colName) %>% 
+    rbind(agg_data)
   
   # add quarterly country aggregates of numVars
   agg_data <- df %>%
-    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
     group_by(QI, h_country, year, quarter, isAngelKPI,aggFunc, !! sym(colName)) %>%
     summarise(
@@ -212,15 +201,14 @@ createAggs <- function(df, colName){
       ),
       data_Pts = sum(!is.na(Value)),
       data_missing = sum(isMissingData)) %>%
-    # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
     mutate(h_name = "all",
            YQ=paste(year, quarter)) %>%
     rename(subGroupVal=colName) %>%
-    mutate(subGroup=colName)
+    mutate(subGroup=colName) %>% 
+    rbind(agg_data)
   
   # add yearly country aggregates of numVars
   agg_data <- df %>%
-    # pivot_longer(-c(key_cols,ctrl_cols), names_to = "QI", values_to = "Value") %>% 
     left_join(angel_conds) %>%
     group_by(QI, h_country, year, isAngelKPI,aggFunc, !! sym(colName)) %>%
     summarise(
@@ -231,25 +219,26 @@ createAggs <- function(df, colName){
       #median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Value)),
       data_missing = sum(isMissingData)) %>%
-    # pivot_longer(cols = median:coverage_pct, names_to = "agg_function", values_to = "Value") %>%
     mutate(quarter = "all",
            h_name = "all",
            YQ=as.character(year)) %>%
     rename(subGroupVal=colName) %>%
-    mutate(subGroup=colName)
+    mutate(subGroup=colName) %>% 
+    rbind(agg_data)
   
-  agg_dataNum <- agg_dataNum %>%
+  agg_data <- agg_data %>%
     mutate(isKPI=ifelse(QI %in% KPIs,TRUE,FALSE),
            pct_missing = ifelse(data_Pts==0,0,round(data_missing/(data_missing + data_Pts)*100,1)))
   
   return(agg_data)
 }
 
-agg_dataNum_first_hospital <- rbind(agg_dataNum,createAggs(df,"first_hospital"))
-agg_data_prenotification <- rbind(agg_dataNum,createAggs(df,"prenotification"))
-agg_data_stroke_type <- rbind(agg_dataNum,createAggs(df,"stroke_type"))
-agg_data_imaging_done <- rbind(agg_dataNum,createAggs(df,"imaging_done"))
-agg_data_gender <- rbind(agg_dataNum,createAggs(df,"gender"))
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"first_hospital"))
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"prenotification"))
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"imaging_done"))
+
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"stroke_type"))
+agg_dataNum <- rbind(agg_dataNum,createAggs(df,"gender"))
 
 
 #set up the grid so we know all the data that should exist and might be missing from the aggregates
