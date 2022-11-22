@@ -130,7 +130,6 @@ agg_dataNum <- df %>%
       median(Val2agg, na.rm = TRUE),
       round(mean(Val2agg, na.rm = TRUE) * 100, 1)
     ),
-    # median = median(Value, na.rm = TRUE),
     data_Pts = sum(!is.na(Value)),
     data_missing = sum(isMissingData)
   ) %>%
@@ -274,7 +273,7 @@ createAggs <- function(df, colName) {
 
 
 
-agg_dataNum <- rbind(agg_dataNum, createAggs(df, "first_hospital"))
+#agg_dataNum <- rbind(agg_dataNum, createAggs(df, "first_hospital"))
 agg_dataNum <- rbind(agg_dataNum, createAggs(df, "prenotification"))
 agg_dataNum <- rbind(agg_dataNum, createAggs(df, "imaging_done"))
 
@@ -362,18 +361,20 @@ options("scipen" = 999)
 
 # plotting a derived measure (quarterly median DNT for one hospital) ------
 
+# preparing data for plotting
+
+
 dfx <- agg_dataNum %>%
   filter(isYearAgg == FALSE, h_name == "Samaritan", QI == "door_to_needle", year=="2019", !is.na(YQ)) %>%
-  mutate(medianValue = median(Value, na.rm = TRUE))
+  mutate(medianValue = median(Value, na.rm = TRUE)) 
 
-dfx %>%
-  ggplot(aes(x = YQ, y = medianValue, group = 1)) +
+dfx %>% ggplot(aes(x = YQ, y = medianValue, group = 1)) +
   geom_line() + 
   geom_point(aes(size=5)) 
-  #geom_point(aes(size = data_Pts))
 
 
 
+    
 
 # #remove all irrelevant combinations
 # agg_dataNum <- agg_dataNum %>%
