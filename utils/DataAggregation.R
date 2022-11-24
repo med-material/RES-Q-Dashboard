@@ -30,9 +30,9 @@ dataset <- dataset %>%
   mutate(patient_id = subject_id, hospital = site_id, h_name = site_name, h_country = site_country, year = discharge_year, quarter = discharge_quarter) %>%
   mutate(YQ = paste(year, quarter)) %>%
   relocate(all_of(key_cols), .before = where(is.character)) %>%
-  #subset for debugging
-  #filter (h_name=="General", year==2018, quarter=="Q1") %>%
-    #       relocate(c(year,quarter,YQ), .after = country)
+  # subset for debugging
+  # filter (h_name=="General", year==2018, quarter=="Q1") %>%
+  #       relocate(c(year,quarter,YQ), .after = country)
   filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y")))
 
 key_cols <- c(
@@ -81,8 +81,8 @@ agg_conds <- angel_conds %>%
   select(QI, cond, aggCond) %>%
   unique() %>%
   mutate(nameOfAggr = QI)
-#? is rbind part of pipe? 
-#rbind(angel_conds)
+# ? is rbind part of pipe?
+# rbind(angel_conds)
 
 eval_vec <- Vectorize(eval.parent, vectorize.args = "expr")
 
@@ -111,7 +111,7 @@ agg_dataNum <- df %>%
   summarise(
     Value = ifelse(first(isAngelKPI) == FALSE,
       median(Val2agg, na.rm = TRUE),
-      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
+      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)), NA, round(mean(Val2agg, na.rm = TRUE) * 100, 1))
     ),
     data_Pts = sum(!is.na(Val2agg)),
     data_missing = sum(isMissingData)
@@ -130,7 +130,7 @@ agg_dataNum <- df %>%
   summarise(
     Value = ifelse(first(isAngelKPI) == FALSE,
       median(Val2agg, na.rm = TRUE),
-      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
+      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)), NA, round(mean(Val2agg, na.rm = TRUE) * 100, 1))
     ),
     data_Pts = sum(!is.na(Val2agg)),
     data_missing = sum(isMissingData)
@@ -148,7 +148,7 @@ agg_dataNum <- df %>%
   summarise(
     Value = ifelse(first(isAngelKPI) == FALSE,
       median(Val2agg, na.rm = TRUE),
-      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
+      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)), NA, round(mean(Val2agg, na.rm = TRUE) * 100, 1))
     ),
     data_Pts = sum(!is.na(Val2agg)),
     data_missing = sum(isMissingData)
@@ -166,7 +166,7 @@ agg_dataNum <- df %>%
   summarise(
     Value = ifelse(first(isAngelKPI) == FALSE,
       median(Val2agg, na.rm = TRUE),
-      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
+      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)), NA, round(mean(Val2agg, na.rm = TRUE) * 100, 1))
     ),
     data_Pts = sum(!is.na(Val2agg)),
     data_missing = sum(isMissingData)
@@ -194,7 +194,7 @@ createAggs <- function(df, colName) {
     summarise(
       Value = ifelse(first(isAngelKPI) == FALSE,
         median(Val2agg, na.rm = TRUE),
-        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
+        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)), NA, round(mean(Val2agg, na.rm = TRUE) * 100, 1))
       ),
       data_Pts = sum(!is.na(Val2agg)),
       data_missing = sum(isMissingData)
@@ -209,7 +209,7 @@ createAggs <- function(df, colName) {
     summarise(
       Value = ifelse(first(isAngelKPI) == FALSE,
         median(Val2agg, na.rm = TRUE),
-        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
+        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)), NA, round(mean(Val2agg, na.rm = TRUE) * 100, 1))
       ),
       data_Pts = sum(!is.na(Val2agg)),
       data_missing = sum(isMissingData)
@@ -229,7 +229,7 @@ createAggs <- function(df, colName) {
     summarise(
       Value = ifelse(first(isAngelKPI) == FALSE,
         median(Val2agg, na.rm = TRUE),
-        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
+        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)), NA, round(mean(Val2agg, na.rm = TRUE) * 100, 1))
       ),
       data_Pts = sum(!is.na(Val2agg)),
       data_missing = sum(isMissingData)
@@ -249,7 +249,7 @@ createAggs <- function(df, colName) {
     summarise(
       Value = ifelse(first(isAngelKPI) == FALSE,
         median(Val2agg, na.rm = TRUE),
-        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
+        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)), NA, round(mean(Val2agg, na.rm = TRUE) * 100, 1))
       ),
       # median = median(Value, na.rm = TRUE),
       data_Pts = sum(!is.na(Val2agg)),
@@ -275,7 +275,7 @@ createAggs <- function(df, colName) {
 
 
 
-#agg_dataNum <- rbind(agg_dataNum, createAggs(df, "first_hospital"))
+# agg_dataNum <- rbind(agg_dataNum, createAggs(df, "first_hospital"))
 agg_dataNum <- rbind(agg_dataNum, createAggs(df, "prenotification"))
 agg_dataNum <- rbind(agg_dataNum, createAggs(df, "imaging_done"))
 
@@ -303,7 +303,7 @@ agg_dataNum <- left_join(full.grid, agg_dataNum)
 agg_dataNum <- angel_awards %>%
   filter(isAngelKPI) %>%
   select(nameOfAggr, gold, platinum, diamond) %>%
-# rename(QI = nameOfAggr) %>%
+  # rename(QI = nameOfAggr) %>%
   right_join(agg_dataNum) %>%
   mutate(
     isYearAgg = ifelse(quarter == "all", TRUE, FALSE),
@@ -346,9 +346,6 @@ agg_dataNum <- agg_dataNum %>%
   arrange(h_country, h_name, year, quarter, QI) %>%
   group_by(h_country, h_name, year, quarter, QI) %>%
   mutate(
-    # qual4Diamond = NA,
-    # qual4Platinum = NA,
-    # qual4Gold = NA,
     CSoAboveCountry = cumsum(ifelse(is.na(MedianGeg_C), 0, MedianGeg_C)),
     CSoAboveDiamond = cumsum(qual4Diamond),
     CSoAbovePlatinum = cumsum(qual4Platinum) + CSoAboveDiamond,
@@ -361,104 +358,25 @@ agg_dataNum <- agg_dataNum %>%
 
 options("scipen" = 999)
 
-# plotting a derived measure (quarterly median DNT for one hospital) ------
+# EXAMPLE GGPLOT  ---------------------------------------------------------
 
 # preparing data for plotting
-# test
+
 dfx <- agg_dataNum
 
-dfx<-agg_dataNum%>%
-  filter(isYearAgg == FALSE, isAngelKPI == TRUE,
-         h_name == "General", nameOfAggr == "dnt_leq_60", 
-         is.na(subGroup), !is.na(YQ), year == "2019") %>%
-  mutate(condColor = ifelse(is1stDiam>0, "#7cd461", "#4299f5")) %>%
-  ggplot(aes(x = YQ, y = Value, group = 1)) + 
-  geom_line(color="#42aaf5") +
-  geom_line(aes(y=C_Value),color="grey") + 
-  geom_point(aes(size=data_Pts,color=condColor)) + 
-  scale_color_identity() + 
-  theme_minimal() + 
+dfx <- agg_dataNum %>%
+  filter(
+    isYearAgg == FALSE, isAngelKPI == TRUE,
+    h_name == "General", nameOfAggr == "dnt_leq_60",
+    is.na(subGroup), !is.na(YQ), year == "2019"
+  ) %>%
+  mutate(condColor = ifelse(is1stDiam > 0, "#7cd461", "#4299f5")) %>%
+  ggplot(aes(x = YQ, y = Value, group = 1)) +
+  geom_line(color = "#42aaf5") +
+  geom_line(aes(y = C_Value), color = "grey") +
+  geom_point(aes(size = data_Pts, color = condColor)) +
+  scale_color_identity() +
+  theme_minimal() +
   ylab("dnt less or equal to 60, in %.")
 
 dfx
-    
-
-# #remove all irrelevant combinations
-# agg_dataNum <- agg_dataNum %>%
-#   filter((QI %in% pctCols & agg_function=='pct') |
-#            (QI %in% numVars  & (agg_function=='median'|agg_function=='coverage_pct'))|
-#            (QI %in% catVars))
-
-
-# agg_dataCat <- dataset[, catVars_cols] %>%
-#   mutate(across(catVars, as.character)) %>%
-#   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-#   group_by(QI, h_country, h_name, year, quarter, YQ, ) %>%
-#   mutate(Totnumber_of_cases = sum(!is.na(Value))) %>%
-#   group_by(Value, add=TRUE) %>%
-#   summarise(percent = ifelse(sum(!is.na(Value))==0, NA, sum(!is.na(Value)) / sum(Totnumber_of_cases))) %>%
-#   rename(subgroup = Value) %>%
-#   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value")
-#
-# agg_dataCat <- dataset[, catVars_cols] %>%
-#   mutate(across(catVars, as.character)) %>%
-#   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-#   group_by(QI, h_country, h_name, year, Value) %>%
-#   summarise (number_of_cases = sum(!is.na(Value))) %>%
-#   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
-#   rename(subgroup = Value) %>%
-#   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
-#   mutate(quarter = "all",
-#          YQ=NA) %>%
-#   rbind(agg_dataCat)
-#
-#
-# agg_dataCat <- dataset[, catVars_cols] %>%
-#   mutate(across(catVars, as.character)) %>%
-#   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-#   group_by(QI, h_country, h_name, year, Value) %>%
-#   summarise (number_of_cases = sum(!is.na(Value))) %>%
-#   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
-#   rename(subgroup = Value) %>%
-#   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
-#   mutate(quarter = "all",
-#          h_name = "all",
-#          YQ=NA) %>%
-#   rbind(agg_dataCat)
-#
-# agg_dataCat <- dataset[, catVars_cols] %>%
-#   mutate(across(catVars, as.character)) %>%
-#   pivot_longer(-key_cols, names_to = "QI", values_to = "Value") %>%
-#   group_by(QI, h_country, year, quarter, Value) %>%
-#   summarise (number_of_cases = sum(!is.na(Value))) %>%
-#   mutate(percent = ifelse(sum(number_of_cases)==0, NA, number_of_cases / sum(number_of_cases))) %>%
-#   rename(subgroup = Value) %>%
-#   pivot_longer(cols = number_of_cases:percent, names_to = "agg_function", values_to = "Value") %>%
-#   mutate(h_name = "all") %>%
-#   rbind(agg_dataCat)
-#
-#
-# CatMeasureGrid<-as_tibble(unique(agg_dataCat[,c('QI','agg_function')]) )
-# full.gridCat<-  timeGrid %>%
-#   merge(hospitalGrid) %>%
-#   merge(CatMeasureGrid) %>%
-#   mutate(YQ=ifelse(quarter=="all",NA,paste(year, quarter)))
-#
-# agg_dataCat<-left_join(full.gridCat,agg_dataCat)
-# agg_dataCat <- unique(agg_dataCat)
-
-
-
-
-# todos for students
-# not requested by students> last4Quarter values instead of year/quarter,
-
-# # show only one specific hospital - reducing the rows in the dataset for debugging.
-# agg_dataNum<-agg_dataNum %>% filter(h_name == "Progress Center")
-# agg_dataCat<-agg_dataCat %>% filter(h_name == "Progress Center")
-
-# #REMOVE means for standard numerical vars and medians for the percentages
-# agg_data <- agg_data %>%
-#   filter((QI %in% pctCols & agg_function=='pct') |
-#            (QI %in% numVars  & (agg_function=='median'|agg_function=='median' ))|
-#            (QI %in% catVars))
