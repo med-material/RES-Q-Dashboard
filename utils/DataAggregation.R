@@ -369,13 +369,14 @@ dfx <- agg_dataNum
 
 dfx<-agg_dataNum%>%
   filter(isYearAgg == FALSE, isAngelKPI == TRUE,
-         h_name == "General", nameOfAggr == "dnt_leq_45", is.na(subGroup),
-         !is.na(YQ)) %>%
+         h_name == "General", nameOfAggr == "dnt_leq_45", 
+         is.na(subGroup), !is.na(YQ)) %>%
+  mutate(condColor = ifelse(is1stDiam>0, "#7cd461", "#4299f5")) %>%
   ggplot(aes(x = YQ, y = Value, group = 1)) + 
-  geom_line(color="steelblue") +
-  geom_line(aes(y=C_Value),color="darkred") + 
-  geom_point(aes(size=data_Pts,color=is1stDiam>0)) + 
-  scale_colour_manual(name = '1st above D > 0', values = setNames(c('green','black'),c(T, F)))
+  geom_line(color="#42aaf5") +
+  geom_line(aes(y=C_Value),color="grey") + 
+  geom_point(aes(size=data_Pts,color=condColor)) + 
+  scale_color_identity()
 
 dfx
     
