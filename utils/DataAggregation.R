@@ -365,17 +365,19 @@ options("scipen" = 999)
 
 # preparing data for plotting
 # test
+dfx <- agg_dataNum
 
-dfx <- agg_dataNum %>%
-  filter(isYearAgg == FALSE, h_name == "Samaritan", QI == "door_to_needle", year=="2019", !is.na(YQ)) %>%
-  mutate(medianValue = median(Value, na.rm = TRUE)) 
+dfx<-agg_dataNum%>%
+  filter(isYearAgg == FALSE, isAngelKPI == TRUE,
+         h_name == "General", nameOfAggr == "dnt_leq_45", is.na(subGroup),
+         !is.na(YQ)) %>%
+  ggplot(aes(x = YQ, y = Value, group = 1)) + 
+  geom_line(color="steelblue") +
+  geom_line(aes(y=C_Value),color="darkred") + 
+  geom_point(aes(size=data_Pts,color=is1stDiam>0)) + 
+  scale_colour_manual(name = '1st above D > 0', values = setNames(c('green','black'),c(T, F)))
 
-dfx %>% ggplot(aes(x = YQ, y = medianValue, group = 1)) +
-  geom_line() + 
-  geom_point(aes(size=5)) 
-
-
-
+dfx
     
 
 # #remove all irrelevant combinations
