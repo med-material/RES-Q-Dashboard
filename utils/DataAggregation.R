@@ -30,9 +30,10 @@ dataset <- dataset %>%
   mutate(patient_id = subject_id, hospital = site_id, h_name = site_name, h_country = site_country, year = discharge_year, quarter = discharge_quarter) %>%
   mutate(YQ = paste(year, quarter)) %>%
   relocate(all_of(key_cols), .before = where(is.character)) %>%
-  #       relocate(c(year,quarter,YQ), .after = country)
+  #subset for debugging
+  #filter (h_name=="General", year==2018, quarter=="Q1") %>%
+    #       relocate(c(year,quarter,YQ), .after = country)
   filter(discharge_year > 2000 & discharge_year <= as.integer(format(Sys.Date(), "%Y")))
-
 
 key_cols <- c(
   key_cols, "patient_id", "hospital", "h_name",
@@ -80,7 +81,8 @@ agg_conds <- angel_conds %>%
   select(QI, cond, aggCond) %>%
   unique() %>%
   mutate(nameOfAggr = QI)
-rbind(angel_conds)
+#? is rbind part of pipe? 
+#rbind(angel_conds)
 
 eval_vec <- Vectorize(eval.parent, vectorize.args = "expr")
 
@@ -109,7 +111,7 @@ agg_dataNum <- df %>%
   summarise(
     Value = ifelse(first(isAngelKPI) == FALSE,
       median(Val2agg, na.rm = TRUE),
-      round(mean(Val2agg, na.rm = TRUE) * 100, 1)
+      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
     ),
     data_Pts = sum(!is.na(Val2agg)),
     data_missing = sum(isMissingData)
@@ -124,13 +126,13 @@ agg_dataNum <- df %>%
 # add yearly hospital aggregates of numVars
 agg_dataNum <- df %>%
   left_join(angel_conds) %>%
-  group_by(QI, h_country, h_name, year, isAngelKPI, aggFunc) %>%
+  group_by(QI, nameOfAggr, h_country, h_name, year, isAngelKPI, aggFunc) %>%
   summarise(
     Value = ifelse(first(isAngelKPI) == FALSE,
       median(Val2agg, na.rm = TRUE),
-      round(mean(Val2agg, na.rm = TRUE) * 100, 1)
+      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
     ),
-    data_Pts = sum(!is.na(Value)),
+    data_Pts = sum(!is.na(Val2agg)),
     data_missing = sum(isMissingData)
   ) %>%
   mutate(
@@ -142,13 +144,13 @@ agg_dataNum <- df %>%
 # add quarterly country aggregates of numVars
 agg_dataNum <- df %>%
   left_join(angel_conds) %>%
-  group_by(QI, h_country, year, quarter, isAngelKPI, aggFunc) %>%
+  group_by(QI, nameOfAggr, h_country, year, quarter, isAngelKPI, aggFunc) %>%
   summarise(
     Value = ifelse(first(isAngelKPI) == FALSE,
       median(Val2agg, na.rm = TRUE),
-      round(mean(Val2agg, na.rm = TRUE) * 100, 1)
+      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
     ),
-    data_Pts = sum(!is.na(Value)),
+    data_Pts = sum(!is.na(Val2agg)),
     data_missing = sum(isMissingData)
   ) %>%
   mutate(
@@ -160,13 +162,13 @@ agg_dataNum <- df %>%
 # add yearly country aggregates of numVars
 agg_dataNum <- df %>%
   left_join(angel_conds) %>%
-  group_by(QI, h_country, year, isAngelKPI, aggFunc) %>%
+  group_by(QI, nameOfAggr, h_country, year, isAngelKPI, aggFunc) %>%
   summarise(
     Value = ifelse(first(isAngelKPI) == FALSE,
       median(Val2agg, na.rm = TRUE),
-      round(mean(Val2agg, na.rm = TRUE) * 100, 1)
+      ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
     ),
-    data_Pts = sum(!is.na(Value)),
+    data_Pts = sum(!is.na(Val2agg)),
     data_missing = sum(isMissingData)
   ) %>%
   mutate(
@@ -192,7 +194,7 @@ createAggs <- function(df, colName) {
     summarise(
       Value = ifelse(first(isAngelKPI) == FALSE,
         median(Val2agg, na.rm = TRUE),
-        round(mean(Val2agg, na.rm = TRUE) * 100, 1)
+        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
       ),
       data_Pts = sum(!is.na(Val2agg)),
       data_missing = sum(isMissingData)
@@ -203,13 +205,13 @@ createAggs <- function(df, colName) {
   # add yearly hospital aggregates of numVars
   agg_data <- df %>%
     left_join(angel_conds) %>%
-    group_by(QI, h_country, h_name, year, isAngelKPI, aggFunc, !!sym(colName)) %>%
+    group_by(QI, nameOfAggr, h_country, h_name, year, isAngelKPI, aggFunc, !!sym(colName)) %>%
     summarise(
       Value = ifelse(first(isAngelKPI) == FALSE,
         median(Val2agg, na.rm = TRUE),
-        round(mean(Val2agg, na.rm = TRUE) * 100, 1)
+        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
       ),
-      data_Pts = sum(!is.na(Value)),
+      data_Pts = sum(!is.na(Val2agg)),
       data_missing = sum(isMissingData)
     ) %>%
     mutate(
@@ -223,13 +225,13 @@ createAggs <- function(df, colName) {
   # add quarterly country aggregates of numVars
   agg_data <- df %>%
     left_join(angel_conds) %>%
-    group_by(QI, h_country, year, quarter, isAngelKPI, aggFunc, !!sym(colName)) %>%
+    group_by(QI, nameOfAggr, h_country, year, quarter, isAngelKPI, aggFunc, !!sym(colName)) %>%
     summarise(
       Value = ifelse(first(isAngelKPI) == FALSE,
         median(Val2agg, na.rm = TRUE),
-        round(mean(Val2agg, na.rm = TRUE) * 100, 1)
+        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
       ),
-      data_Pts = sum(!is.na(Value)),
+      data_Pts = sum(!is.na(Val2agg)),
       data_missing = sum(isMissingData)
     ) %>%
     mutate(
@@ -243,14 +245,14 @@ createAggs <- function(df, colName) {
   # add yearly country aggregates of numVars
   agg_data <- df %>%
     left_join(angel_conds) %>%
-    group_by(QI, h_country, year, isAngelKPI, aggFunc, !!sym(colName)) %>%
+    group_by(QI, nameOfAggr, h_country, year, isAngelKPI, aggFunc, !!sym(colName)) %>%
     summarise(
       Value = ifelse(first(isAngelKPI) == FALSE,
         median(Val2agg, na.rm = TRUE),
-        round(mean(Val2agg, na.rm = TRUE) * 100, 1)
+        ifelse(is.nan(mean(Val2agg, na.rm = TRUE)),NA,round(mean(Val2agg, na.rm = TRUE) * 100, 1))
       ),
       # median = median(Value, na.rm = TRUE),
-      data_Pts = sum(!is.na(Value)),
+      data_Pts = sum(!is.na(Val2agg)),
       data_missing = sum(isMissingData)
     ) %>%
     mutate(
@@ -300,8 +302,8 @@ agg_dataNum <- left_join(full.grid, agg_dataNum)
 # merge in the angel awards thresholds and mark YearAggregates
 agg_dataNum <- angel_awards %>%
   filter(isAngelKPI) %>%
-  select(QI, gold, platinum, diamond) %>%
-  # rename(QI = nameOfAggr) %>%
+  select(nameOfAggr, gold, platinum, diamond) %>%
+# rename(QI = nameOfAggr) %>%
   right_join(agg_dataNum) %>%
   mutate(
     isYearAgg = ifelse(quarter == "all", TRUE, FALSE),
@@ -327,12 +329,12 @@ agg_dataNum <- agg_dataNum %>%
 # adding national comparisons to aggregation data
 agg_dataNum <- agg_dataNum %>%
   filter(isCountryAgg == T, isKPI == T) %>%
-  select(h_country, QI, year, quarter, Value) %>%
-  rename("C_Median" = Value) %>%
+  select(h_country, nameOfAggr, year, quarter, subGroup, subGroupVal, Value) %>%
+  rename("C_Value" = Value) %>%
   right_join(agg_dataNum) %>%
   mutate(
-    MedianGeg_C = ifelse(Value >= C_Median, 1, 0),
-    diffFromC = Value - C_Median
+    MedianGeg_C = ifelse(Value >= C_Value, 1, 0),
+    diffFromC = Value - C_Value
   )
 
 # remove duplicate rows
