@@ -1,7 +1,8 @@
 #not needed when called from DataAggregation.R: library(tidyverse)
 library(googlesheets4)
 library(gsheet)
-structureData<- gsheet2tbl('https://docs.google.com/spreadsheets/d/1MrhG4S0lIzMI6-J7iiURH5LDJ0fAl3RoqFwqMTxXiCY/edit#gid=1936144053',sheet=3)
+# structureData<- gsheet2tbl('https://docs.google.com/spreadsheets/d/1Jz7ABWuC9icSEwy4SDMXp00_2hdyII8QyKDH2qd-vrY/edit?usp=sharing',sheet=3)
+structureData<-read.csv("data/QIdataStructure.csv")
 structureData <- structureData %>% 
   filter(isStudProj=="x") %>%
   mutate(across('conditionForAggr', str_replace, 'total cohort', '')) %>%
